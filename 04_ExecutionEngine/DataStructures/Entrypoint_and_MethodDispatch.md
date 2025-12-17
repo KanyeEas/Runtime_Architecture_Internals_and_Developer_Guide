@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ExecutionEngine_EndToEnd.md`（“调用/桥接（解释器 ↔ compiled）”与“JIT/OSR（热点触发）”框：本卡片解释 Method 的 entrypoint/OSR code 如何驱动派发决策）
+- 总入口：[ExecutionEngine_EndToEnd（Flow）](../Flows/ExecutionEngine_EndToEnd.md)（“调用/桥接（解释器 ↔ compiled）”与“JIT/OSR（热点触发）”框：本卡片解释 Method 的 entrypoint/OSR code 如何驱动派发决策）
 
 ## 它是什么
 
@@ -15,7 +15,7 @@
 ## entrypoint 的存放位置（跨章提示）
 
 `Method` 的字段与状态位段在 03 章已经逐行闭环（避免在 04 章重复逐行）：
-- 见 03：`03_ClassLoading/FileNotes/runtime_include_method.h.md`
+- 见 03：[runtime_include_method.h（FileNotes）](../../03_ClassLoading/FileNotes/runtime_include_method.h.md)
 
 04 章主要关注：**谁在什么时候写入这些 entrypoints，以及调用方如何使用**。
 
@@ -46,13 +46,13 @@ flowchart TD
 - bridge：`runtime/bridge/bridge.h`、`runtime/bridge/bridge.cpp`
 - OSR：`runtime/osr.h`、`runtime/osr.cpp`
 - JIT runtime interface：`runtime/compiler.h`、`runtime/compiler.cpp`（TrySetOsrCode/SetCompiledEntryPoint）
-- 03（Method 字段定义）：`03_ClassLoading/FileNotes/runtime_include_method.h.md`
+- 03（Method 字段定义）：[runtime_include_method.h（FileNotes）](../../03_ClassLoading/FileNotes/runtime_include_method.h.md)
 
 ## 下一步（新人推荐）
 
-- 想看“派发决策如何落到 I2C/C2I 边界” → `../Flows/Bridge_I2C_C2I.md`
-- 想看“OSR 安装条件/触发点/回退路径” → `../Flows/Deopt_and_OSR.md`
-- 想看“compiled code 调 runtime 慢路径 + 编译期写回入口” → `../Flows/Entrypoints_and_RuntimeInterface.md`
+- 想看“派发决策如何落到 I2C/C2I 边界” → [Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
+- 想看“OSR 安装条件/触发点/回退路径” → [Deopt_and_OSR（Flow）](../Flows/Deopt_and_OSR.md)
+- 想看“compiled code 调 runtime 慢路径 + 编译期写回入口” → [Entrypoints_and_RuntimeInterface（Flow）](../Flows/Entrypoints_and_RuntimeInterface.md)
 
 
 

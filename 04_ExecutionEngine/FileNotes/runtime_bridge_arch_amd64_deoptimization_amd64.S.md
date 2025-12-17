@@ -68,6 +68,6 @@
 - aarch64 对照实现：`runtime/bridge/arch/aarch64/deoptimization_aarch64.S`
 - `InvokeInterpreter` 语义骨架：`runtime/bridge/bridge.cpp`
 - StackWalker/ConvertToIFrame：`runtime/stack_walker.cpp`
-- 概念/逻辑：`Flows/Deopt_and_OSR.md` + `Flows/Bridge_I2C_C2I.md`
+- 概念/逻辑：[Deopt_and_OSR（Flow）](../Flows/Deopt_and_OSR.md) + [Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
 
 

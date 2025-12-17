@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ExecutionEngine_EndToEnd.md`（“Entrypoints（runtime slow paths）”与“RuntimeInterface/写回编译产物”框）
+- 总入口：[ExecutionEngine_EndToEnd](ExecutionEngine_EndToEnd.md)（“Entrypoints（runtime slow paths）”与“RuntimeInterface/写回编译产物”框）
 
 ## 1) 这条 flow 解决什么问题
 
@@ -58,8 +58,8 @@ flowchart TD
 
 ## 6) 下一步（新人推荐）
 
-- 你关心“解释器↔compiled 边界与返回值” → `Bridge_I2C_C2I.md`
-- 你关心“OSR/deopt 触发与安装条件” → `Deopt_and_OSR.md`
+- 你关心“解释器↔compiled 边界与返回值” → [Bridge_I2C_C2I](Bridge_I2C_C2I.md)
+- 你关心“OSR/deopt 触发与安装条件” → [Deopt_and_OSR](Deopt_and_OSR.md)
 
 
 

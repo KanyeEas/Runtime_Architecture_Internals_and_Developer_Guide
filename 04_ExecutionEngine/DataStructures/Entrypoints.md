@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ExecutionEngine_EndToEnd.md`（“Entrypoints（runtime slow paths）”框：compiled code 通过 entrypoints 进入 runtime 慢路径）
+- 总入口：[ExecutionEngine_EndToEnd（Flow）](../Flows/ExecutionEngine_EndToEnd.md)（“Entrypoints（runtime slow paths）”框：compiled code 通过 entrypoints 进入 runtime 慢路径）
 
 ## 它是什么
 
@@ -43,8 +43,8 @@ sequenceDiagram
 
 ## 下一步（新人推荐）
 
-- 想看“entrypoints 与 RuntimeInterface 的完整 flow（运行期+编译期两条线）” → `../Flows/Entrypoints_and_RuntimeInterface.md`
-- 想看“entrypoints 异常如何跨边界/导致回解释器” → `../Flows/Bridge_I2C_C2I.md` 与 `../Flows/StackWalking.md`
+- 想看“entrypoints 与 RuntimeInterface 的完整 flow（运行期+编译期两条线）” → [Entrypoints_and_RuntimeInterface（Flow）](../Flows/Entrypoints_and_RuntimeInterface.md)
+- 想看“entrypoints 异常如何跨边界/导致回解释器” → [Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md) 与 [StackWalking（Flow）](../Flows/StackWalking.md)
 
 
 

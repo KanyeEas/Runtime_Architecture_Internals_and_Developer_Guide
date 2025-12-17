@@ -1,18 +1,34 @@
 site_name: Runtime Architecture Internals & Developer Guide
-site_description: Ark runtime_core/static_core internal wiki (Stage1+Stage2)
-site_url: https://<your-github-username>.github.io/<your-repo>/
+site_description: Ark runtime_core/static_core internal wiki（概览 + 深入证据链）
+site_url: ""
 
-# Docs live in this directory (this folder is expected to be the repo root when publishing).
-docs_dir: .
+# Docs live in ./docs (MkDocs requires a child directory).
+docs_dir: docs
 site_dir: site
 
 theme:
   name: material
   language: zh
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: 切换到夜间模式
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到日间模式
   features:
     - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.indexes
+    - navigation.top
     - toc.follow
     - content.code.copy
 
@@ -39,33 +55,66 @@ extra_javascript:
   - https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js
   - assets/javascripts/mermaid-init.js
 
+extra_css:
+  - assets/stylesheets/extra.css
+
 nav:
   - Home: index.md
-  - Stage1 (Master):
-      - Master Index: 00_Master_Index.md
-      - Methodology Checklist: 00_Methodology_Wiki_Review_Checklist.md
-      - Chapter 01 (Stage1): 01_Startup_and_Entrypoints.md
-      - Chapter 02 (Stage1): 02_Memory_Management_and_Object_Model.md
-      - Chapter 03 (Stage1): 03_Class_Loading_and_Linking.md
-      - Chapter 04 (Stage1): 04_Execution_Engine_Interpreter_JIT_AOT.md
-      - Chapter 05 (Stage1): 05_Native_Bridge_ANI_and_Interop.md
-      - Chapter 06 (Stage1): 06_Tooling_Profiling_Verification.md
-      - Chapter 07 (Stage1): 07_Build_and_Configuration.md
-  - Stage2 (Deep Dives):
-      - Chapter 01 Startup:
-          - README: 01_Startup/README.md
-          - Index: 01_Startup/Index.md
-      - Chapter 02 Memory:
-          - README: 02_Memory/README.md
-          - Index: 02_Memory/Index.md
-      - Chapter 03 ClassLoading:
-          - README: 03_ClassLoading/README.md
-          - MinDebug Playbook: 03_ClassLoading/Newbie_MinDebug_Playbook.md
-          - EndToEnd Flow: 03_ClassLoading/Flows/ClassLoading_EndToEnd.md
-          - Index: 03_ClassLoading/Index.md
-      - Chapter 04 ExecutionEngine:
-          - README: 04_ExecutionEngine/README.md
-          - MinDebug Playbook: 04_ExecutionEngine/Newbie_MinDebug_Playbook.md
-          - EndToEnd Flow: 04_ExecutionEngine/Flows/ExecutionEngine_EndToEnd.md
-          - Index: 04_ExecutionEngine/Index.md
+  - 00 总览与方法论:
+      - 总索引（概览）: 00_Master_Index.md
+      - 方法论 Checklist: 00_Methodology_Wiki_Review_Checklist.md
+      - 全量页面索引（必备）: All_Pages.md
+
+  - 01 Startup:
+      - 概览（Stage1）: 01_Startup_and_Entrypoints.md
+      - 深入入口（Stage2/README）: 01_Startup/README.md
+      - 深入路线图（Index）: 01_Startup/Index.md
+
+  - 02 Memory:
+      - 概览（Stage1）: 02_Memory_Management_and_Object_Model.md
+      - 深入入口（Stage2/README）: 02_Memory/README.md
+      - 深入路线图（Index）: 02_Memory/Index.md
+
+  - 03 ClassLoading:
+      - 概览（Stage1）: 03_Class_Loading_and_Linking.md
+      - 深入入口（Stage2/README）: 03_ClassLoading/README.md
+      - 端到端主线（EndToEnd）: 03_ClassLoading/Flows/ClassLoading_EndToEnd.md
+      - 新人最小调试手册: 03_ClassLoading/Newbie_MinDebug_Playbook.md
+      - 深入路线图（Index）: 03_ClassLoading/Index.md
+      - 专题索引:
+          - Flows: 03_ClassLoading/Flows/Index.md
+          - DataStructures: 03_ClassLoading/DataStructures/Index.md
+          - FileNotes: 03_ClassLoading/FileNotes/Index.md
+          - Diagrams: 03_ClassLoading/Diagrams/Index.md
+          - Manifests: 03_ClassLoading/Manifests/Index.md
+      - 完成度验收（Checklist）: 03_ClassLoading/Completion_Review.md
+
+  - 04 ExecutionEngine:
+      - 概览（Stage1）: 04_Execution_Engine_Interpreter_JIT_AOT.md
+      - 深入入口（Stage2/README）: 04_ExecutionEngine/README.md
+      - 端到端主线（EndToEnd）: 04_ExecutionEngine/Flows/ExecutionEngine_EndToEnd.md
+      - 新人最小调试手册: 04_ExecutionEngine/Newbie_MinDebug_Playbook.md
+      - 深入路线图（Index）: 04_ExecutionEngine/Index.md
+      - 专题索引:
+          - Flows: 04_ExecutionEngine/Flows/Index.md
+          - DataStructures: 04_ExecutionEngine/DataStructures/Index.md
+          - FileNotes: 04_ExecutionEngine/FileNotes/Index.md
+          - Diagrams: 04_ExecutionEngine/Diagrams/Index.md
+          - Manifests: 04_ExecutionEngine/Manifests/Index.md
+      - 完成度验收（Checklist）: 04_ExecutionEngine/Completion_Review.md
+
+  - 05 NativeBridge:
+      - 概览（Stage1）: 05_Native_Bridge_ANI_and_Interop.md
+      - 深入入口（Stage2/README）: 05_NativeBridge/README.md
+      - 深入路线图（Index）: 05_NativeBridge/Index.md
+
+  - 06 Tooling:
+      - 概览（Stage1）: 06_Tooling_Profiling_Verification.md
+      - 深入入口（Stage2/README）: 06_Tooling_Profiling_Verification/README.md
+      - 深入路线图（Index）: 06_Tooling_Profiling_Verification/Index.md
+
+  - 07 Build&Config:
+      - 概览（Stage1）: 07_Build_and_Configuration.md
+      - 深入入口（Stage2/README）: 07_Build_and_Configuration/README.md
+      - 深入路线图（Index）: 07_Build_and_Configuration/Index.md
 

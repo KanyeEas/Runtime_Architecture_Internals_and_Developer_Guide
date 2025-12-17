@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ExecutionEngine_EndToEnd.md`（“异常/栈遍历（调试/异常/去优化都会用）”框）
+- 总入口：[ExecutionEngine_EndToEnd](ExecutionEngine_EndToEnd.md)（“异常/栈遍历（调试/异常/去优化都会用）”框）
 
 ## 1) 这条 flow 解决什么问题
 
@@ -49,8 +49,8 @@ flowchart TD
 
 ## 5) 下一步（新人推荐）
 
-- 你遇到“边界帧/ABI 导致缺帧” → `Bridge_I2C_C2I.md`
-- 你遇到“deopt-after/回退解释器导致栈不一致” → `Deopt_and_OSR.md`
+- 你遇到“边界帧/ABI 导致缺帧” → [Bridge_I2C_C2I](Bridge_I2C_C2I.md)
+- 你遇到“deopt-after/回退解释器导致栈不一致” → [Deopt_and_OSR](Deopt_and_OSR.md)
 
 
 

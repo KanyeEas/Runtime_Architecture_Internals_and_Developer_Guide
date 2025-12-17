@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ExecutionEngine_EndToEnd.md`（“JIT/OSR（热点触发）”与“Deopt（compiled→解释器恢复）”框）
+- 总入口：[ExecutionEngine_EndToEnd（Flow）](../Flows/ExecutionEngine_EndToEnd.md)（“JIT/OSR（热点触发）”与“Deopt（compiled→解释器恢复）”框）
 
 ## 它是什么
 
@@ -65,9 +65,9 @@ flowchart TD
 
 ## 下一步（新人推荐）
 
-- 想看“deopt/OSR 的端到端 flow（含架构约束）” → `../Flows/Deopt_and_OSR.md`
-- 想看“OSR 触发点如何绑在解释器回边/分支插桩” → `../Flows/Interpreter_Execute.md`
-- 想看“deopt-after 回解释器时跨边界/缺帧” → `../Flows/Bridge_I2C_C2I.md` 与 `../Flows/StackWalking.md`
+- 想看“deopt/OSR 的端到端 flow（含架构约束）” → [Deopt_and_OSR（Flow）](../Flows/Deopt_and_OSR.md)
+- 想看“OSR 触发点如何绑在解释器回边/分支插桩” → [Interpreter_Execute（Flow）](../Flows/Interpreter_Execute.md)
+- 想看“deopt-after 回解释器时跨边界/缺帧” → [Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md) 与 [StackWalking（Flow）](../Flows/StackWalking.md)
 
 
 

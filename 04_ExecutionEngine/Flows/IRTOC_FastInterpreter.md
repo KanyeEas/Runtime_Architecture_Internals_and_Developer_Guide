@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ExecutionEngine_EndToEnd.md`（“解释器选型（运行时真实入口）”与“解释器执行（主循环）”框：本 flow 解释 fast interpreter 的真实执行路径与 build 生成链）
+- 总入口：[ExecutionEngine_EndToEnd](ExecutionEngine_EndToEnd.md)（“解释器选型（运行时真实入口）”与“解释器执行（主循环）”框：本 flow 解释 fast interpreter 的真实执行路径与 build 生成链）
 
 ## 1) 这条 flow 解决什么问题
 
@@ -119,19 +119,19 @@ flowchart TD
 **确认你跑的是 fast interpreter → 定位 `.irt` 的锚点（dispatch/decode/call/OSR/exception）→ 修改 `irtoc/scripts/interpreter.irt` → 用 build 产物做三段式验证（.irt.fixed → irtoc_code.cpp → disasm.txt）**。
 
 更详细的“怎么读/怎么改/怎么验证”见：
-- `IRTOC_DSL_Primer.md`（新人工具书：最小语法集 + 常见改动落点表 + 验证闭环）
-- 逐行证据：`../FileNotes/irtoc_scripts_interpreter.irt.md`、`../FileNotes/irtoc_scripts_common.irt.md`
-- 更系统的 DSL 参考：`IRTOC_DSL_Reference.md`（查手册式：语法/语义/常见坑）
+- [IRTOC_DSL_Primer](IRTOC_DSL_Primer.md)（新人工具书：最小语法集 + 常见改动落点表 + 验证闭环）
+- 逐行证据：[irtoc_scripts_interpreter.irt](../FileNotes/irtoc_scripts_interpreter.irt.md)、[irtoc_scripts_common.irt](../FileNotes/irtoc_scripts_common.irt.md)
+- 更系统的 DSL 参考：[IRTOC_DSL_Reference](IRTOC_DSL_Reference.md)（查手册式：语法/语义/常见坑）
 
 ### 6.2 从现象到 `.irt`：第一落点速查表（新人最实用）
 
 | 你看到的现象 | 先确认 | `.irt` 第一落点（关键词） | 下一跳 |
 |---|---|---|---|
-| 改了 C++ handler 没生效 | 是否跑的是 `--interpreter-type=llvm/irtoc` | `Panda.instructions.each` / `handle_xxx` | `IRTOC_DSL_Primer.md`（2/3/4 节） |
-| dispatch/异常入口不对 | dispatch table 末尾是否是 exception slot | `macro(:dispatch)` / `move_to_exception` | `../FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md` |
-| OSR 不触发/回退奇怪 | 是否是回边触发、是否 fake-return | `instrument_branches` / `handle_fake_return` | `../FileNotes/irtoc_scripts_interpreter.irt.md`（OSR 段） |
-| call/return 行为异常 | 是否走 I2C 或 stackless | `generic_call` / `generic_return` | `../Flows/Bridge_I2C_C2I.md` |
-| GC/safepoint 崩或偶现错 | acc 是否在边界前写回 | `save_acc` / `restore_acc` / `safepoint` | `../DataStructures/Frame_VReg_Acc.md` |
+| 改了 C++ handler 没生效 | 是否跑的是 `--interpreter-type=llvm/irtoc` | `Panda.instructions.each` / `handle_xxx` | [IRTOC_DSL_Primer](IRTOC_DSL_Primer.md)（2/3/4 节） |
+| dispatch/异常入口不对 | dispatch table 末尾是否是 exception slot | `macro(:dispatch)` / `move_to_exception` | [build_runtime_include_irtoc_interpreter_utils.h](../FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md) |
+| OSR 不触发/回退奇怪 | 是否是回边触发、是否 fake-return | `instrument_branches` / `handle_fake_return` | [irtoc_scripts_interpreter.irt](../FileNotes/irtoc_scripts_interpreter.irt.md)（OSR 段） |
+| call/return 行为异常 | 是否走 I2C 或 stackless | `generic_call` / `generic_return` | [Bridge_I2C_C2I（Flow）](Bridge_I2C_C2I.md) |
+| GC/safepoint 崩或偶现错 | acc 是否在边界前写回 | `save_acc` / `restore_acc` / `safepoint` | [Frame_VReg_Acc（DataStructure）](../DataStructures/Frame_VReg_Acc.md) |
 
 ### 6.3 “验证你改动真的生效”的证据链（必须做）
 
@@ -141,7 +141,7 @@ flowchart TD
 - **IR 层**：`build/irtoc/irtoc_interpreter/irtoc_code.cpp`（确认对应 `Loc(..., line)` 的 IR 节点发生变化）
 - **机器码层**：`build/irtoc/irtoc_interpreter/disasm.txt`（确认对应 `# [inst] id` 的汇编发生变化）
 
-参考笔记：`../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt.md`
+参考笔记：[build_irtoc_irtoc_interpreter_disasm.txt](../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt.md)
 
 
 

@@ -38,6 +38,6 @@
 
 - 静态 C2I（shorty 驱动）对照：`runtime/bridge/arch/aarch64/compiled_code_to_interpreter_bridge_aarch64.S`
 - dyn I2C 对照：`runtime/bridge/arch/aarch64/interpreter_to_compiled_code_bridge_dyn_aarch64.S`
-- 概念/逻辑：`Flows/Bridge_I2C_C2I.md` + `DataStructures/Bridge_ABI_and_FrameKind.md`
+- 概念/逻辑：[Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md) + [Bridge_ABI_and_FrameKind（DataStructure）](../DataStructures/Bridge_ABI_and_FrameKind.md)
 
 

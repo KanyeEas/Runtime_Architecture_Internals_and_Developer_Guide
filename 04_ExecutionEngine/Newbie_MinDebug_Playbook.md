@@ -21,7 +21,7 @@
   - `GetInterpreterTypeFromRuntimeOptions(Frame *frame)`
   - `ExecuteImpl(...)`（会做 debug-mode/GC/hybrid 的硬限制）
 
-> 推荐入口文档：`Flows/IRTOC_FastInterpreter.md` 的 **4.1 解释器选型精确规则**（已按源码可复核）。
+> 推荐入口文档：[Flows/IRTOC_FastInterpreter](Flows/IRTOC_FastInterpreter.md) 的 **4.1 解释器选型精确规则**（已按源码可复核）。
 
 ### 1.1 判定矩阵（最常见的 6 个结论）
 
@@ -63,7 +63,7 @@
     - `392 = Panda::dispatch_table.handler_names.size() + 1`（`+1` 是 `HANDLE_FAST_EXCEPTION(_LLVM)` 槽位）
   - 同时它与 C++ interpreter 的 label dispatch table **同长度、同 ISA 空间**（便于你心里对齐 opcode 空间）：
     - `392 = 256 + NUM_PREFIXED + 1`（见 `runtime/interpreter/templates/interpreter-inl_gen.h.erb` 与 `isa_constants_gen.h.erb`，`+1` 为 `EXCEPTION_HANDLER` 槽）
-- 生成链总览（脚本→机器码）：`Flows/IRTOC_FastInterpreter.md`
+- 生成链总览（脚本→机器码）：[Flows/IRTOC_FastInterpreter](Flows/IRTOC_FastInterpreter.md)
   - `irtoc/scripts/interpreter.irt → build/irtoc/.../interpreter.irt.fixed → irtoc_code.cpp → disasm.txt`
 
 ### 3.1 你应该如何“证明自己看的是生产路径”
@@ -85,16 +85,16 @@
 
 ### 4.2 一键下潜到“汇编证据链”
 
-直接跳：`Flows/Bridge_I2C_C2I.md` → **4.1 arch 汇编证据链**（aarch64/amd64，含 dyn）  
+直接跳：[Flows/Bridge_I2C_C2I](Flows/Bridge_I2C_C2I.md) → **4.1 arch 汇编证据链**（aarch64/amd64，含 dyn）  
 里面把 I2C/C2I/proxy/deopt 的源码路径和对应 FileNotes 都列好了。
 
 ### 4.3 症状 → 第一落点 → 第二落点（新人最快路线）
 
 | 你看到的现象 | 第一落点（优先看） | 第二落点（需要硬证据时） |
 |---|---|---|
-| 跳到 compiled 就崩 | `runtime/bridge/bridge.cpp`（Invoke/Return 语义、frame 切换） | `Flows/Bridge_I2C_C2I.md` 的 arch 汇编证据链（I2C/proxy） |
+| 跳到 compiled 就崩 | `runtime/bridge/bridge.cpp`（Invoke/Return 语义、frame 切换） | [Flows/Bridge_I2C_C2I](Flows/Bridge_I2C_C2I.md) 的 arch 汇编证据链（I2C/proxy） |
 | 从 compiled 回解释器后返回值/acc 不对 | `runtime/bridge/bridge.cpp` + `runtime/interpreter/*`（acc 写回点） | `runtime/bridge/arch/*/compiled_code_to_interpreter_bridge_*.S`（C2I 写回/FreeFrame） |
-| 缺帧/栈遍历崩 | `runtime/stack_walker.cpp`（boundary frame 识别） | `DataStructures/Bridge_ABI_and_FrameKind.md` + arch 汇编（TLS/callee-saved） |
+| 缺帧/栈遍历崩 | `runtime/stack_walker.cpp`（boundary frame 识别） | [Bridge_ABI_and_FrameKind（DataStructure）](DataStructures/Bridge_ABI_and_FrameKind.md) + arch 汇编（TLS/callee-saved） |
 | native 异常无法正确抛出/被吞 | `runtime/exceptions.cpp`（HandlePendingException/FindCatchBlockInCFrames） | `runtime/bridge/arch/*/proxy_entrypoint_*.S`（ThrowNativeExceptionBridge 跳转） |
 
 ## 5) OSR 不生效 / deopt-after 异常：第一落点
@@ -104,13 +104,13 @@
   - `UpdateHotnessOSR(...)`：`frame->IsDeoptimized()` / `compiler-enable-osr` gating
   - 触发成功后的 **fake-return**：伪造 `RETURN_VOID` 让主循环安全退出并进入 OSR 入口路径
 - **fast interpreter 的 OSR entrypoint**：`runtime/entrypoints/entrypoints.cpp::CallCompilerSlowPathOSR`
-- 文档入口：`Flows/Deopt_and_OSR.md`
+- 文档入口：[Flows/Deopt_and_OSR](Flows/Deopt_and_OSR.md)
 
 ### 5.1 让 OSR 更“容易发生”的三个参数（调试专用）
 
 > 目的：让你在本地更容易把 OSR 路径跑出来（不是性能建议）。
 
-- ⚠️ **先确认架构是否支持**：当前源码里 OSR 的 `OsrEntryAfter*` 真实落地主要在 **arm64**（见 `Flows/Deopt_and_OSR.md` 的 **4.3 架构约束**）；在非 arm64 上这些入口可能是 `UNREACHABLE()` stub，你会“怎么调都跑不出来”。
+- ⚠️ **先确认架构是否支持**：当前源码里 OSR 的 `OsrEntryAfter*` 真实落地主要在 **arm64**（见 [Flows/Deopt_and_OSR](Flows/Deopt_and_OSR.md) 的 **4.3 架构约束**）；在非 arm64 上这些入口可能是 `UNREACHABLE()` stub，你会“怎么调都跑不出来”。
 
 - `--compiler-enable-jit=true`
 - `--compiler-hotness-threshold=1`（更快触发编译请求）
@@ -126,7 +126,7 @@
   - 源码：`runtime/interpreter/templates/interpreter-inl_gen.h.erb`
 - 第二段（进入 CFrames 搜索）：`FindCatchBlockInCallStack(thread)` → `FindCatchBlockInCFrames` → 命中后 `Deoptimize(...)`
   - 源码：`runtime/exceptions.cpp`
-- 文档入口：`Flows/StackWalking.md`
+- 文档入口：[Flows/StackWalking](Flows/StackWalking.md)
 
 ## 7) 三个最小实验（把现象“做出来”，你就不再靠猜）
 

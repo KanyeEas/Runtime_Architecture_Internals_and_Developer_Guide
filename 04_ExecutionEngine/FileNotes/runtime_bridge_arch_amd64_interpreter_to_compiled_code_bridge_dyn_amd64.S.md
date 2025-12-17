@@ -32,6 +32,6 @@ dyn 版不以 shorty 决定返回类型寄存器（统一走 TaggedValue 语义�
 
 - 静态 I2C（shorty 驱动）对照：`runtime/bridge/arch/amd64/interpreter_to_compiled_code_bridge_amd64.S`
 - dyn C2I（配套回退路径）：`runtime/bridge/arch/amd64/compiled_code_to_interpreter_bridge_dyn_amd64.S`
-- 概念/逻辑：`Flows/Bridge_I2C_C2I.md`
+- 概念/逻辑：[Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
 
 

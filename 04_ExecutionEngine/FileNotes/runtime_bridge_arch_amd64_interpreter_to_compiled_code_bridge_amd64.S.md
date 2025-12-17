@@ -64,9 +64,9 @@
 
 ## 6) 与本章其他证据的连接点
 
-- 概念/逻辑：`Flows/Bridge_I2C_C2I.md`
-- FrameKind/边界语义：`DataStructures/Bridge_ABI_and_FrameKind.md`
-- C++ 骨架与 acc 写回语义：`FileNotes/runtime_bridge_bridge.cpp.md`
+- 概念/逻辑：[Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
+- FrameKind/边界语义：[Bridge_ABI_and_FrameKind（DataStructure）](../DataStructures/Bridge_ABI_and_FrameKind.md)
+- C++ 骨架与 acc 写回语义：[runtime_bridge_bridge.cpp（FileNotes）](./runtime_bridge_bridge.cpp.md)
 - 相关生成文件（call-format dispatch）：
   - 模板：`runtime/templates/bridge_dispatch.S.erb`
   - 逐行笔记：[FileNotes/runtime_templates_bridge_dispatch.S.erb.md](runtime_templates_bridge_dispatch.S.erb.md)

@@ -6,7 +6,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ExecutionEngine_EndToEnd.md`（“解释器执行（主循环）”与“fast interpreter（IRTOC/LLVM）”相关框：ISA 是 opcode/handler 的规范源）
+- 总入口：[ExecutionEngine_EndToEnd（Flow）](../Flows/ExecutionEngine_EndToEnd.md)（“解释器执行（主循环）”与“fast interpreter（IRTOC/LLVM）”相关框：ISA 是 opcode/handler 的规范源）
 
 ## 1) ISA YAML 的结构（你需要掌握的字段）
 
@@ -49,13 +49,13 @@ flowchart TD
 
 ## 4) 与 04 章其他内容的连接
 
-- **IRTOC fast interpreter**：`DataStructures/IRTOC_FastInterpreter.md`
-- **IRTOC 语义实现**：`FileNotes/irtoc_scripts_interpreter.irt.md`
-- **dispatch table 组装**：`FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md`
+- **IRTOC fast interpreter**：[IRTOC_FastInterpreter（DataStructure）](IRTOC_FastInterpreter.md)
+- **IRTOC 语义实现**：[irtoc_scripts_interpreter.irt（FileNotes）](../FileNotes/irtoc_scripts_interpreter.irt.md)
+- **dispatch table 组装**：[build_runtime_include_irtoc_interpreter_utils.h（FileNotes）](../FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md)
 
 ## 下一步（新人推荐）
 
-- 想把“ISA→handler→dispatch table→机器码”串起来 → `IRTOC_FastInterpreter.md` 与 `../Flows/IRTOC_FastInterpreter.md`
-- 想从几个常用 opcode 直接下潜到生成/实现细节 → `../Flows/Opcode_DeepDives_IRTOC.md`
+- 想把“ISA→handler→dispatch table→机器码”串起来 → [IRTOC_FastInterpreter（DataStructure）](IRTOC_FastInterpreter.md) 与 [IRTOC_FastInterpreter（Flow）](../Flows/IRTOC_FastInterpreter.md)
+- 想从几个常用 opcode 直接下潜到生成/实现细节 → [Opcode_DeepDives_IRTOC（Flow）](../Flows/Opcode_DeepDives_IRTOC.md)
 
 

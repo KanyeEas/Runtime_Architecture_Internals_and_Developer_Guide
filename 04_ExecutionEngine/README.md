@@ -13,14 +13,14 @@
 
 执行引擎并不“凭空执行”——它执行的是 **Chapter 3 已经加载/链接好的 `Class/Method/Field` 元数据**：
 
-- 03 章 Stage2 入口：`../03_ClassLoading/README.md`
-- 03 章端到端主线图：`../03_ClassLoading/Flows/ClassLoading_EndToEnd.md`
+- 03 章 Stage2 入口：[03_ClassLoading/README](../03_ClassLoading/README.md)
+- 03 章端到端主线图：[ClassLoading_EndToEnd](../03_ClassLoading/Flows/ClassLoading_EndToEnd.md)
 
 ## 快速上手（不读 FileNotes 也能看懂大概）
 
 ### 0) 先看“端到端脊柱图”（新人最推荐的第一入口）
 
-- `Flows/ExecutionEngine_EndToEnd.md`：一张图把“选型→执行→桥接→entrypoints→JIT/OSR→deopt→异常/栈遍历”串起来；每个框都能一键下潜到对应 Flow/数据结构/逐行证据。
+- [Flows/ExecutionEngine_EndToEnd](Flows/ExecutionEngine_EndToEnd.md)：一张图把“选型→执行→桥接→entrypoints→JIT/OSR→deopt→异常/栈遍历”串起来；每个框都能一键下潜到对应 Flow/数据结构/逐行证据。
 
 ### 1) 一句话主线（本章故事线）
 
@@ -34,34 +34,35 @@
 
 ### 3) 术语速查（建议侧边打开）
 
-- `FileNotes/_Glossary.md`：本章术语解释（Frame/VReg/Acc、FrameKind、entrypoint、I2C/C2I、OSR、deopt、StackWalker…）
+- [FileNotes/_Glossary](FileNotes/_Glossary.md)：本章术语解释（Frame/VReg/Acc、FrameKind、entrypoint、I2C/C2I、OSR、deopt、StackWalker…）
 
 ### 4) 最小调试手册（独立文档）
 
-- `Newbie_MinDebug_Playbook.md`：新人 5 分钟确认 **interpreter-type / fast interpreter / dispatch table / bridge boundary / OSR / 异常两段式** 的最短路径
+- [Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md)：新人 5 分钟确认 **interpreter-type / fast interpreter / dispatch table / bridge boundary / OSR / 异常两段式** 的最短路径
 
 ### 5) IRTOC（最核心也最难的新人成长点）
 
 如果你需要在实际工作中修改 fast interpreter（`.irt` / handler / dispatch / OSR / 异常等），建议按“由浅入深”：
 
-- `Flows/IRTOC_FastInterpreter.md`：运行时选型→dispatch table→`ExecuteImplFast*` 的执行链与 build 生成链
-- `Flows/IRTOC_DSL_Primer.md`：`.irt → Graph → 机器码` 的全链路分工 + 新人可落地的“怎么读/怎么改/怎么验证”
-- `Flows/IRTOC_DSL_Reference.md`：更“教科书式”的 DSL 参考（语法/语义/常见坑/查手册）
+- [Flows/IRTOC_FastInterpreter](Flows/IRTOC_FastInterpreter.md)：运行时选型→dispatch table→`ExecuteImplFast*` 的执行链与 build 生成链
+- [Flows/IRTOC_DSL_Primer](Flows/IRTOC_DSL_Primer.md)：`.irt → Graph → 机器码` 的全链路分工 + 新人可落地的“怎么读/怎么改/怎么验证”
+- [Flows/IRTOC_DSL_Reference](Flows/IRTOC_DSL_Reference.md)：更“教科书式”的 DSL 参考（语法/语义/常见坑/查手册）
 
 ## 本章产物导航（先看“总览型”）
 
-- **学习路线图**：`Index.md`（30min/2h/1d）
+- **学习路线图**：[Index](Index.md)（30min/2h/1d）
 - **沉淀文档**：
-  - `DataStructures/Index.md`：关键结构卡片（Frame/VReg/Acc/entrypoints/bridges/OSR/Deopt/StackWalker）
-  - `Flows/ExecutionEngine_EndToEnd.md`：端到端主线（新人“脊柱图”入口）
-  - `Flows/Index.md`：主调用链（解释器执行、调用、桥接、异常、deopt/OSR）
+  - [DataStructures/Index](DataStructures/Index.md)：关键结构卡片（Frame/VReg/Acc/entrypoints/bridges/OSR/Deopt/StackWalker）
+  - [Flows/ExecutionEngine_EndToEnd](Flows/ExecutionEngine_EndToEnd.md)：端到端主线（新人“脊柱图”入口）
+  - [Flows/Index](Flows/Index.md)：主调用链（解释器执行、调用、桥接、异常、deopt/OSR）
 - **opcode 入门（新人强烈建议从这里开始）**：
-  - `DataStructures/ISA_and_OpcodeModel.md`：ISA（core + ETS）如何定义 opcode，以及如何驱动 IRTOC 生成 handler
-  - `Flows/Opcode_DeepDives_IRTOC.md`：挑选常用 opcode 深入分析（call/return/jmp+OSR/throw/ETS name-based 指令）
-- **逐行证据链**：`FileNotes/`（需要“为什么一定是这样”时再下潜）
-- **逐行清单**：`Manifests/files.yaml`（本章语义归属文件）
-- **阶段一校正**：`Errata_to_Stage1.md`
-- **章节完工审查（交付验收）**：`Completion_Review.md`（逐文档正确性核验 + 证据点 + 可执行优化项）
+  - [DataStructures/ISA_and_OpcodeModel](DataStructures/ISA_and_OpcodeModel.md)：ISA（core + ETS）如何定义 opcode，以及如何驱动 IRTOC 生成 handler
+  - [Flows/Opcode_DeepDives_IRTOC](Flows/Opcode_DeepDives_IRTOC.md)：挑选常用 opcode 深入分析（call/return/jmp+OSR/throw/ETS name-based 指令）
+- **逐行证据链**：[FileNotes/Index](FileNotes/Index.md)（需要“为什么一定是这样”时再下潜）
+- **逐行清单**：[Manifests/files.yaml](Manifests/files.yaml)（本章语义归属文件）
+- **Manifests 说明**：[Manifests/Index](Manifests/Index.md)
+- **阶段一校正**：[Errata_to_Stage1](Errata_to_Stage1.md)
+- **章节完工审查（交付验收）**：[Completion_Review](Completion_Review.md)（逐文档正确性核验 + 证据点 + 可执行优化项）
 
 ## 执行引擎总览：组件边界与数据流（你先把这张图记住）
 
@@ -137,8 +138,8 @@ flowchart TD
 
 如果你要“从现实角度理解解释器”，建议先读：
 
-- `Flows/IRTOC_FastInterpreter.md`
-- `DataStructures/IRTOC_FastInterpreter.md`
+- [Flows/IRTOC_FastInterpreter](Flows/IRTOC_FastInterpreter.md)
+- [DataStructures/IRTOC_FastInterpreter](DataStructures/IRTOC_FastInterpreter.md)
 
 ## 关键主流程（先看图建立直觉）
 
@@ -241,7 +242,7 @@ flowchart TD
 
 ### 场景 B：I2C/C2I 桥接相关问题（决策树）
 
-> 需要对照“真实栈/ABI/寄存器保存/TLS 更新点”时，直接跳：`Flows/Bridge_I2C_C2I.md` → **4.1 arch 汇编证据链**（aarch64/amd64，含 dyn）。
+> 需要对照“真实栈/ABI/寄存器保存/TLS 更新点”时，直接跳：[Flows/Bridge_I2C_C2I](Flows/Bridge_I2C_C2I.md) → **4.1 arch 汇编证据链**（aarch64/amd64，含 dyn）。
 
 ```mermaid
 flowchart TD
@@ -257,7 +258,7 @@ flowchart TD
 
 ### 场景 C：deopt/OSR/stack walking 问题（决策树）
 
-> 遇到 “deopt-after/缺帧/边界帧不见了” 时，优先把 `thread.currentFrame* / currentFrameIsCompiled / boundary marker` 对齐，再看 `runtime/bridge/arch/*/deoptimization_*.S`（对应 FileNotes 已挂在 `Flows/Bridge_I2C_C2I.md`）。
+> 遇到 “deopt-after/缺帧/边界帧不见了” 时，优先把 `thread.currentFrame* / currentFrameIsCompiled / boundary marker` 对齐，再看 `runtime/bridge/arch/*/deoptimization_*.S`（对应 FileNotes 已挂在 [Flows/Bridge_I2C_C2I](Flows/Bridge_I2C_C2I.md)）。
 
 ```mermaid
 flowchart TD

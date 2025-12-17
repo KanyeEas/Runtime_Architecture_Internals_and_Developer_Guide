@@ -27,7 +27,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r mkdocs-requirements.txt
 
+      - name: Generate All Pages index
+        run: |
+          python3 tools/generate_all_pages.py
+          bash tools/sync_mkdocs_symlinks.sh
+
       - name: Deploy
         run: mkdocs gh-deploy --force
+
 
 

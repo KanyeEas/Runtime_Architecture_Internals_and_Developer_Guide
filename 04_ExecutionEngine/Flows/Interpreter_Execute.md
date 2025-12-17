@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ExecutionEngine_EndToEnd.md`（“解释器执行（主循环）”框）
+- 总入口：[ExecutionEngine_EndToEnd](ExecutionEngine_EndToEnd.md)（“解释器执行（主循环）”框）
 
 ## 1) 这条 flow 解决什么问题
 
@@ -39,14 +39,14 @@ flowchart TD
 - `runtime/interpreter/templates/interpreter-inl_gen.h.erb`（主循环/dispatch table/EXCEPTION_HANDLER 的生成模板）
 - `runtime/interpreter/interpreter-inl.h`（大量 opcode handler：`InstructionHandler::HandleXxx`，以及 stackless 调用/返回/找 catch 等 helper）
 - 辅助底座：`runtime/interpreter/instruction_handler_base.h`、`runtime/interpreter/instruction_handler_state.h`
-- 数据结构：`DataStructures/Frame_VReg_Acc.md`
+- 数据结构：[Frame_VReg_Acc（DataStructure）](../DataStructures/Frame_VReg_Acc.md)
 
 ## 5) 下一步（新人推荐）
 
-- 你关心“call/返回怎么跨边界” → `Bridge_I2C_C2I.md`
-- 你关心“compiled code 怎么走慢路径” → `Entrypoints_and_RuntimeInterface.md`
-- 你关心“deopt/OSR 为什么触发、怎么回退/进入” → `Deopt_and_OSR.md`
-- 你关心“异常/缺帧/栈回溯为什么不一致” → `StackWalking.md`
+- 你关心“call/返回怎么跨边界” → [Bridge_I2C_C2I](Bridge_I2C_C2I.md)
+- 你关心“compiled code 怎么走慢路径” → [Entrypoints_and_RuntimeInterface](Entrypoints_and_RuntimeInterface.md)
+- 你关心“deopt/OSR 为什么触发、怎么回退/进入” → [Deopt_and_OSR](Deopt_and_OSR.md)
+- 你关心“异常/缺帧/栈回溯为什么不一致” → [StackWalking](StackWalking.md)
 
 
 

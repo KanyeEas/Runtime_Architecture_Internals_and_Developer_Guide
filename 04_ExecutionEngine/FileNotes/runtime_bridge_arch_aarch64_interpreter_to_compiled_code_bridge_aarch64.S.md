@@ -79,8 +79,8 @@ I2C 需要根据“当前 bytecode 的 call 指令格式”从 `iframe->vregs` �
 
 ## 6) 与本章其他证据的连接点
 
-- 概念/逻辑：`Flows/Bridge_I2C_C2I.md`
-- FrameKind/边界语义：`DataStructures/Bridge_ABI_and_FrameKind.md`
+- 概念/逻辑：[Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
+- FrameKind/边界语义：[Bridge_ABI_and_FrameKind（DataStructure）](../DataStructures/Bridge_ABI_and_FrameKind.md)
 - amd64 对照实现：`runtime/bridge/arch/amd64/interpreter_to_compiled_code_bridge_amd64.S`（对应 FileNote 已有）
 
 

@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ExecutionEngine_EndToEnd.md`（“解释器执行（主循环）”框；以及桥接/异常/栈遍历会反复读写 Frame/Acc）
+- 总入口：[ExecutionEngine_EndToEnd（Flow）](../Flows/ExecutionEngine_EndToEnd.md)（“解释器执行（主循环）”框；以及桥接/异常/栈遍历会反复读写 Frame/Acc）
 
 ## 它是什么
 
@@ -84,9 +84,9 @@ sequenceDiagram
 
 ## 下一步（新人推荐）
 
-- 想看“解释器主循环/handler 读写点” → `../Flows/Interpreter_Execute.md`
-- 想看“call 指令如何跨到 compiled、以及 acc/返回值协议” → `../Flows/Bridge_I2C_C2I.md`
-- 想看“异常两段式/缺帧/StackWalker 读帧规则” → `../Flows/StackWalking.md`
+- 想看“解释器主循环/handler 读写点” → [Interpreter_Execute（Flow）](../Flows/Interpreter_Execute.md)
+- 想看“call 指令如何跨到 compiled、以及 acc/返回值协议” → [Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
+- 想看“异常两段式/缺帧/StackWalker 读帧规则” → [StackWalking（Flow）](../Flows/StackWalking.md)
 
 
 

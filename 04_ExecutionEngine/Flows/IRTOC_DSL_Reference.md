@@ -1,12 +1,12 @@
 # IRTOC `.irt` DSL 参考（更“教科书式”的语法/语义说明）
 
-> 目标：比 `IRTOC_DSL_Primer.md` 更系统。你可以把它当作“查手册”：  
+> 目标：比 [IRTOC_DSL_Primer](IRTOC_DSL_Primer.md) 更系统。你可以把它当作“查手册”：  
 > - 看到一段 `.irt` 不认识的写法，来这里找“它是什么 / 它等价于什么 / 常见坑是什么”。  
 > - 仍然坚持一个原则：每条规则都能回到源码/生成物验证（证据链在每节末尾）。
 
 ## 0) 入口与证据链
 
-- 新人先读：`IRTOC_DSL_Primer.md`（管线 + 心智模型 + 工作流）
+- 新人先读：[IRTOC_DSL_Primer](IRTOC_DSL_Primer.md)（管线 + 心智模型 + 工作流）
 - Ruby 生成器源码：`irtoc/lang/irtoc.rb`、`irtoc/lang/function.rb`
 - C++ 编译器源码：`irtoc/backend/compilation.h/.cpp`、`irtoc/backend/function.cpp`
 - Graph/IR 定义：`compiler/optimizer/ir/graph.h`、`compiler/optimizer/ir/ir_constructor.h`
@@ -129,8 +129,9 @@ fast interpreter 的性能来自固定寄存器，但固定寄存器同时也是
 
 如果你要“系统掌握”：
 
-1) 先把 `IRTOC_DSL_Primer.md` 的 **6/7/8/9 节**吃透（管线 + Graph + 性能原因）
-2) 再按 `../FileNotes/irtoc_scripts_common.irt.md` 学会读 `Constants/regmap`
-3) 最后按 `../FileNotes/irtoc_scripts_interpreter.irt.md` 的锚点，把 dispatch/exception/OSR/call-return 逐段读完
+1) 先把 [IRTOC_DSL_Primer](IRTOC_DSL_Primer.md) 的 **6/7/8/9 节**吃透（管线 + Graph + 性能原因）
+1) 先把 [IRTOC_DSL_Primer](IRTOC_DSL_Primer.md) 的 **6/7/8/9 节**吃透（管线 + Graph + 性能原因）
+2) 再按 [irtoc_scripts_common.irt](../FileNotes/irtoc_scripts_common.irt.md) 学会读 `Constants/regmap`
+3) 最后按 [irtoc_scripts_interpreter.irt](../FileNotes/irtoc_scripts_interpreter.irt.md) 的锚点，把 dispatch/exception/OSR/call-return 逐段读完
 
 

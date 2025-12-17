@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ExecutionEngine_EndToEnd.md`（“异常/栈遍历（调试/异常/去优化都会用）”框：StackWalker 串起解释器帧/编译帧/边界帧）
+- 总入口：[ExecutionEngine_EndToEnd（Flow）](../Flows/ExecutionEngine_EndToEnd.md)（“异常/栈遍历（调试/异常/去优化都会用）”框：StackWalker 串起解释器帧/编译帧/边界帧）
 
 ## 它是什么
 
@@ -59,9 +59,9 @@ flowchart TD
 
 ## 下一步（新人推荐）
 
-- 想看“StackWalking 主调用链（含异常两段式）” → `../Flows/StackWalking.md`
-- 想看“边界帧/FrameKind 对遍历的影响（最常见缺帧根因）” → `Bridge_ABI_and_FrameKind.md` 或 `../Flows/Bridge_I2C_C2I.md`
-- 想看“deopt-after 与 StackWalker 的交界” → `../Flows/Deopt_and_OSR.md`
+- 想看“StackWalking 主调用链（含异常两段式）” → [StackWalking（Flow）](../Flows/StackWalking.md)
+- 想看“边界帧/FrameKind 对遍历的影响（最常见缺帧根因）” → [Bridge_ABI_and_FrameKind（DataStructure）](Bridge_ABI_and_FrameKind.md) 或 [Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
+- 想看“deopt-after 与 StackWalker 的交界” → [Deopt_and_OSR（Flow）](../Flows/Deopt_and_OSR.md)
 
 
 

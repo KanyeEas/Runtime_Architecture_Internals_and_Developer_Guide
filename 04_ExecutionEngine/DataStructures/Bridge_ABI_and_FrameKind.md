@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ExecutionEngine_EndToEnd.md`（“调用/桥接（解释器 ↔ compiled）”框；以及“异常/栈遍历/Deopt”都会依赖 FrameKind 与 boundary frame）
+- 总入口：[ExecutionEngine_EndToEnd（Flow）](../Flows/ExecutionEngine_EndToEnd.md)（“调用/桥接（解释器 ↔ compiled）”框；以及“异常/栈遍历/Deopt”都会依赖 FrameKind 与 boundary frame）
 
 ## 它是什么
 
@@ -146,9 +146,9 @@ sequenceDiagram
 
 ## 下一步（新人推荐）
 
-- 想看“桥接主调用链 + arch 证据链入口（更集中）” → `../Flows/Bridge_I2C_C2I.md`
-- 想看“缺帧/错帧/异常两段式如何依赖边界帧” → `../Flows/StackWalking.md`
-- 想看“deopt-after/OSR 为什么经常与边界帧耦合” → `../Flows/Deopt_and_OSR.md`
+- 想看“桥接主调用链 + arch 证据链入口（更集中）” → [Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
+- 想看“缺帧/错帧/异常两段式如何依赖边界帧” → [StackWalking（Flow）](../Flows/StackWalking.md)
+- 想看“deopt-after/OSR 为什么经常与边界帧耦合” → [Deopt_and_OSR（Flow）](../Flows/Deopt_and_OSR.md)
 
 
 

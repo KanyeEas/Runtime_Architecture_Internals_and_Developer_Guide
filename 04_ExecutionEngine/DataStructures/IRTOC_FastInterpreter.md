@@ -6,7 +6,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ExecutionEngine_EndToEnd.md`（“解释器选型（运行时真实入口）”与“解释器执行（主循环）”框：fast interpreter 是默认执行路径之一）
+- 总入口：[ExecutionEngine_EndToEnd（Flow）](../Flows/ExecutionEngine_EndToEnd.md)（“解释器选型（运行时真实入口）”与“解释器执行（主循环）”框：fast interpreter 是默认执行路径之一）
 
 ## 1) 三种解释器实现：cpp / irtoc / llvm
 
@@ -99,8 +99,8 @@ flowchart TD
 
 对应工具书：
 
-- `../Flows/IRTOC_DSL_Primer.md`（新人工具书：最小语法集 + 改动落点表 + 验证闭环）
-- 逐行证据：`../FileNotes/irtoc_scripts_common.irt.md`、`../FileNotes/irtoc_scripts_interpreter.irt.md`
+- [IRTOC_DSL_Primer（Flow）](../Flows/IRTOC_DSL_Primer.md)（新人工具书：最小语法集 + 改动落点表 + 验证闭环）
+- 逐行证据：[irtoc_scripts_common.irt](../FileNotes/irtoc_scripts_common.irt.md)、[irtoc_scripts_interpreter.irt](../FileNotes/irtoc_scripts_interpreter.irt.md)
 
 ## 7) 典型“改动模式”速查（新人最容易上手的 3 类）
 
@@ -125,9 +125,9 @@ flowchart TD
 
 ## 下一步（新人推荐）
 
-- 想看“选型规则 + dispatch table + build 生成链（Flow 版）” → `../Flows/IRTOC_FastInterpreter.md`
-- 想从“opcode→handler→runtime 交界面”建立直觉 → `../Flows/Opcode_DeepDives_IRTOC.md`
-- 想搞清“opcode 定义如何驱动生成” → `ISA_and_OpcodeModel.md`
+- 想看“选型规则 + dispatch table + build 生成链（Flow 版）” → [IRTOC_FastInterpreter（Flow）](../Flows/IRTOC_FastInterpreter.md)
+- 想从“opcode→handler→runtime 交界面”建立直觉 → [Opcode_DeepDives_IRTOC（Flow）](../Flows/Opcode_DeepDives_IRTOC.md)
+- 想搞清“opcode 定义如何驱动生成” → [ISA_and_OpcodeModel](ISA_and_OpcodeModel.md)
 
 
 

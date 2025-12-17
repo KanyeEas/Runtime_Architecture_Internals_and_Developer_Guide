@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ExecutionEngine_EndToEnd.md`（“JIT/OSR（热点触发）”与“Deopt（compiled→解释器恢复）”框）
+- 总入口：[ExecutionEngine_EndToEnd](ExecutionEngine_EndToEnd.md)（“JIT/OSR（热点触发）”与“Deopt（compiled→解释器恢复）”框）
 
 ## 1) 这条 flow 解决什么问题
 
@@ -90,15 +90,15 @@ flowchart TD
   - `runtime/arch/aarch64/osr_aarch64.S`
   - `runtime/arch/asm_support.cpp`
   - FileNotes：
-    - `FileNotes/runtime_arch_aarch64_osr_aarch64.S.md`
-    - `FileNotes/runtime_arch_asm_support.cpp.md`
-    - `FileNotes/runtime_arch_x86_osr_x86.S.md` / `runtime_arch_arm_osr_arm.S.md` / `runtime_arch_amd64_osr_amd64.S.md`（stub/空实现现状说明）
+    - [runtime_arch_aarch64_osr_aarch64.S](../FileNotes/runtime_arch_aarch64_osr_aarch64.S.md)
+    - [runtime_arch_asm_support.cpp](../FileNotes/runtime_arch_asm_support.cpp.md)
+    - [runtime_arch_x86_osr_x86.S](../FileNotes/runtime_arch_x86_osr_x86.S.md) / [runtime_arch_arm_osr_arm.S](../FileNotes/runtime_arch_arm_osr_arm.S.md) / [runtime_arch_amd64_osr_amd64.S](../FileNotes/runtime_arch_amd64_osr_amd64.S.md)（stub/空实现现状说明）
 
 ## 6) 下一步（新人推荐）
 
-- 你需要确认“解释器回边/OSR 触发点” → `Interpreter_Execute.md`
-- 你需要确认“跨边界回解释器/缺帧/ABI” → `Bridge_I2C_C2I.md`
-- 你需要确认“异常两段式 + StackWalker” → `StackWalking.md`
+- 你需要确认“解释器回边/OSR 触发点” → [Interpreter_Execute](Interpreter_Execute.md)
+- 你需要确认“跨边界回解释器/缺帧/ABI” → [Bridge_I2C_C2I](Bridge_I2C_C2I.md)
+- 你需要确认“异常两段式 + StackWalker” → [StackWalking](StackWalking.md)
 
 
 

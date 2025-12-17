@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ExecutionEngine_EndToEnd.md`（“调用/桥接（解释器 ↔ compiled）”框）
+- 总入口：[ExecutionEngine_EndToEnd](ExecutionEngine_EndToEnd.md)（“调用/桥接（解释器 ↔ compiled）”框）
 
 ## 1) 这条 flow 解决什么问题
 
@@ -100,15 +100,15 @@ sequenceDiagram
 ## 4) 证据链（本章内）
 
 - `runtime/bridge/bridge.h`、`runtime/bridge/bridge.cpp`
-- `DataStructures/Bridge_ABI_and_FrameKind.md`
+- [Bridge_ABI_and_FrameKind（DataStructure）](../DataStructures/Bridge_ABI_and_FrameKind.md)
 - 交界面：`runtime/deoptimization.*`、`runtime/include/stack_walker.h`
   - 特别关注：`StackWalker` 的 boundary frame 判定、以及 `ConvertToIFrame`（deopt 时重建解释器帧）
 
 ## 5) 下一步（新人推荐）
 
-- 你想看“compiled 调 runtime 慢路径” → `Entrypoints_and_RuntimeInterface.md`
-- 你遇到“deopt-after/OSR/回退解释器” → `Deopt_and_OSR.md`
-- 你遇到“异常缺帧/栈回溯不一致” → `StackWalking.md`
+- 你想看“compiled 调 runtime 慢路径” → [Entrypoints_and_RuntimeInterface](Entrypoints_and_RuntimeInterface.md)
+- 你遇到“deopt-after/OSR/回退解释器” → [Deopt_and_OSR](Deopt_and_OSR.md)
+- 你遇到“异常缺帧/栈回溯不一致” → [StackWalking](StackWalking.md)
 
 ### 4.1 arch 汇编证据链（建议收藏：从“概念”一键下潜到“栈/ABI”）
 

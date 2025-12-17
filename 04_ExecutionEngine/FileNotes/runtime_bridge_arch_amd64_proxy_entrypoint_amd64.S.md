@@ -60,6 +60,6 @@
 
 - aarch64 对照实现：`runtime/bridge/arch/aarch64/proxy_entrypoint_aarch64.S`
 - deopt 变形与 boundary slots：`runtime/bridge/arch/*/deoptimization_*.S`
-- 概念/逻辑：`Flows/Bridge_I2C_C2I.md` + `DataStructures/Bridge_ABI_and_FrameKind.md`
+- 概念/逻辑：[Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md) + [Bridge_ABI_and_FrameKind（DataStructure）](../DataStructures/Bridge_ABI_and_FrameKind.md)
 
 

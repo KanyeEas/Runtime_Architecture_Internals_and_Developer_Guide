@@ -7,9 +7,9 @@
 
 ## 0) 在 04 章端到端主线中的位置
 
-- 总入口：`ExecutionEngine_EndToEnd.md`（“Fast interpreter（IRTOC/LLVM）”相关框）
-- 运行时入口与选型：`IRTOC_FastInterpreter.md`
-- `.irt` 逐行证据（更细）：`../FileNotes/irtoc_scripts_interpreter.irt.md`、`../FileNotes/irtoc_scripts_common.irt.md`
+- 总入口：[ExecutionEngine_EndToEnd](ExecutionEngine_EndToEnd.md)（“Fast interpreter（IRTOC/LLVM）”相关框）
+- 运行时入口与选型：[IRTOC_FastInterpreter](IRTOC_FastInterpreter.md)
+- `.irt` 逐行证据（更细）：[irtoc_scripts_interpreter.irt](../FileNotes/irtoc_scripts_interpreter.irt.md)、[irtoc_scripts_common.irt](../FileNotes/irtoc_scripts_common.irt.md)
 - `.irt → Graph → 机器码` 的实现源码入口（建议收藏）：
   - Ruby 侧生成器：`irtoc/lang/irtoc.rb`、`irtoc/lang/function.rb`
   - C++ 侧编译器：`irtoc/backend/irtoc.cpp`、`irtoc/backend/compilation.cpp`、`irtoc/backend/function.cpp`
@@ -34,9 +34,9 @@
 fast interpreter 把解释器核心状态长期放在固定寄存器（`tr/pc/frame/acc/dispatch`），通过 `dispatch_table[opc]` 做 computed-goto（tail-call）。
 
 对应证据链：
-- `.irt` 语义：`macro(:dispatch)`（见 `../FileNotes/irtoc_scripts_interpreter.irt.md`）
-- build 产物：`../FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md`
-- 汇编证据：`../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt.md`
+- `.irt` 语义：`macro(:dispatch)`（见 [irtoc_scripts_interpreter.irt](../FileNotes/irtoc_scripts_interpreter.irt.md)）
+- build 产物：[build_runtime_include_irtoc_interpreter_utils.h](../FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md)
+- 汇编证据：[build_irtoc_irtoc_interpreter_disasm.txt](../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt.md)
 
 ## 2) `.irt` DSL 的“最小语法集”（够你改 80% 的问题）
 
@@ -112,7 +112,7 @@ fast interpreter 的两个高频 intrinsic：
 | call/return | `generic_call` / `generic_return` | 编译态调用（I2C）与 stackless 调用在这里统一 |
 | 单个 opcode 语义 | `handle_xxx` 宏 + `Panda.instructions.each` 生成段 | 大部分 `HANDLE_FAST_*` 都是“宏展开+生成器” |
 
-更细的逐行证据：直接看 `../FileNotes/irtoc_scripts_interpreter.irt.md`（里面已经按上述锚点分段）。
+更细的逐行证据：直接看 [irtoc_scripts_interpreter.irt](../FileNotes/irtoc_scripts_interpreter.irt.md)（里面已经按上述锚点分段）。
 
 ## 4) 新人“怎么改”的标准工作流（VM 架构审计级别）
 
@@ -135,8 +135,8 @@ fast interpreter 的两个高频 intrinsic：
 3) **机器码层**：在 `disasm.txt` 找到对应 method 的 `# [inst] <id>`，确认汇编真的变了
 
 参考笔记：
-- `../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt.md`
-- `../FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md`
+- [build_irtoc_irtoc_interpreter_disasm.txt](../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt.md)
+- [build_runtime_include_irtoc_interpreter_utils.h](../FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md)
 
 ## 5) 两个“新人必踩坑”与架构层 guardrail
 
@@ -247,6 +247,6 @@ fast interpreter 更快主要来自这些结构性差异：
 
 如果你希望像 C 语言教科书一样系统学习 DSL（每个构造的语义、类型系统、控制流、LiveIn/LiveOut、常用节点），建议继续读：
 
-- `IRTOC_DSL_Reference.md`（更详尽的“语法/语义参考”）
+- [IRTOC_DSL_Reference](IRTOC_DSL_Reference.md)（更详尽的“语法/语义参考”）
 
 

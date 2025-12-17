@@ -41,6 +41,6 @@ dyn 版不会解析 shorty 来搬运参数，而是：
 
 - 静态 C2I（shorty 驱动）对照：`runtime/bridge/arch/amd64/compiled_code_to_interpreter_bridge_amd64.S`
 - dyn I2C（配套入口）：`runtime/bridge/arch/amd64/interpreter_to_compiled_code_bridge_dyn_amd64.S`
-- 概念/逻辑：`Flows/Bridge_I2C_C2I.md`
+- 概念/逻辑：[Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
 
 

@@ -5,20 +5,20 @@
 
 ## 0) 审查范围（Stage1 + Stage2）
 
-- **Stage1（总览）**：`../04_Execution_Engine_Interpreter_JIT_AOT.md`
-- **Stage2（入口/学习路径）**：`README.md`、`Index.md`、`Flows/Index.md`、`DataStructures/Index.md`
+- **Stage1（总览）**：[04_Execution_Engine_Interpreter_JIT_AOT](../04_Execution_Engine_Interpreter_JIT_AOT.md)
+- **Stage2（入口/学习路径）**：[README](README.md)、[Index](Index.md)、[Flows/Index](Flows/Index.md)、[DataStructures/Index](DataStructures/Index.md)
 - **Stage2（Flows）**：
-  - `Flows/ExecutionEngine_EndToEnd.md`
-  - `Flows/Interpreter_Execute.md`
-  - `Flows/Bridge_I2C_C2I.md`
-  - `Flows/Entrypoints_and_RuntimeInterface.md`
-  - `Flows/Deopt_and_OSR.md`
-  - `Flows/StackWalking.md`
-  - `Flows/IRTOC_FastInterpreter.md`
-  - `Flows/IRTOC_DSL_Primer.md`、`Flows/IRTOC_DSL_Reference.md`
-- **Stage2（DataStructures）**：`DataStructures/*`（Frame/Acc/VReg、Bridge/FrameKind、StackWalker、OSR/Deopt、Entrypoints、IRTOC、ISA…）
-- **新人排障入口**：`Newbie_MinDebug_Playbook.md`
-- **逐行证据链**：`FileNotes/*`（按 `Manifests/files.yaml`）
+  - [Flows/ExecutionEngine_EndToEnd](Flows/ExecutionEngine_EndToEnd.md)
+  - [Flows/Interpreter_Execute](Flows/Interpreter_Execute.md)
+  - [Flows/Bridge_I2C_C2I](Flows/Bridge_I2C_C2I.md)
+  - [Flows/Entrypoints_and_RuntimeInterface](Flows/Entrypoints_and_RuntimeInterface.md)
+  - [Flows/Deopt_and_OSR](Flows/Deopt_and_OSR.md)
+  - [Flows/StackWalking](Flows/StackWalking.md)
+  - [Flows/IRTOC_FastInterpreter](Flows/IRTOC_FastInterpreter.md)
+  - [Flows/IRTOC_DSL_Primer](Flows/IRTOC_DSL_Primer.md)、[Flows/IRTOC_DSL_Reference](Flows/IRTOC_DSL_Reference.md)
+- **Stage2（DataStructures）**：[DataStructures/Index](DataStructures/Index.md)（Frame/Acc/VReg、Bridge/FrameKind、StackWalker、OSR/Deopt、Entrypoints、IRTOC、ISA…）
+- **新人排障入口**：[Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md)
+- **逐行证据链**：[FileNotes/Index](FileNotes/Index.md)（按 [Manifests/files.yaml](Manifests/files.yaml)）
 
 ## 1) 结论概览（验收结论）
 
@@ -98,13 +98,13 @@
 
 > 说明：这里是“交付验收视角”的摘要；更细的逐行证据在 `FileNotes/*`。
 
-### 3.1 Stage1：`04_Execution_Engine_Interpreter_JIT_AOT.md`
+### 3.1 Stage1：[04_Execution_Engine_Interpreter_JIT_AOT](../04_Execution_Engine_Interpreter_JIT_AOT.md)
 
 - **正确性**：P0 断言（选型/异常两段式/OSR 架构差异/AOT 两入口/桥接 ABI）已能回到源码核验；表述总体准确。
 - **建议优化**：
   - AOT 段建议补一句：`HandleAotOptions` 在 OHOS 与非 OHOS 的失败处理（ERROR vs FATAL）不同（避免新人误判“为何同配置不同平台行为不一致”）。
 
-### 3.2 Stage2 入口：`README.md` / `Index.md` / `Flows/Index.md` / `DataStructures/Index.md`
+### 3.2 Stage2 入口：[README](README.md) / [Index](Index.md) / [Flows/Index](Flows/Index.md) / [DataStructures/Index](DataStructures/Index.md)
 
 - **正确性**：学习路径与“现实差异”口径与源码一致。
 - **已优化**：IRTOC 的 primer/reference 已在入口层显性挂出，避免新人只读 C++ handler。
@@ -112,20 +112,20 @@
 
 ### 3.3 Flows（调用链）
 
-- **`ExecutionEngine_EndToEnd.md`**：主线图与各下潜链接一致；作为“唯一脊柱入口”合格。
-- **`Interpreter_Execute.md`**：正确；明确主循环来自生成模板（避免错读）。
-- **`Bridge_I2C_C2I.md`**：正确；并提供 arch 汇编证据链入口（对排障极有价值）。
-- **`Entrypoints_and_RuntimeInterface.md`**：正确；建议后续补一个“entrypoints 分类→常见崩溃 first-contact”表格（提升排障效率）。
-- **`Deopt_and_OSR.md`**：与源码一致；对“非 arm64 stub/UNREACHABLE”提醒非常关键，建议保留在所有 OSR 实验入口处（已基本做到）。
-- **`StackWalking.md`**：正确；突出异常两段式交界，方向对。
-- **`IRTOC_FastInterpreter.md` / `IRTOC_DSL_Primer.md` / `IRTOC_DSL_Reference.md`**：管线解释与证据链齐全；属于本章最核心内容之一，现已具备“新人可改可验”的闭环。
+- **[ExecutionEngine_EndToEnd](Flows/ExecutionEngine_EndToEnd.md)**：主线图与各下潜链接一致；作为“唯一脊柱入口”合格。
+- **[Interpreter_Execute](Flows/Interpreter_Execute.md)**：正确；明确主循环来自生成模板（避免错读）。
+- **[Bridge_I2C_C2I](Flows/Bridge_I2C_C2I.md)**：正确；并提供 arch 汇编证据链入口（对排障极有价值）。
+- **[Entrypoints_and_RuntimeInterface](Flows/Entrypoints_and_RuntimeInterface.md)**：正确；建议后续补一个“entrypoints 分类→常见崩溃 first-contact”表格（提升排障效率）。
+- **[Deopt_and_OSR](Flows/Deopt_and_OSR.md)**：与源码一致；对“非 arm64 stub/UNREACHABLE”提醒非常关键，建议保留在所有 OSR 实验入口处（已基本做到）。
+- **[StackWalking](Flows/StackWalking.md)**：正确；突出异常两段式交界，方向对。
+- **[IRTOC_FastInterpreter](Flows/IRTOC_FastInterpreter.md) / [IRTOC_DSL_Primer](Flows/IRTOC_DSL_Primer.md) / [IRTOC_DSL_Reference](Flows/IRTOC_DSL_Reference.md)**：管线解释与证据链齐全；属于本章最核心内容之一，现已具备“新人可改可验”的闭环。
 
 ### 3.4 DataStructures（结构卡片）
 
 - **总体评价**：卡片的“不变量/谁写谁读/常见坑”结构正确，能支撑 code review 与新人排障。
 - **建议优化**：对 `Entrypoint_and_MethodDispatch.md` 建议补一个“entrypoint 状态机（interp/compiled/osr）”图（如果该卡片里还未覆盖）。
 
-### 3.5 新人最小排障：`Newbie_MinDebug_Playbook.md`
+### 3.5 新人最小排障：[Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md)
 
 - **正确性**：关键日志/选项/入口与源码一致。
 - **已优化**：统一了 392 的解释口径，避免误导。
