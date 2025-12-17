@@ -30,6 +30,7 @@ jobs:
       - name: Generate All Pages index
         run: |
           python3 tools/generate_all_pages.py
+          python3 tools/generate_mkdocs_nav.py
           bash tools/sync_mkdocs_symlinks.sh
 
       - name: Deploy

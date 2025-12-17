@@ -27,6 +27,9 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
+    # Keep the sidebar manageable for huge nav trees (e.g. FileNotes):
+    # only show the current branch; users can still expand/collapse manually.
+    - navigation.prune
     - navigation.indexes
     - navigation.top
     - toc.follow
@@ -58,63 +61,235 @@ extra_javascript:
 extra_css:
   - assets/stylesheets/extra.css
 
+# NAV_BEGIN (AUTO-GENERATED)
 nav:
   - Home: index.md
   - 00 总览与方法论:
       - 总索引（概览）: 00_Master_Index.md
       - 方法论 Checklist: 00_Methodology_Wiki_Review_Checklist.md
       - 全量页面索引（必备）: All_Pages.md
-
   - 01 Startup:
       - 概览（Stage1）: 01_Startup_and_Entrypoints.md
       - 深入入口（Stage2/README）: 01_Startup/README.md
       - 深入路线图（Index）: 01_Startup/Index.md
-
+      - Stage1 校正（Errata）: 01_Startup/Errata_to_Stage1.md
   - 02 Memory:
       - 概览（Stage1）: 02_Memory_Management_and_Object_Model.md
       - 深入入口（Stage2/README）: 02_Memory/README.md
       - 深入路线图（Index）: 02_Memory/Index.md
-
+      - Stage1 校正（Errata）: 02_Memory/Errata_to_Stage1.md
   - 03 ClassLoading:
       - 概览（Stage1）: 03_Class_Loading_and_Linking.md
       - 深入入口（Stage2/README）: 03_ClassLoading/README.md
       - 端到端主线（EndToEnd）: 03_ClassLoading/Flows/ClassLoading_EndToEnd.md
       - 新人最小调试手册: 03_ClassLoading/Newbie_MinDebug_Playbook.md
       - 深入路线图（Index）: 03_ClassLoading/Index.md
-      - 专题索引:
-          - Flows: 03_ClassLoading/Flows/Index.md
-          - DataStructures: 03_ClassLoading/DataStructures/Index.md
-          - FileNotes: 03_ClassLoading/FileNotes/Index.md
-          - Diagrams: 03_ClassLoading/Diagrams/Index.md
-          - Manifests: 03_ClassLoading/Manifests/Index.md
       - 完成度验收（Checklist）: 03_ClassLoading/Completion_Review.md
-
+      - Stage1 校正（Errata）: 03_ClassLoading/Errata_to_Stage1.md
+      - 专题索引:
+          - Flows:
+              - Index: 03_ClassLoading/Flows/Index.md
+              - Builders_and_LinkMethods: 03_ClassLoading/Flows/Builders_and_LinkMethods.md
+              - ClassLoading_EndToEnd: 03_ClassLoading/Flows/ClassLoading_EndToEnd.md
+              - Concurrency_and_ClassLock: 03_ClassLoading/Flows/Concurrency_and_ClassLock.md
+              - ETS_Context_Native_vs_Managed_Load: 03_ClassLoading/Flows/ETS_Context_Native_vs_Managed_Load.md
+              - FileManager_ABC_AN: 03_ClassLoading/Flows/FileManager_ABC_AN.md
+              - GetClass_and_LoadClass: 03_ClassLoading/Flows/GetClass_and_LoadClass.md
+              - LayoutFields_and_LinkFields: 03_ClassLoading/Flows/LayoutFields_and_LinkFields.md
+          - DataStructures:
+              - Index: 03_ClassLoading/DataStructures/Index.md
+              - Class: 03_ClassLoading/DataStructures/Class.md
+              - ClassLinkerContext: 03_ClassLoading/DataStructures/ClassLinkerContext.md
+              - ETS_Plugin_Summary: 03_ClassLoading/DataStructures/ETS_Plugin_Summary.md
+              - Field: 03_ClassLoading/DataStructures/Field.md
+              - ITable_and_IMT: 03_ClassLoading/DataStructures/ITable_and_IMT.md
+              - Method: 03_ClassLoading/DataStructures/Method.md
+          - Diagrams:
+              - Index: 03_ClassLoading/Diagrams/Index.md
+          - Manifests:
+              - Index: 03_ClassLoading/Manifests/Index.md
+          - FileNotes:
+              - Index: 03_ClassLoading/FileNotes/Index.md
+              - _Glossary: 03_ClassLoading/FileNotes/_Glossary.md
+              - plugins_ets_runtime_ets_class_linker.cpp: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_class_linker.cpp.md
+              - plugins_ets_runtime_ets_class_linker.h: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_class_linker.h.md
+              - plugins_ets_runtime_ets_class_linker_context.cpp: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md
+              - plugins_ets_runtime_ets_class_linker_context.h: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_class_linker_context.h.md
+              - plugins_ets_runtime_ets_class_linker_extension.cpp: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md
+              - plugins_ets_runtime_ets_class_linker_extension.h: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_class_linker_extension.h.md
+              - plugins_ets_runtime_ets_itable_builder.cpp: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md
+              - plugins_ets_runtime_ets_itable_builder.h: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_itable_builder.h.md
+              - plugins_ets_runtime_ets_language_context.cpp: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_language_context.cpp.md
+              - plugins_ets_runtime_ets_language_context.h: 03_ClassLoading/FileNotes/plugins_ets_runtime_ets_language_context.h.md
+              - runtime_class_linker.cpp: 03_ClassLoading/FileNotes/runtime_class_linker.cpp.md
+              - runtime_class_linker_context.h: 03_ClassLoading/FileNotes/runtime_class_linker_context.h.md
+              - runtime_class_linker_extension.cpp: 03_ClassLoading/FileNotes/runtime_class_linker_extension.cpp.md
+              - runtime_class_lock.cpp: 03_ClassLoading/FileNotes/runtime_class_lock.cpp.md
+              - runtime_class_lock.h: 03_ClassLoading/FileNotes/runtime_class_lock.h.md
+              - runtime_core_core_class_linker_extension.cpp: 03_ClassLoading/FileNotes/runtime_core_core_class_linker_extension.cpp.md
+              - runtime_file_manager.cpp: 03_ClassLoading/FileNotes/runtime_file_manager.cpp.md
+              - runtime_imtable_builder.cpp: 03_ClassLoading/FileNotes/runtime_imtable_builder.cpp.md
+              - runtime_include_class-inl.h: 03_ClassLoading/FileNotes/runtime_include_class-inl.h.md
+              - runtime_include_class.h: 03_ClassLoading/FileNotes/runtime_include_class.h.md
+              - runtime_include_class_helper.h: 03_ClassLoading/FileNotes/runtime_include_class_helper.h.md
+              - runtime_include_class_linker.h: 03_ClassLoading/FileNotes/runtime_include_class_linker.h.md
+              - runtime_include_class_linker_extension.h: 03_ClassLoading/FileNotes/runtime_include_class_linker_extension.h.md
+              - runtime_include_field.h: 03_ClassLoading/FileNotes/runtime_include_field.h.md
+              - runtime_include_file_manager.h: 03_ClassLoading/FileNotes/runtime_include_file_manager.h.md
+              - runtime_include_imtable_builder.h: 03_ClassLoading/FileNotes/runtime_include_imtable_builder.h.md
+              - runtime_include_itable.h: 03_ClassLoading/FileNotes/runtime_include_itable.h.md
+              - runtime_include_itable_builder.h: 03_ClassLoading/FileNotes/runtime_include_itable_builder.h.md
+              - runtime_include_method.h: 03_ClassLoading/FileNotes/runtime_include_method.h.md
+              - runtime_include_vtable_builder_base-inl.h: 03_ClassLoading/FileNotes/runtime_include_vtable_builder_base-inl.h.md
+              - runtime_include_vtable_builder_base.h: 03_ClassLoading/FileNotes/runtime_include_vtable_builder_base.h.md
+              - runtime_include_vtable_builder_interface.h: 03_ClassLoading/FileNotes/runtime_include_vtable_builder_interface.h.md
+              - runtime_include_vtable_builder_variance-inl.h: 03_ClassLoading/FileNotes/runtime_include_vtable_builder_variance-inl.h.md
+              - runtime_include_vtable_builder_variance.h: 03_ClassLoading/FileNotes/runtime_include_vtable_builder_variance.h.md
   - 04 ExecutionEngine:
       - 概览（Stage1）: 04_Execution_Engine_Interpreter_JIT_AOT.md
       - 深入入口（Stage2/README）: 04_ExecutionEngine/README.md
       - 端到端主线（EndToEnd）: 04_ExecutionEngine/Flows/ExecutionEngine_EndToEnd.md
       - 新人最小调试手册: 04_ExecutionEngine/Newbie_MinDebug_Playbook.md
       - 深入路线图（Index）: 04_ExecutionEngine/Index.md
-      - 专题索引:
-          - Flows: 04_ExecutionEngine/Flows/Index.md
-          - DataStructures: 04_ExecutionEngine/DataStructures/Index.md
-          - FileNotes: 04_ExecutionEngine/FileNotes/Index.md
-          - Diagrams: 04_ExecutionEngine/Diagrams/Index.md
-          - Manifests: 04_ExecutionEngine/Manifests/Index.md
       - 完成度验收（Checklist）: 04_ExecutionEngine/Completion_Review.md
-
+      - Stage1 校正（Errata）: 04_ExecutionEngine/Errata_to_Stage1.md
+      - 专题索引:
+          - Flows:
+              - Index: 04_ExecutionEngine/Flows/Index.md
+              - Bridge_I2C_C2I: 04_ExecutionEngine/Flows/Bridge_I2C_C2I.md
+              - Deopt_and_OSR: 04_ExecutionEngine/Flows/Deopt_and_OSR.md
+              - Entrypoints_and_RuntimeInterface: 04_ExecutionEngine/Flows/Entrypoints_and_RuntimeInterface.md
+              - ExecutionEngine_EndToEnd: 04_ExecutionEngine/Flows/ExecutionEngine_EndToEnd.md
+              - Interpreter_Execute: 04_ExecutionEngine/Flows/Interpreter_Execute.md
+              - IRTOC_DSL_Primer: 04_ExecutionEngine/Flows/IRTOC_DSL_Primer.md
+              - IRTOC_DSL_Reference: 04_ExecutionEngine/Flows/IRTOC_DSL_Reference.md
+              - IRTOC_FastInterpreter: 04_ExecutionEngine/Flows/IRTOC_FastInterpreter.md
+              - Opcode_DeepDives_IRTOC: 04_ExecutionEngine/Flows/Opcode_DeepDives_IRTOC.md
+              - StackWalking: 04_ExecutionEngine/Flows/StackWalking.md
+          - DataStructures:
+              - Index: 04_ExecutionEngine/DataStructures/Index.md
+              - Bridge_ABI_and_FrameKind: 04_ExecutionEngine/DataStructures/Bridge_ABI_and_FrameKind.md
+              - Deopt_and_OSR: 04_ExecutionEngine/DataStructures/Deopt_and_OSR.md
+              - Entrypoint_and_MethodDispatch: 04_ExecutionEngine/DataStructures/Entrypoint_and_MethodDispatch.md
+              - Entrypoints: 04_ExecutionEngine/DataStructures/Entrypoints.md
+              - Frame_VReg_Acc: 04_ExecutionEngine/DataStructures/Frame_VReg_Acc.md
+              - IRTOC_FastInterpreter: 04_ExecutionEngine/DataStructures/IRTOC_FastInterpreter.md
+              - ISA_and_OpcodeModel: 04_ExecutionEngine/DataStructures/ISA_and_OpcodeModel.md
+              - StackWalker: 04_ExecutionEngine/DataStructures/StackWalker.md
+          - Diagrams:
+              - Index: 04_ExecutionEngine/Diagrams/Index.md
+          - Manifests:
+              - Index: 04_ExecutionEngine/Manifests/Index.md
+          - FileNotes:
+              - Index: 04_ExecutionEngine/FileNotes/Index.md
+              - _Glossary: 04_ExecutionEngine/FileNotes/_Glossary.md
+              - build_irtoc_irtoc_interpreter_disasm.txt: 04_ExecutionEngine/FileNotes/build_irtoc_irtoc_interpreter_disasm.txt.md
+              - build_irtoc_irtoc_interpreter_interpreter.irt.fixed: 04_ExecutionEngine/FileNotes/build_irtoc_irtoc_interpreter_interpreter.irt.fixed.md
+              - build_irtoc_irtoc_interpreter_irtoc_code.cpp: 04_ExecutionEngine/FileNotes/build_irtoc_irtoc_interpreter_irtoc_code.cpp.md
+              - build_irtoc_irtoc_interpreter_validation.yaml: 04_ExecutionEngine/FileNotes/build_irtoc_irtoc_interpreter_validation.yaml.md
+              - build_runtime_include_irtoc_interpreter_utils.h: 04_ExecutionEngine/FileNotes/build_runtime_include_irtoc_interpreter_utils.h.md
+              - bytecode_optimizer_optimize_bytecode.cpp: 04_ExecutionEngine/FileNotes/bytecode_optimizer_optimize_bytecode.cpp.md
+              - bytecode_optimizer_optimize_bytecode.h: 04_ExecutionEngine/FileNotes/bytecode_optimizer_optimize_bytecode.h.md
+              - compiler_aot_aot_file.cpp: 04_ExecutionEngine/FileNotes/compiler_aot_aot_file.cpp.md
+              - compiler_aot_aot_file.h: 04_ExecutionEngine/FileNotes/compiler_aot_aot_file.h.md
+              - compiler_aot_aot_headers.h: 04_ExecutionEngine/FileNotes/compiler_aot_aot_headers.h.md
+              - compiler_aot_aot_manager.cpp: 04_ExecutionEngine/FileNotes/compiler_aot_aot_manager.cpp.md
+              - compiler_aot_aot_manager.h: 04_ExecutionEngine/FileNotes/compiler_aot_aot_manager.h.md
+              - compiler_aot_compiled_method.h: 04_ExecutionEngine/FileNotes/compiler_aot_compiled_method.h.md
+              - irtoc_scripts_common.irt: 04_ExecutionEngine/FileNotes/irtoc_scripts_common.irt.md
+              - irtoc_scripts_interpreter.irt: 04_ExecutionEngine/FileNotes/irtoc_scripts_interpreter.irt.md
+              - isa_isa.yaml: 04_ExecutionEngine/FileNotes/isa_isa.yaml.md
+              - plugins_ets_isa_isa.yaml: 04_ExecutionEngine/FileNotes/plugins_ets_isa_isa.yaml.md
+              - quickener_quick.cpp: 04_ExecutionEngine/FileNotes/quickener_quick.cpp.md
+              - runtime_arch_aarch64_osr_aarch64.S: 04_ExecutionEngine/FileNotes/runtime_arch_aarch64_osr_aarch64.S.md
+              - runtime_arch_amd64_osr_amd64.S: 04_ExecutionEngine/FileNotes/runtime_arch_amd64_osr_amd64.S.md
+              - runtime_arch_arm_osr_arm.S: 04_ExecutionEngine/FileNotes/runtime_arch_arm_osr_arm.S.md
+              - runtime_arch_asm_support.cpp: 04_ExecutionEngine/FileNotes/runtime_arch_asm_support.cpp.md
+              - runtime_arch_x86_osr_x86.S: 04_ExecutionEngine/FileNotes/runtime_arch_x86_osr_x86.S.md
+              - runtime_bridge_arch_aarch64_compiled_code_to_interpreter_bridge_aarch64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_aarch64_compiled_code_to_interpreter_bridge_aarch64.S.md
+              - runtime_bridge_arch_aarch64_compiled_code_to_interpreter_bridge_dyn_aarch64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_aarch64_compiled_code_to_interpreter_bridge_dyn_aarch64.S.md
+              - runtime_bridge_arch_aarch64_deoptimization_aarch64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_aarch64_deoptimization_aarch64.S.md
+              - runtime_bridge_arch_aarch64_interpreter_to_compiled_code_bridge_aarch64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_aarch64_interpreter_to_compiled_code_bridge_aarch64.S.md
+              - runtime_bridge_arch_aarch64_interpreter_to_compiled_code_bridge_dyn_aarch64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_aarch64_interpreter_to_compiled_code_bridge_dyn_aarch64.S.md
+              - runtime_bridge_arch_aarch64_proxy_entrypoint_aarch64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_aarch64_proxy_entrypoint_aarch64.S.md
+              - runtime_bridge_arch_amd64_compiled_code_to_interpreter_bridge_amd64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_amd64_compiled_code_to_interpreter_bridge_amd64.S.md
+              - runtime_bridge_arch_amd64_compiled_code_to_interpreter_bridge_dyn_amd64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_amd64_compiled_code_to_interpreter_bridge_dyn_amd64.S.md
+              - runtime_bridge_arch_amd64_deoptimization_amd64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_amd64_deoptimization_amd64.S.md
+              - runtime_bridge_arch_amd64_interpreter_to_compiled_code_bridge_amd64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_amd64_interpreter_to_compiled_code_bridge_amd64.S.md
+              - runtime_bridge_arch_amd64_interpreter_to_compiled_code_bridge_dyn_amd64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_amd64_interpreter_to_compiled_code_bridge_dyn_amd64.S.md
+              - runtime_bridge_arch_amd64_proxy_entrypoint_amd64.S: 04_ExecutionEngine/FileNotes/runtime_bridge_arch_amd64_proxy_entrypoint_amd64.S.md
+              - runtime_bridge_bridge.cpp: 04_ExecutionEngine/FileNotes/runtime_bridge_bridge.cpp.md
+              - runtime_bridge_bridge.h: 04_ExecutionEngine/FileNotes/runtime_bridge_bridge.h.md
+              - runtime_compiler.cpp: 04_ExecutionEngine/FileNotes/runtime_compiler.cpp.md
+              - runtime_compiler.h: 04_ExecutionEngine/FileNotes/runtime_compiler.h.md
+              - runtime_deoptimization.cpp: 04_ExecutionEngine/FileNotes/runtime_deoptimization.cpp.md
+              - runtime_deoptimization.h: 04_ExecutionEngine/FileNotes/runtime_deoptimization.h.md
+              - runtime_entrypoints_entrypoints.cpp: 04_ExecutionEngine/FileNotes/runtime_entrypoints_entrypoints.cpp.md
+              - runtime_entrypoints_entrypoints.h: 04_ExecutionEngine/FileNotes/runtime_entrypoints_entrypoints.h.md
+              - runtime_exceptions.cpp: 04_ExecutionEngine/FileNotes/runtime_exceptions.cpp.md
+              - runtime_include_compiler_interface.h: 04_ExecutionEngine/FileNotes/runtime_include_compiler_interface.h.md
+              - runtime_include_exceptions.h: 04_ExecutionEngine/FileNotes/runtime_include_exceptions.h.md
+              - runtime_include_stack_walker.h: 04_ExecutionEngine/FileNotes/runtime_include_stack_walker.h.md
+              - runtime_interpreter_acc_vregister-inl.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_acc_vregister-inl.h.md
+              - runtime_interpreter_acc_vregister.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_acc_vregister.h.md
+              - runtime_interpreter_arch_macros.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_arch_macros.h.md
+              - runtime_interpreter_frame.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_frame.h.md
+              - runtime_interpreter_instruction_handler_base.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_instruction_handler_base.h.md
+              - runtime_interpreter_instruction_handler_state.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_instruction_handler_state.h.md
+              - runtime_interpreter_interpreter-inl.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_interpreter-inl.h.md
+              - runtime_interpreter_interpreter.cpp: 04_ExecutionEngine/FileNotes/runtime_interpreter_interpreter.cpp.md
+              - runtime_interpreter_interpreter.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_interpreter.h.md
+              - runtime_interpreter_interpreter_impl.cpp: 04_ExecutionEngine/FileNotes/runtime_interpreter_interpreter_impl.cpp.md
+              - runtime_interpreter_interpreter_impl.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_interpreter_impl.h.md
+              - runtime_interpreter_runtime_interface.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_runtime_interface.h.md
+              - runtime_interpreter_state.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_state.h.md
+              - runtime_interpreter_templates_interpreter-inl_gen.h.erb: 04_ExecutionEngine/FileNotes/runtime_interpreter_templates_interpreter-inl_gen.h.erb.md
+              - runtime_interpreter_templates_irtoc_interpreter_utils.h.erb: 04_ExecutionEngine/FileNotes/runtime_interpreter_templates_irtoc_interpreter_utils.h.erb.md
+              - runtime_interpreter_templates_isa_constants_gen.h.erb: 04_ExecutionEngine/FileNotes/runtime_interpreter_templates_isa_constants_gen.h.erb.md
+              - runtime_interpreter_vregister.h: 04_ExecutionEngine/FileNotes/runtime_interpreter_vregister.h.md
+              - runtime_osr.cpp: 04_ExecutionEngine/FileNotes/runtime_osr.cpp.md
+              - runtime_osr.h: 04_ExecutionEngine/FileNotes/runtime_osr.h.md
+              - runtime_stack_walker.cpp: 04_ExecutionEngine/FileNotes/runtime_stack_walker.cpp.md
+              - runtime_templates_bridge_dispatch.S.erb: 04_ExecutionEngine/FileNotes/runtime_templates_bridge_dispatch.S.erb.md
+              - runtime_templates_bridge_dispatch_dyn.S.erb: 04_ExecutionEngine/FileNotes/runtime_templates_bridge_dispatch_dyn.S.erb.md
+              - runtime_templates_plugins_interpreters-inl.h.erb: 04_ExecutionEngine/FileNotes/runtime_templates_plugins_interpreters-inl.h.erb.md
   - 05 NativeBridge:
       - 概览（Stage1）: 05_Native_Bridge_ANI_and_Interop.md
       - 深入入口（Stage2/README）: 05_NativeBridge/README.md
       - 深入路线图（Index）: 05_NativeBridge/Index.md
-
+      - Stage1 校正（Errata）: 05_NativeBridge/Errata_to_Stage1.md
+      - 专题索引:
+          - FileNotes:
+              - plugins_ets_runtime_ani_ani.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani.h.md
+              - plugins_ets_runtime_ani_ani_helpers.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_helpers.cpp.md
+              - plugins_ets_runtime_ani_ani_helpers.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_helpers.h.md
+              - plugins_ets_runtime_ani_ani_interaction_api.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_interaction_api.cpp.md
+              - plugins_ets_runtime_ani_ani_interaction_api.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_interaction_api.h.md
+              - plugins_ets_runtime_ani_ani_options.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_options.cpp.md
+              - plugins_ets_runtime_ani_ani_options.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_options.h.md
+              - plugins_ets_runtime_ani_ani_options_parser.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_options_parser.cpp.md
+              - plugins_ets_runtime_ani_ani_options_parser.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_options_parser.h.md
+              - plugins_ets_runtime_ani_ani_vm_api.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_vm_api.cpp.md
+              - plugins_ets_runtime_ani_ani_vm_api.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ani_ani_vm_api.h.md
+              - plugins_ets_runtime_ets_napi_env.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_ets_napi_env.cpp.md
+              - plugins_ets_runtime_ets_napi_env.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ets_napi_env.h.md
+              - plugins_ets_runtime_ets_native_library.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_ets_native_library.cpp.md
+              - plugins_ets_runtime_ets_native_library.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ets_native_library.h.md
+              - plugins_ets_runtime_ets_native_library_provider.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_ets_native_library_provider.cpp.md
+              - plugins_ets_runtime_ets_native_library_provider.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_ets_native_library_provider.h.md
+              - plugins_ets_runtime_external_iface_table.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_external_iface_table.h.md
+              - plugins_ets_runtime_interop_js_interop_context.cpp: 05_NativeBridge/FileNotes/plugins_ets_runtime_interop_js_interop_context.cpp.md
+              - plugins_ets_runtime_interop_js_interop_context.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_interop_js_interop_context.h.md
+              - plugins_ets_runtime_interop_js_interop_context_api.h: 05_NativeBridge/FileNotes/plugins_ets_runtime_interop_js_interop_context_api.h.md
   - 06 Tooling:
       - 概览（Stage1）: 06_Tooling_Profiling_Verification.md
       - 深入入口（Stage2/README）: 06_Tooling_Profiling_Verification/README.md
       - 深入路线图（Index）: 06_Tooling_Profiling_Verification/Index.md
-
+      - Stage1 校正（Errata）: 06_Tooling_Profiling_Verification/Errata_to_Stage1.md
   - 07 Build&Config:
       - 概览（Stage1）: 07_Build_and_Configuration.md
       - 深入入口（Stage2/README）: 07_Build_and_Configuration/README.md
       - 深入路线图（Index）: 07_Build_and_Configuration/Index.md
+      - Stage1 校正（Errata）: 07_Build_and_Configuration/Errata_to_Stage1.md
+# NAV_END (AUTO-GENERATED)
 
