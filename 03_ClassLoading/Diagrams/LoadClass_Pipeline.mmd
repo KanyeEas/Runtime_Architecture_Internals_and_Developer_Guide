@@ -1,0 +1,12 @@
+flowchart TD
+  S["LoadClass(ClassDataAccessor, descriptor, base, interfaces, context, ext)"] --> I1["SetupClassInfo\nCreate{ITable,VTable,IMTable}Builder\n计算 class size + numSfields"]
+  I1 --> I2["ext->CreateClass\n(ETS: 分配 NonMovable EtsClass + 绑定 runtime Class)"]
+  I2 --> I3["填元信息\n(base/interfaces/fileId/pf/accessFlags/indexes)\n写入 counts(vmethods/copied/sfields)"]
+  I3 --> I4["LoadMethods\n(+copied methods)\n设置 entrypoint: C2I/native/AOT/stub"]
+  I4 --> I5["LoadFields\n创建 Field 数组（type 编码在 accessFlags）"]
+  I5 --> I6["LinkMethods\nvtable.UpdateClass\nitable.Resolve+UpdateClass\nimtable.UpdateClass"]
+  I6 --> I7["LinkFields\nLayoutFields(static/instance)\n写 offset/refFields* / objectSize"]
+  I7 --> I8["(addToRuntime)\n通知事件 ClassLoad/ClassPrepare\nInsertClass 并发去重"]
+  I8 --> R["返回 Class* 或 nullptr"]
+
+

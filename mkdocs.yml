@@ -1,0 +1,71 @@
+site_name: Runtime Architecture Internals & Developer Guide
+site_description: Ark runtime_core/static_core internal wiki (Stage1+Stage2)
+site_url: https://<your-github-username>.github.io/<your-repo>/
+
+# Docs live in this directory (this folder is expected to be the repo root when publishing).
+docs_dir: .
+site_dir: site
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.indexes
+    - toc.follow
+    - content.code.copy
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.details
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js
+  - assets/javascripts/mermaid-init.js
+
+nav:
+  - Home: index.md
+  - Stage1 (Master):
+      - Master Index: 00_Master_Index.md
+      - Methodology Checklist: 00_Methodology_Wiki_Review_Checklist.md
+      - Chapter 01 (Stage1): 01_Startup_and_Entrypoints.md
+      - Chapter 02 (Stage1): 02_Memory_Management_and_Object_Model.md
+      - Chapter 03 (Stage1): 03_Class_Loading_and_Linking.md
+      - Chapter 04 (Stage1): 04_Execution_Engine_Interpreter_JIT_AOT.md
+      - Chapter 05 (Stage1): 05_Native_Bridge_ANI_and_Interop.md
+      - Chapter 06 (Stage1): 06_Tooling_Profiling_Verification.md
+      - Chapter 07 (Stage1): 07_Build_and_Configuration.md
+  - Stage2 (Deep Dives):
+      - Chapter 01 Startup:
+          - README: 01_Startup/README.md
+          - Index: 01_Startup/Index.md
+      - Chapter 02 Memory:
+          - README: 02_Memory/README.md
+          - Index: 02_Memory/Index.md
+      - Chapter 03 ClassLoading:
+          - README: 03_ClassLoading/README.md
+          - MinDebug Playbook: 03_ClassLoading/Newbie_MinDebug_Playbook.md
+          - EndToEnd Flow: 03_ClassLoading/Flows/ClassLoading_EndToEnd.md
+          - Index: 03_ClassLoading/Index.md
+      - Chapter 04 ExecutionEngine:
+          - README: 04_ExecutionEngine/README.md
+          - MinDebug Playbook: 04_ExecutionEngine/Newbie_MinDebug_Playbook.md
+          - EndToEnd Flow: 04_ExecutionEngine/Flows/ExecutionEngine_EndToEnd.md
+          - Index: 04_ExecutionEngine/Index.md
+

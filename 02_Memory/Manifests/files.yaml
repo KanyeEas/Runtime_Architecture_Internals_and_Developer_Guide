@@ -1,0 +1,35 @@
+schema: 1
+chapter: "02_Memory"
+policy:
+  discovery: dynamic
+  cross_chapter: no_duplicate_line_by_line
+seeds:
+  dirs:
+    - "runtime/mem"
+    - "runtime/coretypes"
+    - "runtime/include/coretypes"
+    - "docs"
+  files:
+    - "runtime/object_header.cpp"
+    - "runtime/include/object_header.h"
+    - "runtime/mark_word.h"
+    - "runtime/object_header_config.h"
+files:
+  - path: "runtime/object_header.cpp"
+    mode: line_by_line
+    priority: P0
+    status: pending
+  - path: "runtime/include/object_header.h"
+    mode: line_by_line
+    priority: P0
+    status: pending
+  - path: "runtime/mark_word.h"
+    mode: line_by_line
+    priority: P0
+    status: pending
+  - path: "runtime/object_header_config.h"
+    mode: line_by_line
+    priority: P0
+    status: pending
+  - path: "(dynamic_discovery)"
+    note: "逐行精读过程中发现同章强相关文件，将追加到此列表"

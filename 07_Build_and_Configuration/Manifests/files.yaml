@@ -1,0 +1,26 @@
+schema: 1
+chapter: "07_Build_and_Configuration"
+policy:
+  discovery: dynamic
+  cross_chapter: no_duplicate_line_by_line
+seeds:
+  dirs:
+    - "cmake"
+    - "plugins"
+    - "runtime"
+    - "compiler"
+    - "verification"
+  files:
+    - "BUILD.gn"
+    - "CMakeLists.txt"
+files:
+  - path: "BUILD.gn"
+    mode: line_by_line
+    priority: P0
+    status: pending
+  - path: "CMakeLists.txt"
+    mode: line_by_line
+    priority: P0
+    status: pending
+  - path: "(dynamic_discovery)"
+    note: "逐行精读过程中发现同章强相关文件，将追加到此列表"

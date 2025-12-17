@@ -1,0 +1,15 @@
+flowchart TD
+  A["GetClass(descriptor, context)"] --> B{"FindLoadedClass\n(context缓存)"}
+  B -->|是| R1["返回 Class*"]
+  B -->|否| C{"Union/Array?"}
+  C -->|Union| U["LoadUnionClass\n(commonContext)"] --> R2["返回/插入/去重"]
+  C -->|Array| AR["LoadArrayClass\n(componentContext)"] --> R2
+  C -->|普通| D{"IsBootContext?"}
+  D -->|是| F{"LookupInFilter\n(bloom filter)"}
+  F -->|IMPOSSIBLY_HAS| R0["nullptr"]
+  F -->|POSSIBLY_HAS| G["FindClassInBootPandaFiles"] --> H{"找到 classId?"}
+  H -->|否| R3["OnError(CLASS_NOT_FOUND)\nnullptr"]
+  H -->|是| I["LoadClass(pf,classId,descriptor,context)"] --> J["InsertClass 并发去重"] --> R4["Class*"]
+  D -->|否| K["context->LoadClass\n(ETS 特化)"] --> R4
+
+
