@@ -25,6 +25,6 @@
 - 所以并发加载同一类时，优先用“重复构建 + InsertClass 去重”的模型理解
 
 对应总述：
-- [Flows/Concurrency_and_ClassLock](Flows/Concurrency_and_ClassLock.md)
+- [Flows/Concurrency_and_ClassLock](../Flows/Concurrency_and_ClassLock.md)
 
 

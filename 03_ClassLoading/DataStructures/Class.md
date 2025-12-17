@@ -119,14 +119,14 @@ flowchart LR
     - `LinkMethods`：vtable/itable/imtable 的 UpdateClass 写回
     - `LinkFields/LayoutFields`：写 `Field::offset_`，并写回 `objectSize_` 与 ref 字段统计
 - **读取（派发/反射/执行）**：
-  - `Class::ResolveVirtualMethod` 走 IMT/ITable/VTable（见 [FileNotes/runtime_include_class-inl.h](FileNotes/runtime_include_class-inl.h.md)）
+  - `Class::ResolveVirtualMethod` 走 IMT/ITable/VTable（见 [FileNotes/runtime_include_class-inl.h](../FileNotes/runtime_include_class-inl.h.md)）
   - field/method 查找（Find* / Get*ByName）在 `class-inl.h`（同上）
 
 ## 证据链
 
-- [FileNotes/runtime_include_class.h](FileNotes/runtime_include_class.h.md)
-- [FileNotes/runtime_include_class-inl.h](FileNotes/runtime_include_class-inl.h.md)
-- [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)
+- [FileNotes/runtime_include_class.h](../FileNotes/runtime_include_class.h.md)
+- [FileNotes/runtime_include_class-inl.h](../FileNotes/runtime_include_class-inl.h.md)
+- [FileNotes/runtime_class_linker.cpp](../FileNotes/runtime_class_linker.cpp.md)
  - 关键源码锚点（placement new + 变长布局）：
    - `runtime/include/coretypes/class.h`（`InitClass` 的 placement new；`GetSize(klassSize)`；“klass field must be last” static_assert）
    - `runtime/include/class-inl.h`（`ComputeClassSize/GetVTableOffset/GetVTable/GetIMTOffset/GetClassSpan`）

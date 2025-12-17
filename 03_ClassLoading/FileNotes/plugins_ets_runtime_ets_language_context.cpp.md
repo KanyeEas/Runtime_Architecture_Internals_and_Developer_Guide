@@ -7,7 +7,7 @@
 ## 1. include 与依赖定位（L16–L26）
 
 该 `.cpp` 明确揭示 ETS 在 03 章的关键实现点：
-- **L16**：`ets_itable_builder.h`：ETS 的 ITableBuilder 实现（已逐行：见 [FileNotes/plugins_ets_runtime_ets_itable_builder.h](FileNotes/plugins_ets_runtime_ets_itable_builder.h.md) / [.cpp](.cpp.md)）。
+- **L16**：`ets_itable_builder.h`：ETS 的 ITableBuilder 实现（已逐行：见 [plugins_ets_runtime_ets_itable_builder.h](plugins_ets_runtime_ets_itable_builder.h.md) / [plugins_ets_runtime_ets_itable_builder.cpp](plugins_ets_runtime_ets_itable_builder.cpp.md)）。
 - **L18**：`ets_vtable_builder.h`：ETS 的 VTableBuilder 实现（本章目前以 `EtsVTableBuilder` 为“存在点”说明；其逐行可在后续按动态发现纳入，若你希望把 ETS vtable override 规则也完全闭环到代码）。
 - **L19–L24**：ETS 的方法/字符串/异常/handle scope：用于异常创建与 ThrowStackOverflow。
 

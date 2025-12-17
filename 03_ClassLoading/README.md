@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # 03_ClassLoading（Stage2）
 
 > 阶段二：逐行精读与 wiki 沉淀（**已闭环到代码实现与 ETS 插件落地**）。

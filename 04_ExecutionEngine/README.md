@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # 04_ExecutionEngine（Stage2）
 
 > 阶段二：逐行精读与 wiki 沉淀（目标：**新同学不读 FileNotes 也能建立“执行引擎怎么跑”的整体模型**，需要时再下潜逐行证据）。

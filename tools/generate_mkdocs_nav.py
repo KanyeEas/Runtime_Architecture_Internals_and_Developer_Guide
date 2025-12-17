@@ -173,17 +173,19 @@ def _emit_chapter(lines: List[str], docs_root: Path, spec: ChapterSpec) -> None:
     # Chapter header
     _emit_yaml_line(lines, 2, f"- {spec.key}:")
 
-    # 1) Stage1 overview (single file at docs root)
-    stage1 = _maybe_file(spec.stage1_file, docs_root)
-    if stage1:
-        _emit_item(lines, 6, spec.stage1_title, stage1)
-
-    # 2) Stage2 README (chapter_dir/README.md) - if exists
+    # NOTE: Per user requirement, Stage1 overviews are centralized under
+    # "00 总览与方法论", not repeated inside each chapter.
+    #
+    # README.md is still kept as the chapter landing page (MkDocs maps README.md
+    # to /<chapter_dir>/). To keep it as the landing page without adding a
+    # labeled nav row, we insert a *path-only* entry as the first child.
+    # Then the README itself uses front matter `hide: [navigation]` to avoid
+    # occupying space in the left sidebar.
     readme = _maybe_file(f"{spec.chapter_dir}/README.md", docs_root)
     if readme:
-        _emit_item(lines, 6, spec.readme_title, readme)
+        _emit_yaml_line(lines, 6, f"- {readme}")
 
-    # 3) EndToEnd (Flows/*EndToEnd*.md) - if exists
+    # 1) EndToEnd (Flows/*EndToEnd*.md) - if exists
     flows_dir = docs_root / spec.chapter_dir / "Flows"
     if flows_dir.exists():
         end_to_end = None
@@ -194,17 +196,17 @@ def _emit_chapter(lines: List[str], docs_root: Path, spec: ChapterSpec) -> None:
         if end_to_end:
             _emit_item(lines, 6, "端到端主线（EndToEnd）", end_to_end)
 
-    # 4) Newbie playbook
+    # 2) Newbie playbook
     playbook = _maybe_file(f"{spec.chapter_dir}/Newbie_MinDebug_Playbook.md", docs_root)
     if playbook:
         _emit_item(lines, 6, "新人最小调试手册", playbook)
 
-    # 5) Chapter Index
+    # 3) Chapter Index
     idx = _maybe_file(f"{spec.chapter_dir}/Index.md", docs_root)
     if idx:
         _emit_item(lines, 6, spec.index_title, idx)
 
-    # 6) Completion review & Errata (if exists)
+    # 4) Completion review & Errata (if exists)
     completion = _maybe_file(f"{spec.chapter_dir}/Completion_Review.md", docs_root)
     if completion:
         _emit_item(lines, 6, "完成度验收（Checklist）", completion)
@@ -212,7 +214,8 @@ def _emit_chapter(lines: List[str], docs_root: Path, spec: ChapterSpec) -> None:
     if errata:
         _emit_item(lines, 6, "Stage1 校正（Errata）", errata)
 
-    # 7) Any other md at chapter root (not already listed), keep stable order
+    # 5) Any other md at chapter root (not already listed), keep stable order.
+    # Keep README.md excluded to avoid duplicating a page that is already the directory index.
     chapter_root = docs_root / spec.chapter_dir
     if chapter_root.exists():
         known = {
@@ -226,7 +229,7 @@ def _emit_chapter(lines: List[str], docs_root: Path, spec: ChapterSpec) -> None:
         for p in extra_root:
             _emit_item(lines, 6, _title_from_filename(p), _rel_posix(p, docs_root))
 
-    # 8) Topic indexes + all pages under subdirs.
+    # 6) Topic indexes + all pages under subdirs.
     # Order matters, and FileNotes MUST be the last.
     subdir_order = ["Flows", "DataStructures", "Diagrams", "Manifests", "FileNotes"]
     # Only include non-empty subdirs (must contain at least one .md),
@@ -283,6 +286,16 @@ def generate_nav_yaml(docs_root: Path) -> str:
     ]:
         if _maybe_file(rel, docs_root):
             _emit_item(lines, 6, title, rel)
+
+    # Centralized Stage1 overviews for each chapter (per user requirement)
+    stage1_items: List[Tuple[str, str]] = []
+    for spec in CHAPTERS:
+        if _maybe_file(spec.stage1_file, docs_root):
+            stage1_items.append((spec.key, spec.stage1_file))
+    if stage1_items:
+        _emit_yaml_line(lines, 6, "- 各章概览（Stage1）:")
+        for key, rel in stage1_items:
+            _emit_item(lines, 10, key, rel)
 
     # Chapters (fixed order)
     for spec in CHAPTERS:

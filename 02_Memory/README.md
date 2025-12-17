@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # 02_Memory（Stage2）
 
 > 阶段二：逐行精读与 wiki 沉淀。

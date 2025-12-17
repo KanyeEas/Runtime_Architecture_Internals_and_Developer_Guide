@@ -98,11 +98,11 @@ IMT 是 Class 内部的一段 `Method*` 数组，用于把“接口方法 id/has
 
 ## 证据链
 
-- [FileNotes/runtime_include_itable.h](FileNotes/runtime_include_itable.h.md)
-- [FileNotes/runtime_include_itable_builder.h](FileNotes/runtime_include_itable_builder.h.md)
-- [FileNotes/plugins_ets_runtime_ets_itable_builder.cpp](FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md)
-- [FileNotes/runtime_imtable_builder.cpp](FileNotes/runtime_imtable_builder.cpp.md)
-- [FileNotes/runtime_include_class-inl.h](FileNotes/runtime_include_class-inl.h.md)（ResolveVirtualMethod 的 IMT/ITable/VTable 分支）
+- [FileNotes/runtime_include_itable.h](../FileNotes/runtime_include_itable.h.md)
+- [FileNotes/runtime_include_itable_builder.h](../FileNotes/runtime_include_itable_builder.h.md)
+- [FileNotes/plugins_ets_runtime_ets_itable_builder.cpp](../FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md)
+- [FileNotes/runtime_imtable_builder.cpp](../FileNotes/runtime_imtable_builder.cpp.md)
+- [FileNotes/runtime_include_class-inl.h](../FileNotes/runtime_include_class-inl.h.md)（ResolveVirtualMethod 的 IMT/ITable/VTable 分支）
  - 关键源码锚点：
    - `plugins/ets/runtime/ets_itable_builder.cpp`（LinearizeITable/CloneBaseITable/Build/Resolve/FindMethodInVTable）
 

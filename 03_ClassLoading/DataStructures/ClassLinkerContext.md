@@ -30,9 +30,9 @@
 
 ## 证据链
 
-- [FileNotes/runtime_class_linker_context.h](FileNotes/runtime_class_linker_context.h.md)
-- [FileNotes/plugins_ets_runtime_ets_class_linker_context.h](FileNotes/plugins_ets_runtime_ets_class_linker_context.h.md)
-- [FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
+- [FileNotes/runtime_class_linker_context.h](../FileNotes/runtime_class_linker_context.h.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_context.h](../FileNotes/plugins_ets_runtime_ets_class_linker_context.h.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](../FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
 
 ## 3) 并发模型（必须按真实代码理解）
 

@@ -40,9 +40,9 @@
 
 ## 证据链
 
-- [FileNotes/runtime_include_method.h](FileNotes/runtime_include_method.h.md)
-- [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)
-- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
+- [FileNotes/runtime_include_method.h](../FileNotes/runtime_include_method.h.md)
+- [FileNotes/runtime_class_linker.cpp](../FileNotes/runtime_class_linker.cpp.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](../FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
 
 ## 下一步（新人推荐）
 

@@ -69,7 +69,7 @@
 - `GetUnionComponent`
 - `GetUnionLUBClass(descriptor, classLinker, ctx, ext, handler)`
 
-> union 描述符的加载/组成类型解析已在 `runtime/class_linker.cpp` 的 `LoadUnionClass/LoadConstituentClasses` 等路径逐行确认（见 [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md) 的 union 段落）。
+> union 描述符的加载/组成类型解析已在 `runtime/class_linker.cpp` 的 `LoadUnionClass/LoadConstituentClasses` 等路径逐行确认（见 [FileNotes/runtime_class_linker.cpp](runtime_class_linker.cpp.md) 的 union 段落）。
 
 ## 5. `GetName`：descriptor → 人类可读名（L113–L167）
 

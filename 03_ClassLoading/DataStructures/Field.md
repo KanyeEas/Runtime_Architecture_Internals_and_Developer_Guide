@@ -20,12 +20,12 @@
 - **写入 type/flags**：`runtime/class_linker.cpp::LoadFields`（InitializeMemory(field, ..., TypeFromEncoding)）
 - **写入 offset**：`runtime/class_linker.cpp::LayoutFields`（唯一写入点）
 - **读取 offset 做访问**：
-  - 实际读写由 `Class::GetFieldObject/SetFieldObject` 通过 `ObjectAccessor` 完成（见 [FileNotes/runtime_include_class-inl.h](FileNotes/runtime_include_class-inl.h.md)）
+  - 实际读写由 `Class::GetFieldObject/SetFieldObject` 通过 `ObjectAccessor` 完成（见 [FileNotes/runtime_include_class-inl.h](../FileNotes/runtime_include_class-inl.h.md)）
 
 ## 证据链
 
-- [FileNotes/runtime_include_field.h](FileNotes/runtime_include_field.h.md)
-- [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)（LayoutFields 段）
+- [FileNotes/runtime_include_field.h](../FileNotes/runtime_include_field.h.md)
+- [FileNotes/runtime_class_linker.cpp](../FileNotes/runtime_class_linker.cpp.md)（LayoutFields 段）
 
 ## 下一步（新人推荐）
 

@@ -15,7 +15,7 @@
 
 > 交叉引用：  
 > - 字段访问实际读写（含屏障/原子）：在 `Class::GetFieldObject/SetFieldObject`（`class-inl.h`）里通过 `ObjectAccessor` 实现（跨章 Memory）。  
-> - 字段 offset 的来源：在 `runtime/class_linker.cpp` 的 `LayoutFields/LinkFields` 阶段写入（见 [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md) 的字段布局段落）。  
+> - 字段 offset 的来源：在 `runtime/class_linker.cpp` 的 `LayoutFields/LinkFields` 阶段写入（见 [FileNotes/runtime_class_linker.cpp](runtime_class_linker.cpp.md) 的字段布局段落）。  
 
 ## 2. 头部与依赖（L1–L35）
 

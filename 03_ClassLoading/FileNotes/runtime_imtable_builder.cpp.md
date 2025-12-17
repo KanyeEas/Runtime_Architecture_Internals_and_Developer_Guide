@@ -4,7 +4,7 @@
 > 文件类型：`IMTableBuilder` 实现（IMT 构建与写回）  
 > 文件规模：约 129 行（实现非常集中）
 
-> 术语速查：见 [FileNotes/_Glossary](FileNotes/_Glossary.md)（同目录）
+> 术语速查：见 [FileNotes/_Glossary](_Glossary.md)（同目录）
 
 ## 一图读懂：IMT 的“是否构建/构建多大”与“冲突即清空槽”
 

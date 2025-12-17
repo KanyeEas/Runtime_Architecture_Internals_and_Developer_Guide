@@ -89,6 +89,7 @@
 - [IRTOC_FastInterpreter](04_ExecutionEngine/DataStructures/IRTOC_FastInterpreter.md)
 - [ISA_and_OpcodeModel](04_ExecutionEngine/DataStructures/ISA_and_OpcodeModel.md)
 - [StackWalker](04_ExecutionEngine/DataStructures/StackWalker.md)
+- [Index](04_ExecutionEngine/Diagrams/Index.md)
 - [Errata_to_Stage1](04_ExecutionEngine/Errata_to_Stage1.md)
 - [_Glossary](04_ExecutionEngine/FileNotes/_Glossary.md)
 - [build_irtoc_irtoc_interpreter_disasm.txt](04_ExecutionEngine/FileNotes/build_irtoc_irtoc_interpreter_disasm.txt.md)
@@ -104,6 +105,7 @@
 - [compiler_aot_aot_manager.cpp](04_ExecutionEngine/FileNotes/compiler_aot_aot_manager.cpp.md)
 - [compiler_aot_aot_manager.h](04_ExecutionEngine/FileNotes/compiler_aot_aot_manager.h.md)
 - [compiler_aot_compiled_method.h](04_ExecutionEngine/FileNotes/compiler_aot_compiled_method.h.md)
+- [Index](04_ExecutionEngine/FileNotes/Index.md)
 - [irtoc_scripts_common.irt](04_ExecutionEngine/FileNotes/irtoc_scripts_common.irt.md)
 - [irtoc_scripts_interpreter.irt](04_ExecutionEngine/FileNotes/irtoc_scripts_interpreter.irt.md)
 - [isa_isa.yaml](04_ExecutionEngine/FileNotes/isa_isa.yaml.md)
@@ -173,6 +175,7 @@
 - [Opcode_DeepDives_IRTOC](04_ExecutionEngine/Flows/Opcode_DeepDives_IRTOC.md)
 - [StackWalking](04_ExecutionEngine/Flows/StackWalking.md)
 - [Index](04_ExecutionEngine/Index.md)
+- [Index](04_ExecutionEngine/Manifests/Index.md)
 - [Newbie_MinDebug_Playbook](04_ExecutionEngine/Newbie_MinDebug_Playbook.md)
 - [04_ExecutionEngine/README](04_ExecutionEngine/README.md)
 

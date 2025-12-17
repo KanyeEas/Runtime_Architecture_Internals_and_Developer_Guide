@@ -43,8 +43,8 @@ sequenceDiagram
 
 ## 3) 证据链
 
-- [FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
-- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)（CreateApplicationRuntimeLinker）
+- [FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](../FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](../FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)（CreateApplicationRuntimeLinker）
 
 ## 下一步（新人推荐）
 

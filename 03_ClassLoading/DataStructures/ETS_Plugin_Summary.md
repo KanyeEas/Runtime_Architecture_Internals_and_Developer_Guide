@@ -14,8 +14,8 @@
 - CreateVM / CreateGC / ThrowException / ThrowStackOverflow / VerificationInitAPI
 
 证据链：
-- [FileNotes/plugins_ets_runtime_ets_language_context.h](FileNotes/plugins_ets_runtime_ets_language_context.h.md)
-- [FileNotes/plugins_ets_runtime_ets_language_context.cpp](FileNotes/plugins_ets_runtime_ets_language_context.cpp.md)
+- [FileNotes/plugins_ets_runtime_ets_language_context.h](../FileNotes/plugins_ets_runtime_ets_language_context.h.md)
+- [FileNotes/plugins_ets_runtime_ets_language_context.cpp](../FileNotes/plugins_ets_runtime_ets_language_context.cpp.md)
 
 ## 2) ClassLinkerExtension：自举 + managed<->runtime Class 绑定 + native 入口点
 
@@ -27,8 +27,8 @@
 - common-context：为 union/跨域类型集合找共同 loadContext
 
 证据链：
-- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.h](FileNotes/plugins_ets_runtime_ets_class_linker_extension.h.md)
-- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.h](../FileNotes/plugins_ets_runtime_ets_class_linker_extension.h.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](../FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
 
 ## 3) ClassLinkerContext：ETS 非 boot 加载域
 
@@ -38,7 +38,7 @@
 - panda files 枚举直接来自 RuntimeLinker 的 AbcFiles 列表
 
 证据链：
-- [FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](../FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
 
 ## 4) ITableBuilder：ETS 接口派发 resolve（vtable 驱动）
 
@@ -48,7 +48,7 @@
 - 多实现候选直接 MULTIPLE_IMPLEMENT 报错并失败
 
 证据链：
-- [FileNotes/plugins_ets_runtime_ets_itable_builder.cpp](FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md)
+- [FileNotes/plugins_ets_runtime_ets_itable_builder.cpp](../FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md)
 
 ## 下一步（新人推荐）
 

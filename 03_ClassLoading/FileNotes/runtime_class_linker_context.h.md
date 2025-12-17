@@ -111,7 +111,7 @@
 
 ### 4.8 per-Class MutexTable：GetClassMutexHandler（L212–L216）
 - 在 `mapLock_` 下 `mutexTable_.at(cls)`，返回该 class 的 `ClassMutexHandler*`。
-- 该同步器通常被 class initialization / link steps 用于等待/唤醒（已在 [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md) 的并发加载/InsertClass/LoadClass 互斥段落对齐到使用点）。
+- 该同步器通常被 class initialization / link steps 用于等待/唤醒（已在 [FileNotes/runtime_class_linker.cpp](runtime_class_linker.cpp.md) 的并发加载/InsertClass/LoadClass 互斥段落对齐到使用点）。
 
 ### 4.9 私有字段（L224–L233）
 - **L226**：`classesLock_` 是 `RecursiveMutex`：支撑 InsertClass 里 FindClass 的重入锁。

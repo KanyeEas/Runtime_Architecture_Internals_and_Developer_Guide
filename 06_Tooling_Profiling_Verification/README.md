@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # 06_Tooling_Profiling_Verification（Stage2）
 
 > 阶段二：逐行精读与 wiki 沉淀。

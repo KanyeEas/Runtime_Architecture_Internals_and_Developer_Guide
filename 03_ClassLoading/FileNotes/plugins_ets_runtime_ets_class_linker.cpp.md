@@ -61,8 +61,8 @@
 
 ## 证据链
 
-- ETS extension 入口点/错误映射：[FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
-- ClassLinker GetMethod：[FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)
+- ETS extension 入口点/错误映射：[FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](plugins_ets_runtime_ets_class_linker_extension.cpp.md)
+- ClassLinker GetMethod：[FileNotes/runtime_class_linker.cpp](runtime_class_linker.cpp.md)
 - async 注解数据结构：`plugins/ets/runtime/ets_annotation.h`（若后续需要可纳入 03 动态发现）
 
 

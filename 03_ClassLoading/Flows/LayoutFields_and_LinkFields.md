@@ -37,9 +37,9 @@ flowchart TD
 
 ## 4) 证据链
 
-- [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)（LayoutFieldsWithoutAlignment/LayoutReferenceFields/LayoutFieldsInBaseClassPadding/LayoutFields/LinkFields）
-- [FileNotes/runtime_include_field.h](FileNotes/runtime_include_field.h.md)（Field::offset_ 语义）
-- [FileNotes/runtime_include_class.h](FileNotes/runtime_include_class.h.md)（ref fields 元数据字段与访问）
+- [FileNotes/runtime_class_linker.cpp](../FileNotes/runtime_class_linker.cpp.md)（LayoutFieldsWithoutAlignment/LayoutReferenceFields/LayoutFieldsInBaseClassPadding/LayoutFields/LinkFields）
+- [FileNotes/runtime_include_field.h](../FileNotes/runtime_include_field.h.md)（Field::offset_ 语义）
+- [FileNotes/runtime_include_class.h](../FileNotes/runtime_include_class.h.md)（ref fields 元数据字段与访问）
 
 ## 下一步（新人推荐）
 

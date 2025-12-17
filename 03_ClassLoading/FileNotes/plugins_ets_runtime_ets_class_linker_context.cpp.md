@@ -4,7 +4,7 @@
 > 文件类型：ETS AppContext 的核心实现：把 “descriptor→Class” 的查找/加载，拆成 **native 快路径（走 linker chain）** 与 **managed 慢路径（调用 RuntimeLinker.loadClass）**。  
 > 文件规模：约 332 行（主要逻辑集中在 LoadClass 与链式查找/枚举）。
 
-> 术语速查：见 [FileNotes/_Glossary](FileNotes/_Glossary.md)（同目录）
+> 术语速查：见 [FileNotes/_Glossary](_Glossary.md)（同目录）
 
 ## 一图读懂：ETS LoadClass（native 优先链式解析 → managed 回退）
 
