@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # 07_Build_and_Configuration（Stage2）
 
 > 阶段二：逐行精读与 wiki 沉淀。
