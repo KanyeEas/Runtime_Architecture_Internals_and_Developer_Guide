@@ -53,6 +53,6 @@
 ## 下一步（新人推荐）
 
 - 想看“ETS 两段式加载”的决策树与 gate → [../Flows/ETS_Context_Native_vs_Managed_Load](../Flows/ETS_Context_Native_vs_Managed_Load.md)
-- 想看“ETS native entrypoint 如何写回 Method 并影响执行入口（跨章）” → [../04_ExecutionEngine/README](../04_ExecutionEngine/README.md)
+- 想看“ETS native entrypoint 如何写回 Method 并影响执行入口（跨章）” → [04_ExecutionEngine/README](../../04_ExecutionEngine/README.md)
 
 

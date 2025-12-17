@@ -46,6 +46,6 @@
 
 ## 下一步（新人推荐）
 
-- 想看“entrypoint 在运行期如何影响解释器↔compiled 派发（跨章）” → [../04_ExecutionEngine/README](../04_ExecutionEngine/README.md)
+- 想看“entrypoint 在运行期如何影响解释器↔compiled 派发（跨章）” → [04_ExecutionEngine/README](../../04_ExecutionEngine/README.md)
 - 想看“LinkMethods 如何写回 vtableIndex/派发结构” → [../Flows/Builders_and_LinkMethods](../Flows/Builders_and_LinkMethods.md)
 

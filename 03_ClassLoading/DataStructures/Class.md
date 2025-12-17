@@ -137,6 +137,6 @@ flowchart LR
 
 - 想看“GetClass/LoadClass 主调用链” → [../Flows/GetClass_and_LoadClass](../Flows/GetClass_and_LoadClass.md)
 - 想看“vtable/itable/IMT 构建与冲突” → [ITable_and_IMT](ITable_and_IMT.md) 与 [../Flows/Builders_and_LinkMethods](../Flows/Builders_and_LinkMethods.md)
-- 想看“加载↔初始化交界（<clinit> 真正执行）” → [../04_ExecutionEngine/README](../04_ExecutionEngine/README.md)
+- 想看“加载↔初始化交界（<clinit> 真正执行）” → [04_ExecutionEngine/README](../../04_ExecutionEngine/README.md)
 
 
