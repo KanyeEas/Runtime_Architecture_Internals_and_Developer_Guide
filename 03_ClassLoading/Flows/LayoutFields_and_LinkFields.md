@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ClassLoading_EndToEnd.md`（“LinkFields：LayoutFields 写回 offset/objectSize/refFields*”框）
+- 总入口：[ClassLoading_EndToEnd](ClassLoading_EndToEnd.md)（“LinkFields：LayoutFields 写回 offset/objectSize/refFields*”框）
 
 ## 1) 发生在什么时候
 
@@ -37,14 +37,14 @@ flowchart TD
 
 ## 4) 证据链
 
-- `FileNotes/runtime_class_linker.cpp.md`（LayoutFieldsWithoutAlignment/LayoutReferenceFields/LayoutFieldsInBaseClassPadding/LayoutFields/LinkFields）
-- `FileNotes/runtime_include_field.h.md`（Field::offset_ 语义）
-- `FileNotes/runtime_include_class.h.md`（ref fields 元数据字段与访问）
+- [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)（LayoutFieldsWithoutAlignment/LayoutReferenceFields/LayoutFieldsInBaseClassPadding/LayoutFields/LinkFields）
+- [FileNotes/runtime_include_field.h](FileNotes/runtime_include_field.h.md)（Field::offset_ 语义）
+- [FileNotes/runtime_include_class.h](FileNotes/runtime_include_class.h.md)（ref fields 元数据字段与访问）
 
 ## 下一步（新人推荐）
 
-- 想先把 GetClass/LoadClass 主线对齐 → `GetClass_and_LoadClass.md`
-- 想看“builder 写回顺序（vtable/itable/IMT）” → `Builders_and_LinkMethods.md`
-- 想看“Class/Field 的关键字段语义” → `../DataStructures/Class.md` 与 `../DataStructures/Field.md`
+- 想先把 GetClass/LoadClass 主线对齐 → [GetClass_and_LoadClass](GetClass_and_LoadClass.md)
+- 想看“builder 写回顺序（vtable/itable/IMT）” → [Builders_and_LinkMethods](Builders_and_LinkMethods.md)
+- 想看“Class/Field 的关键字段语义” → [../DataStructures/Class](../DataStructures/Class.md) 与 [../DataStructures/Field](../DataStructures/Field.md)
 
 

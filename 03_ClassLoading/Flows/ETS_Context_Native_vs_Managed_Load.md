@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ClassLoading_EndToEnd.md`（“ETS：context 的 native→managed 两段式加载”框）
+- 总入口：[ClassLoading_EndToEnd](ClassLoading_EndToEnd.md)（“ETS：context 的 native→managed 两段式加载”框）
 
 ## 1) 为什么 ETS 要这么做
 
@@ -43,12 +43,12 @@ sequenceDiagram
 
 ## 3) 证据链
 
-- `FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md`
-- `FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md`（CreateApplicationRuntimeLinker）
+- [FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)（CreateApplicationRuntimeLinker）
 
 ## 下一步（新人推荐）
 
-- 想看“为什么非 managed 线程禁止回退”的决策树版本 → `../Newbie_MinDebug_Playbook.md`（实验 2）
-- 想把 “GetClass/LoadClass 主线” 与 ETS 特化对齐 → `GetClass_and_LoadClass.md`
+- 想看“为什么非 managed 线程禁止回退”的决策树版本 → [../Newbie_MinDebug_Playbook](../Newbie_MinDebug_Playbook.md)（实验 2）
+- 想把 “GetClass/LoadClass 主线” 与 ETS 特化对齐 → [GetClass_and_LoadClass](GetClass_and_LoadClass.md)
 
 

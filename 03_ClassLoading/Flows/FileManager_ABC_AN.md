@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ClassLoading_EndToEnd.md`（“输入（文件/上下文）”框：.abc/.an 如何进入 runtime）
+- 总入口：[ClassLoading_EndToEnd（Flow）](ClassLoading_EndToEnd.md)（“输入（文件/上下文）”框：.abc/.an 如何进入 runtime）
 
 ## 1) `.abc`（panda file）加载
 
@@ -23,13 +23,13 @@
 
 ## 3) 证据链
 
-- `FileNotes/runtime_include_file_manager.h.md`
-- `FileNotes/runtime_file_manager.cpp.md`
-- `FileNotes/runtime_class_linker.cpp.md`（AddPandaFile）
+- [runtime_include_file_manager.h（FileNotes）](../FileNotes/runtime_include_file_manager.h.md)
+- [runtime_file_manager.cpp（FileNotes）](../FileNotes/runtime_file_manager.cpp.md)
+- [runtime_class_linker.cpp（FileNotes）](../FileNotes/runtime_class_linker.cpp.md)（AddPandaFile）
 
 ## 下一步（新人推荐）
 
-- 想看“boot/app 可见域是怎么分的（boot bloom filter 什么时候生效）” → `GetClass_and_LoadClass.md`
-- 想看“AOT class context/装载入口（跨章）” → `../04_ExecutionEngine/FileNotes/compiler_aot_aot_manager.cpp.md` 与 `../04_ExecutionEngine/FileNotes/compiler_aot_aot_file.cpp.md`
+- 想看“boot/app 可见域是怎么分的（boot bloom filter 什么时候生效）” → [GetClass_and_LoadClass（Flow）](GetClass_and_LoadClass.md)
+- 想看“AOT class context/装载入口（跨章）” → [compiler_aot_aot_manager.cpp（FileNotes）](../../04_ExecutionEngine/FileNotes/compiler_aot_aot_manager.cpp.md) 与 [compiler_aot_aot_file.cpp（FileNotes）](../../04_ExecutionEngine/FileNotes/compiler_aot_aot_file.cpp.md)
 
 

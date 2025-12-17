@@ -34,6 +34,6 @@
 - [runtime_include_class_linker.h](./runtime_include_class_linker.h.md)
 - [runtime_include_class_linker_extension.h](./runtime_include_class_linker_extension.h.md)
 - [runtime_include_class_helper.h](./runtime_include_class_helper.h.md)
-- ETS 插件相关：见 `All_Pages.md` 中的 `plugins_ets_runtime_ets_*`
+- ETS 插件相关：见 [All_Pages](../../All_Pages.md) 中的 `plugins_ets_runtime_ets_*`
 
 

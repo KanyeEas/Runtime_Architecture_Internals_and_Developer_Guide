@@ -4,7 +4,7 @@
 > 文件规模：481 行  
 > 目标：把“默认 ClassLinkerExtension 抽象”在 core（PANDA_ASSEMBLY）语言下的落地讲清楚：**错误映射**、**根类自举（primitive/array/synthetic/String 子类）**、**CreateClass 的 heap 分配与 managed<->runtime 绑定**、以及各 root 的 vtable/IMT/size 策略。
 
-> 术语速查：见 `FileNotes/_Glossary.md`（同目录）
+> 术语速查：见 [FileNotes/_Glossary](FileNotes/_Glossary.md)（同目录）
 
 ## 一图读懂：Core roots 自举（Class/Object/String + String 子类 + primitive/array）
 
@@ -142,8 +142,8 @@ flowchart TD
 
 ## 证据链与关联阅读
 
-- 抽象与容器语义：`FileNotes/runtime_include_class_linker_extension.h.md` + `FileNotes/runtime_class_linker_extension.cpp.md`
-- ClassLinker roots 初始化调度：`FileNotes/runtime_class_linker.cpp.md`（Initialize/InitializeRoots 调用 ext->Initialize/InitializeRoots）
-- ETS 对应实现：`FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md`
+- 抽象与容器语义：[FileNotes/runtime_include_class_linker_extension.h](FileNotes/runtime_include_class_linker_extension.h.md) + [FileNotes/runtime_class_linker_extension.cpp](FileNotes/runtime_class_linker_extension.cpp.md)
+- ClassLinker roots 初始化调度：[FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)（Initialize/InitializeRoots 调用 ext->Initialize/InitializeRoots）
+- ETS 对应实现：[FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
 
 

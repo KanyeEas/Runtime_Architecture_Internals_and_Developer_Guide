@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ClassLoading_EndToEnd.md`（“入口：按 descriptor 找 Class（FindLoadedClass/ctx->LoadClass）”框）
+- 总入口：[../Flows/ClassLoading_EndToEnd](../Flows/ClassLoading_EndToEnd.md)（“入口：按 descriptor 找 Class（FindLoadedClass/ctx->LoadClass）”框）
 
 ## 它是什么
 
@@ -30,9 +30,9 @@
 
 ## 证据链
 
-- `FileNotes/runtime_class_linker_context.h.md`
-- `FileNotes/plugins_ets_runtime_ets_class_linker_context.h.md`
-- `FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md`
+- [FileNotes/runtime_class_linker_context.h](FileNotes/runtime_class_linker_context.h.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_context.h](FileNotes/plugins_ets_runtime_ets_class_linker_context.h.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
 
 ## 3) 并发模型（必须按真实代码理解）
 
@@ -46,7 +46,7 @@ flowchart TD
   C -->|无同名| E["插入 loadedClasses_[descriptor]=klass\n并创建 mutexTable_[klass]"]
 ```
 
-> 详细时序图与递归加载防护（CLASS_CIRCULARITY）见：`../Flows/Concurrency_and_ClassLock.md`。
+> 详细时序图与递归加载防护（CLASS_CIRCULARITY）见：[../Flows/Concurrency_and_ClassLock](../Flows/Concurrency_and_ClassLock.md)。
 
 ## 4) ClassLock（per-class condvar）的定位与现实
 
@@ -55,7 +55,7 @@ flowchart TD
 
 ## 下一步（新人推荐）
 
-- 想看“Context 决定可见域（boot vs app vs ETS 链）” → `../Flows/ClassLoading_EndToEnd.md`
-- 想看“ETS 两段式加载的 gate 细节” → `../Flows/ETS_Context_Native_vs_Managed_Load.md`
-- 想看“并发去重/递归加载防护/（ClassLock 的现实定位）” → `../Flows/Concurrency_and_ClassLock.md`
+- 想看“Context 决定可见域（boot vs app vs ETS 链）” → [../Flows/ClassLoading_EndToEnd](../Flows/ClassLoading_EndToEnd.md)
+- 想看“ETS 两段式加载的 gate 细节” → [../Flows/ETS_Context_Native_vs_Managed_Load](../Flows/ETS_Context_Native_vs_Managed_Load.md)
+- 想看“并发去重/递归加载防护/（ClassLock 的现实定位）” → [../Flows/Concurrency_and_ClassLock](../Flows/Concurrency_and_ClassLock.md)
 

@@ -4,7 +4,7 @@
 > 文件规模：1895 行（实现文件，按“函数簇 + 行段”做逐行记录）  
 > 目标：把 **ClassLinker 的真实执行管线**、**布局算法**、**缓存/并发策略**、以及 **AOT/boot filter** 的接入点讲清楚。
 
-> 术语速查：见 `FileNotes/_Glossary.md`（同目录）
+> 术语速查：见 [FileNotes/_Glossary](FileNotes/_Glossary.md)（同目录）
 
 ## 一图读懂：GetClass → LoadClass → Link（本文件主线）
 

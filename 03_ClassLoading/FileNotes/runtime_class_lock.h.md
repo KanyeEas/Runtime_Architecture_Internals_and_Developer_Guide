@@ -4,7 +4,7 @@
 
 本文件定义 `ClassLock`：一个围绕 `ClassLinkerContext::ClassMutexHandler` 的 RAII 封装，提供 `Wait/Notify/NotifyAll`。
 
-注意：它是“通用工具/潜在接入点”，**当前 `runtime/class_linker.cpp` 的类加载去重主线并未使用它**；并发去重主要依赖 `InsertClass`（见 `Flows/Concurrency_and_ClassLock.md`）。
+注意：它是“通用工具/潜在接入点”，**当前 `runtime/class_linker.cpp` 的类加载去重主线并未使用它**；并发去重主要依赖 `InsertClass`（见 [Flows/Concurrency_and_ClassLock](Flows/Concurrency_and_ClassLock.md)）。
 
 ## 1) 核心接口
 

@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ClassLoading_EndToEnd.md`（“LoadMethods：设置 entrypoint / copied methods”框；以及后续执行入口跨章）
+- 总入口：[../Flows/ClassLoading_EndToEnd](../Flows/ClassLoading_EndToEnd.md)（“LoadMethods：设置 entrypoint / copied methods”框；以及后续执行入口跨章）
 
 ## 它是什么
 
@@ -40,12 +40,12 @@
 
 ## 证据链
 
-- `FileNotes/runtime_include_method.h.md`
-- `FileNotes/runtime_class_linker.cpp.md`
-- `FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md`
+- [FileNotes/runtime_include_method.h](FileNotes/runtime_include_method.h.md)
+- [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)
+- [FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
 
 ## 下一步（新人推荐）
 
-- 想看“entrypoint 在运行期如何影响解释器↔compiled 派发（跨章）” → `../04_ExecutionEngine/README.md`
-- 想看“LinkMethods 如何写回 vtableIndex/派发结构” → `../Flows/Builders_and_LinkMethods.md`
+- 想看“entrypoint 在运行期如何影响解释器↔compiled 派发（跨章）” → [../04_ExecutionEngine/README](../04_ExecutionEngine/README.md)
+- 想看“LinkMethods 如何写回 vtableIndex/派发结构” → [../Flows/Builders_and_LinkMethods](../Flows/Builders_and_LinkMethods.md)
 

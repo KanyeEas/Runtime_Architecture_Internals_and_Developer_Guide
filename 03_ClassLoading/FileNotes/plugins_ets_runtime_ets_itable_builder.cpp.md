@@ -4,7 +4,7 @@
 > 文件类型：ETS 的 itable 构建与解析实现（Build / Resolve / UpdateClass）。  
 > 文件规模：约 205 行（实现相对集中）。
 
-> 术语速查：见 `FileNotes/_Glossary.md`（同目录）
+> 术语速查：见 [FileNotes/_Glossary](FileNotes/_Glossary.md)（同目录）
 
 ## 一图读懂：ETS ITableBuilder（Build → Resolve → UpdateClass）
 

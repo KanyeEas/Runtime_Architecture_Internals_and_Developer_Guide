@@ -6,8 +6,8 @@
 
 建议打开 3 个页签：
 
-- 术语速查：`../FileNotes/_Glossary.md`
-- 新人快速自检：`../Newbie_MinDebug_Playbook.md`
+- 术语速查：[FileNotes/_Glossary](../FileNotes/_Glossary.md)
+- 新人快速自检：[Newbie_MinDebug_Playbook](../Newbie_MinDebug_Playbook.md)
 - 本文（端到端主线图）
 
 阅读顺序：
@@ -18,11 +18,11 @@
 
 ## 1) 先记住三条现实规则（新人最常误判）
 
-- **“加载”≠“<clinit> 初始化执行”**：`LoadClass` 的主线会调用 `ext->InitializeClass(klass)` 做语言侧“元数据收尾”（例如 managed<->runtime 绑定等），但 `<clinit>`/语言语义初始化的执行细节仍属于 04 执行引擎（建议对照 `../04_ExecutionEngine/README.md`）。
+- **“加载”≠“<clinit> 初始化执行”**：`LoadClass` 的主线会调用 `ext->InitializeClass(klass)` 做语言侧“元数据收尾”（例如 managed<->runtime 绑定等），但 `<clinit>`/语言语义初始化的执行细节仍属于 04 执行引擎（建议对照 [04_ExecutionEngine/README](../../04_ExecutionEngine/README.md)）。
 - **Context 决定可见域**：同名 descriptor 在不同 `ClassLinkerContext` 里可以是不同的 `Class*`；ETS 额外引入 parent/shared-libs 链，关系不是简单树。
-- **“找不到类”并不总是 CNFE**：在 Extension 层经常把底层 CNFE 包装成 NCDFE（证据：`FileNotes/runtime_class_linker_extension.cpp.md` 的 `WrapClassNotFoundExceptionIfNeeded` 段）。
-- **接口派发的真实成本与坑点**：LinkMethods 阶段不仅“写回表”，还涉及 vtable 的 override/copy/default 冲突与 itable 的线性化+resolve（建议优先读：`Flows/Builders_and_LinkMethods.md` 与 `DataStructures/ITable_and_IMT.md`）。
-- **Class 是尾随变长布局**：`Class*` 后面跟着 vtable/imt/static 区（placement new 构造），调试时不要把它当普通成员数组（建议读：`DataStructures/Class.md` 的“变长对象尾随布局”段）。
+- **“找不到类”并不总是 CNFE**：在 Extension 层经常把底层 CNFE 包装成 NCDFE（证据：[FileNotes/runtime_class_linker_extension.cpp](../FileNotes/runtime_class_linker_extension.cpp.md) 的 `WrapClassNotFoundExceptionIfNeeded` 段）。
+- **接口派发的真实成本与坑点**：LinkMethods 阶段不仅“写回表”，还涉及 vtable 的 override/copy/default 冲突与 itable 的线性化+resolve（建议优先读：[Builders_and_LinkMethods（Flow）](Builders_and_LinkMethods.md) 与 [ITable_and_IMT（DataStructure）](../DataStructures/ITable_and_IMT.md)）。
+- **Class 是尾随变长布局**：`Class*` 后面跟着 vtable/imt/static 区（placement new 构造），调试时不要把它当普通成员数组（建议读：[Class（DataStructure）](../DataStructures/Class.md) 的“变长对象尾随布局”段）。
 
 ## 2) Mermaid：类加载端到端总图（主线）
 
@@ -65,35 +65,35 @@ flowchart TD
 
 ### 3.1 文件如何进入 ClassLinker（.abc/.an）
 
-- Flow：`FileManager_ABC_AN.md`
-- 逐行证据：`../FileNotes/runtime_file_manager.cpp.md`、`../FileNotes/runtime_include_file_manager.h.md`
+- Flow：[FileManager_ABC_AN](FileManager_ABC_AN.md)
+- 逐行证据：[runtime_file_manager.cpp（FileNotes）](../FileNotes/runtime_file_manager.cpp.md)、[runtime_include_file_manager.h（FileNotes）](../FileNotes/runtime_include_file_manager.h.md)
 - 相关提醒（跨章）：AOT class context/装载入口见 04 章 FileNotes：
-  - `../04_ExecutionEngine/FileNotes/compiler_aot_aot_manager.cpp.md`
-  - `../04_ExecutionEngine/FileNotes/compiler_aot_aot_file.cpp.md`
+  - [compiler_aot_aot_manager.cpp（FileNotes）](../../04_ExecutionEngine/FileNotes/compiler_aot_aot_manager.cpp.md)
+  - [compiler_aot_aot_file.cpp（FileNotes）](../../04_ExecutionEngine/FileNotes/compiler_aot_aot_file.cpp.md)
 
 ### 3.2 GetClass（boot vs app 的决策树）
 
-- Flow：`GetClass_and_LoadClass.md`
-- 卡片：`../DataStructures/ClassLinkerContext.md`
-- 逐行证据：`../FileNotes/runtime_class_linker.cpp.md`（GetClass/boot filter 段）、`../FileNotes/runtime_class_linker_extension.cpp.md`（AppContext LoadClass）
+- Flow：[GetClass_and_LoadClass](GetClass_and_LoadClass.md)
+- 卡片：[ClassLinkerContext（DataStructure）](../DataStructures/ClassLinkerContext.md)
+- 逐行证据：[runtime_class_linker.cpp（FileNotes）](../FileNotes/runtime_class_linker.cpp.md)（GetClass/boot filter 段）、[runtime_class_linker_extension.cpp（FileNotes）](../FileNotes/runtime_class_linker_extension.cpp.md)（AppContext LoadClass）
 
 ### 3.3 LoadClass（主管线：builders/layout/link）
 
-- Flow：`GetClass_and_LoadClass.md`（第 3 节）
-- Flow：`Builders_and_LinkMethods.md`、`LayoutFields_and_LinkFields.md`
-- 卡片：`../DataStructures/Class.md`、`../DataStructures/Method.md`、`../DataStructures/Field.md`
-- 逐行证据：`../FileNotes/runtime_class_linker.cpp.md`（SetupClassInfo/LoadMethods/LoadFields/Link*）
+- Flow：[GetClass_and_LoadClass](GetClass_and_LoadClass.md)（第 3 节）
+- Flow：[Builders_and_LinkMethods](Builders_and_LinkMethods.md)、[LayoutFields_and_LinkFields](LayoutFields_and_LinkFields.md)
+- 卡片：[Class（DataStructure）](../DataStructures/Class.md)、[Method（DataStructure）](../DataStructures/Method.md)、[Field（DataStructure）](../DataStructures/Field.md)
+- 逐行证据：[runtime_class_linker.cpp（FileNotes）](../FileNotes/runtime_class_linker.cpp.md)（SetupClassInfo/LoadMethods/LoadFields/Link*）
 
 ### 3.4 并发与递归：为什么可能“重复构建”，以及 CLASS_CIRCULARITY 怎么来的
 
-- Flow：`Concurrency_and_ClassLock.md`
-- 逐行证据：`../FileNotes/runtime_class_linker.cpp.md`（InsertClass 冲突回收 + ClassLoadingSet）
+- Flow：[Concurrency_and_ClassLock](Concurrency_and_ClassLock.md)
+- 逐行证据：[runtime_class_linker.cpp（FileNotes）](../FileNotes/runtime_class_linker.cpp.md)（InsertClass 冲突回收 + ClassLoadingSet）
 
 ### 3.5 ETS：context 的 native→managed 两段式加载
 
-- Flow：`ETS_Context_Native_vs_Managed_Load.md`
-- 卡片：`../DataStructures/ETS_Plugin_Summary.md`
-- 逐行证据：`../FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md`
+- Flow：[ETS_Context_Native_vs_Managed_Load](ETS_Context_Native_vs_Managed_Load.md)
+- 卡片：[ETS_Plugin_Summary（DataStructure）](../DataStructures/ETS_Plugin_Summary.md)
+- 逐行证据：[plugins_ets_runtime_ets_class_linker_context.cpp（FileNotes）](../FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
 
 
 

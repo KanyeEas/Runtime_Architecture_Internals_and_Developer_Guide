@@ -4,7 +4,7 @@
 > 文件规模：377 行（实现文件，逐段逐行记录）  
 > 目标：补齐 `ClassLinkerExtension` 抽象在 **core runtime 侧的“默认实现行为”**：Boot/App context 的 LoadClass、roots 初始化 helper、context 注册、created/new/obsolete classes 容器语义，以及一个很关键的“异常包装”逻辑。
 
-> 术语速查：见 `FileNotes/_Glossary.md`（同目录）
+> 术语速查：见 [FileNotes/_Glossary](FileNotes/_Glossary.md)（同目录）
 
 ## 一图读懂：默认 Boot/AppContext 的 LoadClass 与 “created→prepared→newClasses”
 
@@ -46,7 +46,7 @@ flowchart TD
 
 ### 2.2 `BootContext::EnumeratePandaFiles`（L43–L47）
 - 直接委托 `ClassLinker::EnumerateBootPandaFiles(cb)`。
-  - 与 `ClassLinker` 内部的 `bootPandaFiles_` 对齐（见 `FileNotes/runtime_class_linker.cpp.md` 的 AddPandaFile 段）。
+  - 与 `ClassLinker` 内部的 `bootPandaFiles_` 对齐（见 [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md) 的 AddPandaFile 段）。
 
 ## 3. AppContext：默认应用域的 LoadClass 策略（L49–L78）
 
@@ -157,9 +157,9 @@ flowchart TD
 
 ## 证据链与关联阅读
 
-- 抽象与数据成员：`FileNotes/runtime_include_class_linker_extension.h.md`
-- `ClassLinker` 主管线/FreeClassData：`FileNotes/runtime_class_linker.cpp.md`
+- 抽象与数据成员：[FileNotes/runtime_include_class_linker_extension.h](FileNotes/runtime_include_class_linker_extension.h.md)
+- `ClassLinker` 主管线/FreeClassData：[FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)
 - core 语言实现（roots 与 CreateClass）：`runtime/core/core_class_linker_extension.cpp`（将补齐逐行）
-- ETS 语言实现：`FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md`
+- ETS 语言实现：[FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
 
 

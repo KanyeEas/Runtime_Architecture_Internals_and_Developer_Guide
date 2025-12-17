@@ -11,4 +11,4 @@
     - `runtime/class_linker_extension.cpp`：Boot/AppContext 的默认 `LoadClass` 策略、`created/new/obsolete classes` 容器语义、以及 **CNFE→NCDFE** 的异常包装（按 `pf,id` 取类失败时）。
     - `runtime/core/core_class_linker_extension.cpp`：core（PANDA_ASSEMBLY）语言的 roots 自举实现（primitive/array/synthetic），以及 **String 子类在 roots 阶段写入 GC ref-fields 元数据** 与 `CreateClass` 的 NonMovable 分配+managed/runtime 绑定。
     - `plugins/ets/runtime/ets_class_linker.h` / `plugins/ets/runtime/ets_class_linker.cpp`：ETS 对外 façade（把 `Class*` 语义包装成 `EtsClass*`），并包含 async 注解 → impl method 的解析链路与异常语义。
-  - **处理**：Stage2 已将上述文件纳入 `03_ClassLoading/Manifests/files.yaml` 并补齐逐行 `FileNotes/`；同时已回写修正 Stage1 的 `03_Class_Loading_and_Linking.md`，把这些文件作为“语言扩展实现/入口”的必读落点补充进去。
+  - **处理**：Stage2 已将上述文件纳入 `03_ClassLoading/Manifests/files.yaml` 并补齐逐行 `FileNotes/`；同时已回写修正 Stage1 的 [03_Class_Loading_and_Linking](../03_Class_Loading_and_Linking.md)，把这些文件作为“语言扩展实现/入口”的必读落点补充进去。

@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ClassLoading_EndToEnd.md`（“LinkMethods：vtable/itable/imtable UpdateClass”框）
+- 总入口：[../Flows/ClassLoading_EndToEnd](../Flows/ClassLoading_EndToEnd.md)（“LinkMethods：vtable/itable/imtable UpdateClass”框）
 
 ## 1) ITable：接口表（Interface Table）
 
@@ -91,18 +91,18 @@ IMT 是 Class 内部的一段 `Method*` 数组，用于把“接口方法 id/has
 
 ## 下一步（新人推荐）
 
-- 想看“Build/Resolve/UpdateClass 的真实顺序” → `../Flows/Builders_and_LinkMethods.md`
-- 想排查 MULTIPLE_IMPLEMENT / IMT 冲突 / IMT 禁用 → `../Newbie_MinDebug_Playbook.md`（实验 3）
+- 想看“Build/Resolve/UpdateClass 的真实顺序” → [../Flows/Builders_and_LinkMethods](../Flows/Builders_and_LinkMethods.md)
+- 想排查 MULTIPLE_IMPLEMENT / IMT 冲突 / IMT 禁用 → [../Newbie_MinDebug_Playbook](../Newbie_MinDebug_Playbook.md)（实验 3）
 - **回退 ITable**：按接口 entry + vtableIndex/resolve 结果取实现
 - **最终 vtable**：对类虚方法派发则直接走 vtable
 
 ## 证据链
 
-- `FileNotes/runtime_include_itable.h.md`
-- `FileNotes/runtime_include_itable_builder.h.md`
-- `FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md`
-- `FileNotes/runtime_imtable_builder.cpp.md`
-- `FileNotes/runtime_include_class-inl.h.md`（ResolveVirtualMethod 的 IMT/ITable/VTable 分支）
+- [FileNotes/runtime_include_itable.h](FileNotes/runtime_include_itable.h.md)
+- [FileNotes/runtime_include_itable_builder.h](FileNotes/runtime_include_itable_builder.h.md)
+- [FileNotes/plugins_ets_runtime_ets_itable_builder.cpp](FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md)
+- [FileNotes/runtime_imtable_builder.cpp](FileNotes/runtime_imtable_builder.cpp.md)
+- [FileNotes/runtime_include_class-inl.h](FileNotes/runtime_include_class-inl.h.md)（ResolveVirtualMethod 的 IMT/ITable/VTable 分支）
  - 关键源码锚点：
    - `plugins/ets/runtime/ets_itable_builder.cpp`（LinearizeITable/CloneBaseITable/Build/Resolve/FindMethodInVTable）
 

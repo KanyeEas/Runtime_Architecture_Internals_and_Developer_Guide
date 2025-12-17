@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ClassLoading_EndToEnd.md`（“主管线：LoadClass”框；以及后续初始化交界）
+- 总入口：[../Flows/ClassLoading_EndToEnd](../Flows/ClassLoading_EndToEnd.md)（“主管线：LoadClass”框；以及后续初始化交界）
 
 ## 它是什么
 
@@ -119,14 +119,14 @@ flowchart LR
     - `LinkMethods`：vtable/itable/imtable 的 UpdateClass 写回
     - `LinkFields/LayoutFields`：写 `Field::offset_`，并写回 `objectSize_` 与 ref 字段统计
 - **读取（派发/反射/执行）**：
-  - `Class::ResolveVirtualMethod` 走 IMT/ITable/VTable（见 `FileNotes/runtime_include_class-inl.h.md`）
+  - `Class::ResolveVirtualMethod` 走 IMT/ITable/VTable（见 [FileNotes/runtime_include_class-inl.h](FileNotes/runtime_include_class-inl.h.md)）
   - field/method 查找（Find* / Get*ByName）在 `class-inl.h`（同上）
 
 ## 证据链
 
-- `FileNotes/runtime_include_class.h.md`
-- `FileNotes/runtime_include_class-inl.h.md`
-- `FileNotes/runtime_class_linker.cpp.md`
+- [FileNotes/runtime_include_class.h](FileNotes/runtime_include_class.h.md)
+- [FileNotes/runtime_include_class-inl.h](FileNotes/runtime_include_class-inl.h.md)
+- [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)
  - 关键源码锚点（placement new + 变长布局）：
    - `runtime/include/coretypes/class.h`（`InitClass` 的 placement new；`GetSize(klassSize)`；“klass field must be last” static_assert）
    - `runtime/include/class-inl.h`（`ComputeClassSize/GetVTableOffset/GetVTable/GetIMTOffset/GetClassSpan`）
@@ -135,8 +135,8 @@ flowchart LR
 
 ## 下一步（新人推荐）
 
-- 想看“GetClass/LoadClass 主调用链” → `../Flows/GetClass_and_LoadClass.md`
-- 想看“vtable/itable/IMT 构建与冲突” → `ITable_and_IMT.md` 与 `../Flows/Builders_and_LinkMethods.md`
-- 想看“加载↔初始化交界（<clinit> 真正执行）” → `../04_ExecutionEngine/README.md`
+- 想看“GetClass/LoadClass 主调用链” → [../Flows/GetClass_and_LoadClass](../Flows/GetClass_and_LoadClass.md)
+- 想看“vtable/itable/IMT 构建与冲突” → [ITable_and_IMT](ITable_and_IMT.md) 与 [../Flows/Builders_and_LinkMethods](../Flows/Builders_and_LinkMethods.md)
+- 想看“加载↔初始化交界（<clinit> 真正执行）” → [../04_ExecutionEngine/README](../04_ExecutionEngine/README.md)
 
 

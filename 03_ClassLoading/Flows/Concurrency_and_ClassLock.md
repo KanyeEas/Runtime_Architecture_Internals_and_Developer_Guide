@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ClassLoading_EndToEnd.md`（“InsertClass 并发去重”框 + “Context 并发协调”规则）
+- 总入口：[ClassLoading_EndToEnd（Flow）](ClassLoading_EndToEnd.md)（“InsertClass 并发去重”框 + “Context 并发协调”规则）
 
 ## 1) 先给结论（新人必须先记住的现实）
 
@@ -96,9 +96,9 @@ flowchart TD
 
 | 症状 | 第一落点 | 第二落点 |
 |---|---|---|
-| 同一类日志里出现“重复创建/重复 FreeClass/prepare 顺序偶现” | `runtime/class_linker.cpp::LoadClass(... addToRuntime)`（InsertClass 冲突回收） | `FileNotes/runtime_class_linker.cpp.md`（InsertClass 段） |
-| 报 `CLASS_CIRCULARITY`（自己的父类/父接口） | `runtime/class_linker.cpp::TryInsertClassLoading` | `FileNotes/runtime_class_linker.cpp.md`（ClassLoadingSet 段） |
-| 你怀疑某处在等待 class init（IS_WAITING/condvar） | `runtime/class_lock.cpp`（ClassLock Wait/NotifyAll） | `FileNotes/runtime_class_lock.cpp.md`（若后续接入到初始化/反射路径） |
+| 同一类日志里出现“重复创建/重复 FreeClass/prepare 顺序偶现” | `runtime/class_linker.cpp::LoadClass(... addToRuntime)`（InsertClass 冲突回收） | [runtime_class_linker.cpp（FileNotes）](../FileNotes/runtime_class_linker.cpp.md)（InsertClass 段） |
+| 报 `CLASS_CIRCULARITY`（自己的父类/父接口） | `runtime/class_linker.cpp::TryInsertClassLoading` | [runtime_class_linker.cpp（FileNotes）](../FileNotes/runtime_class_linker.cpp.md)（ClassLoadingSet 段） |
+| 你怀疑某处在等待 class init（IS_WAITING/condvar） | `runtime/class_lock.cpp`（ClassLock Wait/NotifyAll） | [runtime_class_lock.cpp（FileNotes）](../FileNotes/runtime_class_lock.cpp.md)（若后续接入到初始化/反射路径） |
 
 ## 证据链
 
@@ -108,7 +108,7 @@ flowchart TD
 
 ## 下一步（新人推荐）
 
-- 想把“并发去重”放回 GetClass/LoadClass 主线对齐 → `GetClass_and_LoadClass.md`
-- 想看 copied methods/default method 的真实落地效果 → `Builders_and_LinkMethods.md`
+- 想把“并发去重”放回 GetClass/LoadClass 主线对齐 → [GetClass_and_LoadClass（Flow）](GetClass_and_LoadClass.md)
+- 想看 copied methods/default method 的真实落地效果 → [Builders_and_LinkMethods（Flow）](Builders_and_LinkMethods.md)
 
 

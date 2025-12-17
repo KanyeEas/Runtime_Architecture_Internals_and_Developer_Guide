@@ -34,7 +34,7 @@
 
 ## 证据链
 
-- 实现：`FileNotes/plugins_ets_runtime_ets_class_linker.cpp.md`
-- ETS extension：`FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md`
+- 实现：[FileNotes/plugins_ets_runtime_ets_class_linker.cpp](FileNotes/plugins_ets_runtime_ets_class_linker.cpp.md)
+- ETS extension：[FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
 
 

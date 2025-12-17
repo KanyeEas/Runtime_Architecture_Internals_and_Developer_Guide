@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`../Flows/ClassLoading_EndToEnd.md`（“LoadFields/LinkFields：LayoutFields 写回 offset”框）
+- 总入口：[../Flows/ClassLoading_EndToEnd](../Flows/ClassLoading_EndToEnd.md)（“LoadFields/LinkFields：LayoutFields 写回 offset”框）
 
 ## 它是什么
 
@@ -20,15 +20,15 @@
 - **写入 type/flags**：`runtime/class_linker.cpp::LoadFields`（InitializeMemory(field, ..., TypeFromEncoding)）
 - **写入 offset**：`runtime/class_linker.cpp::LayoutFields`（唯一写入点）
 - **读取 offset 做访问**：
-  - 实际读写由 `Class::GetFieldObject/SetFieldObject` 通过 `ObjectAccessor` 完成（见 `FileNotes/runtime_include_class-inl.h.md`）
+  - 实际读写由 `Class::GetFieldObject/SetFieldObject` 通过 `ObjectAccessor` 完成（见 [FileNotes/runtime_include_class-inl.h](FileNotes/runtime_include_class-inl.h.md)）
 
 ## 证据链
 
-- `FileNotes/runtime_include_field.h.md`
-- `FileNotes/runtime_class_linker.cpp.md`（LayoutFields 段）
+- [FileNotes/runtime_include_field.h](FileNotes/runtime_include_field.h.md)
+- [FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)（LayoutFields 段）
 
 ## 下一步（新人推荐）
 
-- 想看“字段布局算法与对齐/基类 padding 回填” → `../Flows/LayoutFields_and_LinkFields.md`
-- 想看“Class 的 refFields*/objectSize 等元数据如何被写回” → `Class.md`
+- 想看“字段布局算法与对齐/基类 padding 回填” → [../Flows/LayoutFields_and_LinkFields](../Flows/LayoutFields_and_LinkFields.md)
+- 想看“Class 的 refFields*/objectSize 等元数据如何被写回” → [Class](Class.md)
 

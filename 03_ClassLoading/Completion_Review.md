@@ -1,23 +1,23 @@
 # 03_ClassLoading 章节完工审查（VM 架构师验收）
 
 > 审查目标：把 03 章交付为“**新人可直接排障** + **架构断言可追溯到源码**”的稳定文档集。  
-> 审查方法（复用 04 章经验）：见 `../00_Methodology_Wiki_Review_Checklist.md`（单一脊柱图入口 → Flow 拆链路 → DataStructures 抽不变量 → FileNotes 给证据链 → 最小调试手册给可复现实验 → 逐断言回源码核验 → 出具完工审查报告）。
+> 审查方法（复用 04 章经验）：见 [../00_Methodology_Wiki_Review_Checklist](../00_Methodology_Wiki_Review_Checklist.md)（单一脊柱图入口 → Flow 拆链路 → DataStructures 抽不变量 → FileNotes 给证据链 → 最小调试手册给可复现实验 → 逐断言回源码核验 → 出具完工审查报告）。
 
 ## 0) 审查范围
 
-- Stage2 入口：`README.md`、`Index.md`
+- Stage2 入口：[README](README.md)、[Index](Index.md)
 - Flows：`Flows/*`
 - DataStructures：`DataStructures/*`
-- 新人最小排障：`Newbie_MinDebug_Playbook.md`
+- 新人最小排障：[Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md)
 - 逐行证据链：`FileNotes/*`（以 `Manifests/files.yaml` 为准）
-- Stage1 校正：`Errata_to_Stage1.md`
+- Stage1 校正：[Errata_to_Stage1](Errata_to_Stage1.md)
 
 ## 1) 结论概览
 
 - **正确性（P0 断言）**：03 章的核心断言（GetClass 决策树、LoadClass 主管线、builders/layout/link 顺序、Context 并发去重、ETS 两段式加载、CNFE→NCDFE 包装）都能回到源码核验，结论总体 **可靠**。
 - **可用性（新人路径）**：README/Index 已具备“场景驱动”的学习与排障路线；本轮补齐了：
-  - `Flows/ClassLoading_EndToEnd.md`：**单一端到端脊柱图入口**
-  - `Newbie_MinDebug_Playbook.md`：**可复现的最小调试手册**
+  - [Flows/ClassLoading_EndToEnd](Flows/ClassLoading_EndToEnd.md)：**单一端到端脊柱图入口**
+  - [Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md)：**可复现的最小调试手册**
 - **仍可优化**：
   - 把少量“描述性结论”进一步改成“条件矩阵”（触发条件→第一落点→第二落点→必看日志）
   - 在“加载↔初始化”的跨章交界处加更显式互链（03→04）
@@ -78,7 +78,7 @@
 
 ## 3) 文档交付形态验收（摘要）
 
-- `README.md`：场景决策树与主流程图完整；建议把“端到端脊柱图/最小调试手册/完工审查”作为显性入口挂在导航区。
+- [README](README.md)：场景决策树与主流程图完整；建议把“端到端脊柱图/最小调试手册/完工审查”作为显性入口挂在导航区。
 - `Flows/*`：覆盖 GetClass/LoadClass、builders/link、layout/link、ETS 两段式、FileManager 输入链；**已统一补齐**“0) 在端到端主线图中的位置/下一步”导航（后续新增 flow 请保持该格式）。
 - `DataStructures/*`：卡片结构清晰；**已补齐**“0) 位置/下一步”并在关键卡片增加 03→04 交界互链（仍建议后续把 InitializeClass/<clinit> 的跨章衔接做成更显性的单独小节）。
 

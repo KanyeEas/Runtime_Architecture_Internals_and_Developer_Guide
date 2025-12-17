@@ -13,7 +13,7 @@
 
 ### 0) 先看“端到端脊柱图”（新人最推荐的第一入口）
 
-- `Flows/ClassLoading_EndToEnd.md`：一张图把“文件装载→GetClass→LoadClass→builders/layout/link→并发去重→初始化交界”串起来；每个框都能一键下潜到对应 Flow/卡片/逐行证据。
+- [Flows/ClassLoading_EndToEnd](Flows/ClassLoading_EndToEnd.md)：一张图把“文件装载→GetClass→LoadClass→builders/layout/link→并发去重→初始化交界”串起来；每个框都能一键下潜到对应 Flow/卡片/逐行证据。
 
 ### 1) 先记住一句话（本章主线）
 
@@ -106,23 +106,23 @@ flowchart TD
 
 ### 3) 术语速查（建议打开在侧边）
 
-- `FileNotes/_Glossary.md`：本章术语解释（descriptor、PandaFile、EntityId、Context、roots、ITable/IMT、CNFE/NCDFE…）
+- [FileNotes/_Glossary](FileNotes/_Glossary.md)：本章术语解释（descriptor、PandaFile、EntityId、Context、roots、ITable/IMT、CNFE/NCDFE…）
 
 ### 4) 新人最小调试手册（独立文档）
 
-- `Newbie_MinDebug_Playbook.md`：新人 10 分钟定位 **找不到类 / CNFE vs NCDFE / IMT 冲突与禁用 / ETS 两段式加载 gate / .abc/.an 装载** 的最短路径（含可复现实验）
-- **更强交付标准入口**：Playbook 内含“日志关键词 → 第一落点函数 → 必查分支条件 → 第二落点”的症状矩阵（见 `Newbie_MinDebug_Playbook.md` 的 2.1 节）。
+- [Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md)：新人 10 分钟定位 **找不到类 / CNFE vs NCDFE / IMT 冲突与禁用 / ETS 两段式加载 gate / .abc/.an 装载** 的最短路径（含可复现实验）
+- **更强交付标准入口**：Playbook 内含“日志关键词 → 第一落点函数 → 必查分支条件 → 第二落点”的症状矩阵（见 [Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md) 的 2.1 节）。
 
 ## 本章产物导航（建议先看这些“总览型”文档）
 
-- **学习路线图**：`Index.md`（30 分钟/2 小时/1 天三档）
+- **学习路线图**：[Index](Index.md)（30 分钟/2 小时/1 天三档）
 - **本章沉淀**：
-  - `DataStructures/Index.md`：关键数据结构卡片（Class/Method/Field/ITable/IMT/Contexts/ETS）
-  - `Flows/Index.md`：按调用链组织的流程讲解（每条 flow 都可直接复用到排障/分享）
-  - `Diagrams/Index.md`：可复用 Mermaid 图（README 里嵌了主图，这里是单文件版本）
+  - [DataStructures/Index](DataStructures/Index.md)：关键数据结构卡片（Class/Method/Field/ITable/IMT/Contexts/ETS）
+  - [Flows/Index](Flows/Index.md)：按调用链组织的流程讲解（每条 flow 都可直接复用到排障/分享）
+  - [Diagrams/Index](Diagrams/Index.md)：可复用 Mermaid 图（README 里嵌了主图，这里是单文件版本）
 - **逐行证据链**：`FileNotes/`（当你需要“为什么一定是这样”时再下潜）
-- **阶段一校正**：`Errata_to_Stage1.md`
-- **章节完工审查（交付验收）**：`Completion_Review.md`（逐断言核验 + 源码证据点 + 可执行优化项）
+- **阶段一校正**：[Errata_to_Stage1](Errata_to_Stage1.md)
+- **章节完工审查（交付验收）**：[Completion_Review](Completion_Review.md)（逐断言核验 + 源码证据点 + 可执行优化项）
 
 ## 章节总览：组件边界与数据流
 
@@ -202,7 +202,7 @@ flowchart TD
 
 > 这是 03 章最容易被忽略但最影响排障的点：同一个 descriptor 在并发场景下**可能被多个线程完整构建**，最后才在 `InsertClass` 处决出胜负；同线程递归自指依赖用 `ClassLoadingSet` 检测并报 `CLASS_CIRCULARITY`。
 
-- Flow（含两线程时序图 + 递归加载判定）：`Flows/Concurrency_and_ClassLock.md`
+- Flow（含两线程时序图 + 递归加载判定）：[Flows/Concurrency_and_ClassLock](Flows/Concurrency_and_ClassLock.md)
 
 ### 3) ETS `EtsClassLinkerContext::LoadClass`（native 优先，必要时 managed）
 
@@ -261,27 +261,27 @@ flowchart TD
   D --> E["抛 NoClassDefFoundError(NCDFE)\n(更偏“链接失败/定义不可用”)"]
 ```
 
-> 这个行为在 Stage2 已逐行闭环：见 `FileNotes/runtime_class_linker_extension.cpp.md`（WrapClassNotFoundExceptionIfNeeded）。
+> 这个行为在 Stage2 已逐行闭环：见 [FileNotes/runtime_class_linker_extension.cpp](FileNotes/runtime_class_linker_extension.cpp.md)（WrapClassNotFoundExceptionIfNeeded）。
 
 ## DataStructures / Flows / Diagrams（本章沉淀产物）
 
 - **DataStructures**：关键结构卡片（字段含义 + 关键不变量 + 与 FileNotes 的对齐）
-  - 见 `DataStructures/Index.md`
+  - 见 [DataStructures/Index](DataStructures/Index.md)
 - **Flows**：按“调用链”组织的流程讲解（每条流程都回链到实现）
-  - 见 `Flows/Index.md`
+  - 见 [Flows/Index](Flows/Index.md)
 - **Diagrams**：可复用 Mermaid 图（README 中也嵌入了核心图）
-  - 见 `Diagrams/Index.md`
+  - 见 [Diagrams/Index](Diagrams/Index.md)
 
 ## 证据链（从总述跳到逐行）
 
 本章所有结论都应能回溯到逐行笔记：
-- **ClassLinker 主管线**：`FileNotes/runtime_class_linker.cpp.md`
-- **ClassLinkerExtension 默认行为**（Boot/AppContext LoadClass / new|created|obsolete classes）：`FileNotes/runtime_class_linker_extension.cpp.md`
-- **Core roots 自举（PANDA_ASSEMBLY）**：`FileNotes/runtime_core_core_class_linker_extension.cpp.md`
-- **字段布局与 offset 写入**：同上（LayoutFields 段）+ `FileNotes/runtime_include_field.h.md`
-- **Method entrypoint/编译状态位段**：`FileNotes/runtime_include_method.h.md`
-- **IMT 策略**：`FileNotes/runtime_imtable_builder.cpp.md`
-- **ETS itable resolve**：`FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md`
-- **ETS Context 链式加载**：`FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md`
-- **ETS Extension roots/entrypoint**：`FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md`
-- **ETS façade（对外 API + async 注解解析）**：`FileNotes/plugins_ets_runtime_ets_class_linker.cpp.md`
+- **ClassLinker 主管线**：[FileNotes/runtime_class_linker.cpp](FileNotes/runtime_class_linker.cpp.md)
+- **ClassLinkerExtension 默认行为**（Boot/AppContext LoadClass / new|created|obsolete classes）：[FileNotes/runtime_class_linker_extension.cpp](FileNotes/runtime_class_linker_extension.cpp.md)
+- **Core roots 自举（PANDA_ASSEMBLY）**：[FileNotes/runtime_core_core_class_linker_extension.cpp](FileNotes/runtime_core_core_class_linker_extension.cpp.md)
+- **字段布局与 offset 写入**：同上（LayoutFields 段）+ [FileNotes/runtime_include_field.h](FileNotes/runtime_include_field.h.md)
+- **Method entrypoint/编译状态位段**：[FileNotes/runtime_include_method.h](FileNotes/runtime_include_method.h.md)
+- **IMT 策略**：[FileNotes/runtime_imtable_builder.cpp](FileNotes/runtime_imtable_builder.cpp.md)
+- **ETS itable resolve**：[FileNotes/plugins_ets_runtime_ets_itable_builder.cpp](FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md)
+- **ETS Context 链式加载**：[FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)
+- **ETS Extension roots/entrypoint**：[FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp](FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)
+- **ETS façade（对外 API + async 注解解析）**：[FileNotes/plugins_ets_runtime_ets_class_linker.cpp](FileNotes/plugins_ets_runtime_ets_class_linker.cpp.md)

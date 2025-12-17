@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ClassLoading_EndToEnd.md`（“LinkMethods：vtable/itable/imtable UpdateClass”框）
+- 总入口：[ClassLoading_EndToEnd（Flow）](ClassLoading_EndToEnd.md)（“LinkMethods：vtable/itable/imtable UpdateClass”框）
 
 ## 1) 发生在什么时候
 
@@ -157,10 +157,10 @@ flowchart TD
 
 ## 4) 证据链
 
-- `FileNotes/runtime_class_linker.cpp.md`（SetupClassInfo/LinkMethods/LoadMethods/copied methods）
+- [runtime_class_linker.cpp（FileNotes）](../FileNotes/runtime_class_linker.cpp.md)（SetupClassInfo/LinkMethods/LoadMethods/copied methods）
 - `FileNotes/runtime_include_vtable_builder_*`（vtable builder 契约与策略）
-- `FileNotes/runtime_include_itable_builder.h.md` + `FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md`
-- `FileNotes/runtime_imtable_builder.cpp.md`
+- [runtime_include_itable_builder.h（FileNotes）](../FileNotes/runtime_include_itable_builder.h.md) + [plugins_ets_runtime_ets_itable_builder.cpp（FileNotes）](../FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md)
+- [runtime_imtable_builder.cpp（FileNotes）](../FileNotes/runtime_imtable_builder.cpp.md)
  - 关键源码锚点：
    - `runtime/include/vtable_builder_base-inl.h`（Build/AddBaseMethods/AddClassMethods/AddDefaultInterfaceMethods/UpdateClass）
    - `runtime/include/vtable_builder_standard-inl.h`（ProcessClassMethod/ProcessDefaultMethod/Status 判定树）
@@ -169,8 +169,8 @@ flowchart TD
 
 ## 下一步（新人推荐）
 
-- 想先把 GetClass/LoadClass 主线对齐 → `GetClass_and_LoadClass.md`
-- 想看“接口派发结构与回退语义” → `../DataStructures/ITable_and_IMT.md`
-- 想看“字段布局/offset 写回” → `LayoutFields_and_LinkFields.md`
+- 想先把 GetClass/LoadClass 主线对齐 → [GetClass_and_LoadClass（Flow）](GetClass_and_LoadClass.md)
+- 想看“接口派发结构与回退语义” → [ITable_and_IMT（DataStructure）](../DataStructures/ITable_and_IMT.md)
+- 想看“字段布局/offset 写回” → [LayoutFields_and_LinkFields（Flow）](LayoutFields_and_LinkFields.md)
 
 

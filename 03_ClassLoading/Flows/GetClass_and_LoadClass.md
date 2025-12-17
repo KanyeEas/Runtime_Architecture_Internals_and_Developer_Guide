@@ -2,7 +2,7 @@
 
 ## 0) 在端到端主线图中的位置
 
-- 总入口：`ClassLoading_EndToEnd.md`（“入口：按 descriptor 找 Class”与“主管线：LoadClass”框）
+- 总入口：[ClassLoading_EndToEnd（Flow）](ClassLoading_EndToEnd.md)（“入口：按 descriptor 找 Class”与“主管线：LoadClass”框）
 
 ## 1) 背景：GetClass 是“入口”，LoadClass 是“主管线”
 
@@ -57,7 +57,7 @@ flowchart TD
   - 赢者：插入成功（返回 nullptr）
   - 输者：得到 `otherKlass`，调用方 `FreeClass(klass)` 并返回已有对象
 
-> 详细时序图见：`Concurrency_and_ClassLock.md`
+> 详细时序图见：[Concurrency_and_ClassLock（Flow）](Concurrency_and_ClassLock.md)
 
 ### 3.1.2 递归：CLASS_CIRCULARITY 不是锁检测，而是 thread_local 的 ClassLoadingSet
 
@@ -79,10 +79,10 @@ flowchart TD
 
 ## 4) 证据链（逐行可审计）
 
-- `FileNotes/runtime_class_linker.cpp.md`（GetClass/LoadClass/SetupClassInfo/LoadMethods/LoadFields/Link*）
-- `FileNotes/runtime_include_class_linker.h.md`（管线分解）
-- `FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md`（非 boot 的 ETS context->LoadClass）
-- `FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md`（ext->CreateClass / native entrypoint）
+- [runtime_class_linker.cpp（FileNotes）](../FileNotes/runtime_class_linker.cpp.md)（GetClass/LoadClass/SetupClassInfo/LoadMethods/LoadFields/Link*）
+- [runtime_include_class_linker.h（FileNotes）](../FileNotes/runtime_include_class_linker.h.md)（管线分解）
+- [plugins_ets_runtime_ets_class_linker_context.cpp（FileNotes）](../FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md)（非 boot 的 ETS context->LoadClass）
+- [plugins_ets_runtime_ets_class_linker_extension.cpp（FileNotes）](../FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp.md)（ext->CreateClass / native entrypoint）
  - 关键源码锚点：
    - `runtime/class_linker.cpp::AddPandaFile/AddBootClassFilter/LookupInFilter`
    - `runtime/class_linker.cpp::ClassLoadingSet/TryInsertClassLoading`（CLASS_CIRCULARITY）
@@ -90,9 +90,9 @@ flowchart TD
 
 ## 下一步（新人推荐）
 
-- 想把“文件装载→boot/app 可见域”串起来 → `FileManager_ABC_AN.md`
-- 想看“vtable/itable/IMT 构建与冲突” → `Builders_and_LinkMethods.md`
-- 想看“字段布局/offset 写回” → `LayoutFields_and_LinkFields.md`
-- 想看“并发与递归加载（重复构建/去重/CLASS_CIRCULARITY）” → `Concurrency_and_ClassLock.md`
+- 想把“文件装载→boot/app 可见域”串起来 → [FileManager_ABC_AN（Flow）](FileManager_ABC_AN.md)
+- 想看“vtable/itable/IMT 构建与冲突” → [Builders_and_LinkMethods（Flow）](Builders_and_LinkMethods.md)
+- 想看“字段布局/offset 写回” → [LayoutFields_and_LinkFields（Flow）](LayoutFields_and_LinkFields.md)
+- 想看“并发与递归加载（重复构建/去重/CLASS_CIRCULARITY）” → [Concurrency_and_ClassLock（Flow）](Concurrency_and_ClassLock.md)
 
 
