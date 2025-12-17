@@ -37,7 +37,7 @@
 
 - **仍可优化（不影响正确性，但能提升“新人可用性/排障效率”）**：
   - 把文档中少量“可能触发/可能是”的表述进一步收敛为 **条件矩阵**（触发条件→第一落点→第二落点→必看日志）。
-  - 把 `Newbie_MinDebug_Playbook.md` 的实验步骤与各 Flow/Primer 的锚点做更细的互链（“排障→学习”闭环）。
+  - 把 [Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md) 的实验步骤与各 Flow/Primer 的锚点做更细的互链（“排障→学习”闭环）。
 
 ## 2) P0 断言核验清单（带源码证据点）
 
@@ -108,7 +108,7 @@
 
 - **正确性**：学习路径与“现实差异”口径与源码一致。
 - **已优化**：IRTOC 的 primer/reference 已在入口层显性挂出，避免新人只读 C++ handler。
-- **建议优化**：在 `Index.md` 的 2h/1d 路线中增加“最小跑通实验”（直接复用 playbook 的 3 个实验链接）。
+- **建议优化**：在 [Index](Index.md) 的 2h/1d 路线中增加“最小跑通实验”（直接复用 playbook 的 3 个实验链接）。
 
 ### 3.3 Flows（调用链）
 
@@ -123,7 +123,7 @@
 ### 3.4 DataStructures（结构卡片）
 
 - **总体评价**：卡片的“不变量/谁写谁读/常见坑”结构正确，能支撑 code review 与新人排障。
-- **建议优化**：对 `Entrypoint_and_MethodDispatch.md` 建议补一个“entrypoint 状态机（interp/compiled/osr）”图（如果该卡片里还未覆盖）。
+- **建议优化**：对 [Entrypoint_and_MethodDispatch](DataStructures/Entrypoint_and_MethodDispatch.md) 建议补一个“entrypoint 状态机（interp/compiled/osr）”图（如果该卡片里还未覆盖）。
 
 ### 3.5 新人最小排障：[Newbie_MinDebug_Playbook](Newbie_MinDebug_Playbook.md)
 

@@ -98,7 +98,7 @@
 
 ## 6) 与本章其他证据的连接点
 
-- 概念/逻辑流：`Flows/Bridge_I2C_C2I.md`
+- 概念/逻辑流：[Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
 - FrameKind/边界语义：[Bridge_ABI_and_FrameKind（DataStructure）](../DataStructures/Bridge_ABI_and_FrameKind.md)
 - C++ 骨架（acc 写回、thread 状态位切换点）：`runtime/bridge/bridge.cpp`（本章已有 FileNotes/引用）
 - aarch64 对照实现：`runtime/bridge/arch/aarch64/compiled_code_to_interpreter_bridge_aarch64.S`

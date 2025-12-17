@@ -56,7 +56,7 @@
   - 把所有 vregs 初始化为该 tagged 值
   - `frame->SetDynamic()`
 
-> 这是动态语言“vregs 自带 tag/初始值”语义的一个直接证据点（对应 04 的 `DataStructures/Frame_VReg_Acc.md`）。
+> 这是动态语言“vregs 自带 tag/初始值”语义的一个直接证据点（对应 04 的 [Frame_VReg_Acc（DataStructure）](../DataStructures/Frame_VReg_Acc.md)）。
 
 ### 2.4 便捷入口：CreateFrameForMethod*（L740–L764）
 

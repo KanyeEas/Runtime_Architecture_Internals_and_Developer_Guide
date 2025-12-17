@@ -66,7 +66,7 @@
 
 ## 6) 与本章其他证据的连接点
 
-- 概念/逻辑流：`Flows/Bridge_I2C_C2I.md`
+- 概念/逻辑流：[Bridge_I2C_C2I（Flow）](../Flows/Bridge_I2C_C2I.md)
 - FrameKind/边界语义：[Bridge_ABI_and_FrameKind（DataStructure）](../DataStructures/Bridge_ABI_and_FrameKind.md)
 - amd64 对照实现：`runtime/bridge/arch/amd64/compiled_code_to_interpreter_bridge_amd64.S`
 
