@@ -1,0 +1,154 @@
+schema: 1
+chapter: "03_ClassLoading"
+policy:
+  discovery: dynamic
+  cross_chapter: no_duplicate_line_by_line
+seeds:
+  dirs:
+    - "runtime/include"
+    - "runtime"
+    - "plugins/ets/runtime"
+  files:
+    - "runtime/include/class.h"
+    - "runtime/include/class-inl.h"
+    - "runtime/include/vtable_builder_base.h"
+    - "runtime/include/vtable_builder_variance-inl.h"
+files:
+  - path: "runtime/include/class.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/class-inl.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/vtable_builder_base.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/vtable_builder_variance-inl.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/vtable_builder_variance.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/vtable_builder_interface.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/vtable_builder_base-inl.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/itable.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/method.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/field.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/class_helper.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/class_linker_context.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/class_linker.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/class_linker_extension.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/class_linker_extension.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/core/core_class_linker_extension.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/itable_builder.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/imtable_builder.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/imtable_builder.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_language_context.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_language_context.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_itable_builder.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_itable_builder.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_class_linker_context.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_class_linker_context.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_class_linker_extension.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_class_linker_extension.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_class_linker.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_class_linker.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/class_linker.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/file_manager.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/class_lock.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/class_lock.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/file_manager.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "(dynamic_discovery)"
+    note: "逐行精读过程中发现同章强相关文件，将追加到此列表"

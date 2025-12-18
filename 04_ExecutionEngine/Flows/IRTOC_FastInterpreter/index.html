@@ -1,0 +1,2649 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ark runtime_core/static_core internal wiki（概览 + 深入证据链）">
+      
+      
+      
+        <link rel="canonical" href="https://github.com/KanyeEas/Runtime_Architecture_Internals_and_Developer_Guide/04_ExecutionEngine/Flows/IRTOC_FastInterpreter/">
+      
+      
+        <link rel="prev" href="../IRTOC_DSL_Reference/">
+      
+      
+        <link rel="next" href="../Opcode_DeepDives_IRTOC/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>IRTOC_FastInterpreter - Runtime Architecture Internals & Developer Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#flowirtocllvm-fast-interpreterexecuteimpl-setupdispatchtable-executeimplfast" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Runtime Architecture Internals &amp; Developer Guide" class="md-header__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Runtime Architecture Internals & Developer Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              IRTOC_FastInterpreter
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到夜间模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到夜间模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到日间模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到日间模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
+          
+  
+  
+    
+  
+  00 总览与方法论
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../01_Startup/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  01 Startup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../02_Memory/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  02 Memory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../03_ClassLoading/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  03 ClassLoading
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  04 ExecutionEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../05_NativeBridge/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  05 NativeBridge
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../06_Tooling_Profiling_Verification/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  06 Tooling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../07_Build_and_Configuration/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  07 Build&Config
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Runtime Architecture Internals &amp; Developer Guide" class="md-nav__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Runtime Architecture Internals & Developer Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../.." class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 总览与方法论
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../01_Startup/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 Startup
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../02_Memory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 Memory
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../03_ClassLoading/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 ClassLoading
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 ExecutionEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    04 ExecutionEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ExecutionEngine_EndToEnd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    端到端主线（EndToEnd）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Newbie_MinDebug_Playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    新人最小调试手册
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    深入路线图（Index）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Completion_Review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完成度验收（Checklist）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Errata_to_Stage1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage1 校正（Errata）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题索引
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题索引
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_7_1" id="__nav_5_7_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flows
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_7_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flows
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Bridge_I2C_C2I/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bridge_I2C_C2I
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Deopt_and_OSR/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deopt_and_OSR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Entrypoints_and_RuntimeInterface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entrypoints_and_RuntimeInterface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ExecutionEngine_EndToEnd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    端到端主线（EndToEnd）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Interpreter_Execute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interpreter_Execute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IRTOC_DSL_Primer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IRTOC_DSL_Primer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IRTOC_DSL_Reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IRTOC_DSL_Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IRTOC_FastInterpreter
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IRTOC_FastInterpreter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0) 在端到端主线图中的位置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 这条 flow 解决什么问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mermaid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Mermaid：运行时调用链（真实执行路径）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-mermaidbuild" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) Mermaid：build 生成链（脚本 → 机器码）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 排障抓手（你应该先看哪里）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 解释器选型“精确规则”（按源码可复核，不靠猜）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1 解释器选型“精确规则”（按源码可复核，不靠猜）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-cpp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A) 默认值与“动态语言默认 cpp”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-interpreter-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B) 构建开关导致的“自动降级”（只在你没有显式设置 interpreter-type 时发生）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-fatal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C) 运行时硬约束（不满足直接 FATAL，不是“降级”）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-dispatch-table-392" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 dispatch table 的 392 是怎么来的（从模板可算出来）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 证据链（本章）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-vm-irtoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) VM 架构师视角：新人如何“真正学会改 IRTOC”（从现象到落地）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6) VM 架构师视角：新人如何“真正学会改 IRTOC”（从现象到落地）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 一句话工作流（最短闭环）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-irt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 从现象到 .irt：第一落点速查表（新人最实用）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 “验证你改动真的生效”的证据链（必须做）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Opcode_DeepDives_IRTOC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Opcode_DeepDives_IRTOC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../StackWalking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StackWalking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../DataStructures/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataStructures
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../Diagrams/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../Manifests/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manifests
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../FileNotes/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileNotes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../05_NativeBridge/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 NativeBridge
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../06_Tooling_Profiling_Verification/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 Tooling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../07_Build_and_Configuration/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 Build&Config
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0) 在端到端主线图中的位置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 这条 flow 解决什么问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mermaid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Mermaid：运行时调用链（真实执行路径）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-mermaidbuild" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) Mermaid：build 生成链（脚本 → 机器码）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 排障抓手（你应该先看哪里）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 解释器选型“精确规则”（按源码可复核，不靠猜）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1 解释器选型“精确规则”（按源码可复核，不靠猜）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-cpp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A) 默认值与“动态语言默认 cpp”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-interpreter-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B) 构建开关导致的“自动降级”（只在你没有显式设置 interpreter-type 时发生）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-fatal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C) 运行时硬约束（不满足直接 FATAL，不是“降级”）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-dispatch-table-392" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 dispatch table 的 392 是怎么来的（从模板可算出来）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 证据链（本章）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-vm-irtoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) VM 架构师视角：新人如何“真正学会改 IRTOC”（从现象到落地）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6) VM 架构师视角：新人如何“真正学会改 IRTOC”（从现象到落地）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 一句话工作流（最短闭环）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-irt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 从现象到 .irt：第一落点速查表（新人最实用）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 “验证你改动真的生效”的证据链（必须做）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="flowirtocllvm-fast-interpreterexecuteimpl-setupdispatchtable-executeimplfast">Flow：IRTOC/LLVM Fast Interpreter（ExecuteImpl → SetupDispatchTable → ExecuteImplFast）<a class="headerlink" href="#flowirtocllvm-fast-interpreterexecuteimpl-setupdispatchtable-executeimplfast" title="Permanent link">&para;</a></h1>
+<h2 id="0">0) 在端到端主线图中的位置<a class="headerlink" href="#0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>总入口：<a href="../ExecutionEngine_EndToEnd/">ExecutionEngine_EndToEnd</a>（“解释器选型（运行时真实入口）”与“解释器执行（主循环）”框：本 flow 解释 fast interpreter 的真实执行路径与 build 生成链）</li>
+</ul>
+<h2 id="1-flow">1) 这条 flow 解决什么问题<a class="headerlink" href="#1-flow" title="Permanent link">&para;</a></h2>
+<p>当你发现：</p>
+<ul>
+<li>“生产环境默认走 llvm interpreter，我看 C++ handler 怎么对不上？”</li>
+<li>“<code>--interpreter-type</code> 切换后，代码路径完全变了”</li>
+<li>“dispatch table 从哪里来？<code>ExecuteImplFast</code> 是谁实现的？”</li>
+</ul>
+<p>这条 flow 把 <strong>运行时选型 → dispatch table → fast interpreter entry</strong> 串起来，并把 build 生成物指给你看。</p>
+<h2 id="2-mermaid">2) Mermaid：运行时调用链（真实执行路径）<a class="headerlink" href="#2-mermaid" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+  A["interpreter::Execute(thread, pc, frame)"] --&gt; B["ExecuteImpl(thread, pc, frame, jumpToEh)\n(runtime/interpreter/interpreter_impl.cpp)"]
+  B --&gt; C{"GetInterpreterTypeFromRuntimeOptions(frame)\n--interpreter-type=cpp/irtoc/llvm"}
+  C --&gt;|cpp| CPP["ExecuteImplInner&lt;...&gt;()\n(C++ interpreter)"]
+  C --&gt;|irtoc| IRT["SetupDispatchTableImpl()\n(build/runtime/include/irtoc_interpreter_utils.h)"]
+  C --&gt;|llvm| LLVM["SetupLLVMDispatchTableImpl()\n(build/runtime/include/irtoc_interpreter_utils.h)"]
+  IRT --&gt; D["dispatch_table (void(*)()[392])"]
+  LLVM --&gt; D
+  D --&gt; E{"jumpToEh ?"}
+  E --&gt;|false| F["ExecuteImplFast(..., dispatch_table)\n(IRTOC 生成符号)"]
+  E --&gt;|true| G["ExecuteImplFastEH(..., dispatch_table)\n(IRTOC 生成符号)"]</code></pre>
+<h2 id="3-mermaidbuild">3) Mermaid：build 生成链（脚本 → 机器码）<a class="headerlink" href="#3-mermaidbuild" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+  S["irtoc/scripts/interpreter.irt"] --&gt; FIX["build/irtoc/irtoc_interpreter/interpreter.irt.fixed"]
+  FIX --&gt; CPP["build/irtoc/irtoc_interpreter/irtoc_code.cpp\n(COMPILE(HANDLE_FAST_*))"]
+  CPP --&gt; OBJ["build/irtoc/irtoc_interpreter/irtoc_interpreter.o"]
+  S --&gt; DT["build/runtime/include/irtoc_interpreter_utils.h\n(Setup*DispatchTableImpl)"]
+  OBJ --&gt; R["runtime/interpreter/interpreter_impl.cpp\n调用 ExecuteImplFast*"]
+  DT --&gt; R</code></pre>
+<h2 id="4">4) 排障抓手（你应该先看哪里）<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>解释器选型是否符合预期</strong>：<code>runtime/interpreter/interpreter_impl.cpp</code></li>
+<li>动态语言默认 cpp（除非显式设置）</li>
+<li>debug-mode 只能 cpp</li>
+<li>部分 GC/编译开关会导致降级</li>
+<li><strong>dispatch table 是否为你期望的后端</strong>：<code>SetupDispatchTableImpl</code> vs <code>SetupLLVMDispatchTableImpl</code></li>
+<li><strong>handler 符号是否存在</strong>：<code>HANDLE_FAST_*</code> / <code>HANDLE_FAST_*_LLVM</code>（<code>irtoc_interpreter_utils.h</code> 里是声明 + table）</li>
+</ul>
+<h2 id="41">4.1 解释器选型“精确规则”（按源码可复核，不靠猜）<a class="headerlink" href="#41" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>核心入口：<code>runtime/interpreter/interpreter_impl.cpp::GetInterpreterTypeFromRuntimeOptions/ExecuteImpl</code></p>
+</blockquote>
+<h3 id="a-cpp">A) 默认值与“动态语言默认 cpp”<a class="headerlink" href="#a-cpp" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>options 默认值</strong>：<code>--interpreter-type</code> 默认是 <code>llvm</code>（<code>runtime/options.yaml:886-890</code>）。</li>
+<li><strong>但动态语言有特例</strong>：源码直接写明：<code>Dynamic languages default is always cpp interpreter (unless option was set)</code>。<br />
+  即：<strong>frame 是 dynamic 且你没有显式设置 <code>--interpreter-type</code> 时，会强制走 cpp</strong>（即使 options 默认是 llvm）。</li>
+</ul>
+<h3 id="b-interpreter-type">B) 构建开关导致的“自动降级”（只在你没有显式设置 interpreter-type 时发生）<a class="headerlink" href="#b-interpreter-type" title="Permanent link">&para;</a></h3>
+<p>当 <code>--interpreter-type</code> <strong>未显式设置</strong>（<code>wasSet == false</code>）时：</p>
+<ul>
+<li><strong>没编进 LLVM interpreter</strong>（未定义 <code>PANDA_LLVM_INTERPRETER</code>）：<code>llvm → irtoc</code></li>
+<li><strong>没编进 IRTOC</strong>（未定义 <code>PANDA_WITH_IRTOC</code>）：<code>irtoc → cpp</code></li>
+<li><strong>ARK_HYBRID 特例</strong>：若默认选择到 <code>llvm</code>，会打印 INFO 并 <strong>降级到 irtoc</strong>（注释写明 CMC GC 的 LLVM 支持仍在补齐）</li>
+</ul>
+<blockquote>
+<p>重要：如果你 <strong>显式设置</strong> 了 <code>--interpreter-type=llvm/irtoc</code>，而当前构建不支持，对应路径会 <code>LOG(FATAL)</code>，不会降级。</p>
+</blockquote>
+<h3 id="c-fatal">C) 运行时硬约束（不满足直接 FATAL，不是“降级”）<a class="headerlink" href="#c-fatal" title="Permanent link">&para;</a></h3>
+<p>当最终 interpreter-type &gt; cpp（即 irtoc/llvm）时，<code>ExecuteImpl</code> 还会做一组硬检查：</p>
+<ul>
+<li><strong>debug-mode 限制</strong>：<code>--debug-mode=true</code> <strong>只能</strong> 配 <code>--interpreter-type=cpp</code>（否则 FATAL）</li>
+<li><strong>Arm32 限制</strong>：<code>PANDA_TARGET_ARM32</code> 下 irtoc 不可用，整个文件把选型包在 <code>#if !defined(PANDA_TARGET_ARM32)</code> 内（等价于 <strong>arm32 永远 cpp</strong>）</li>
+<li><strong>GC 限制（非 ARK_HYBRID）</strong>：</li>
+<li>对 <strong>动态语言</strong>：若你显式要求 irtoc/llvm，则 GC 必须是 <code>G1_GC</code>，否则 FATAL（提示 dynamic languages 的 gc-type 仅 cpp 支持）</li>
+<li><strong>ARK_HYBRID 的组合限制</strong>：</li>
+<li>只要 interpreter-type &gt; cpp，GC 必须是 <code>CMC_GC</code>，否则 FATAL</li>
+<li>并且 <code>interpreter-type == llvm</code> 会直接 FATAL（信息：CMC GC 只支持 cpp 或 irtoc）</li>
+</ul>
+<h2 id="42-dispatch-table-392">4.2 dispatch table 的 392 是怎么来的（从模板可算出来）<a class="headerlink" href="#42-dispatch-table-392" title="Permanent link">&para;</a></h2>
+<p>你在 <code>build/runtime/include/irtoc_interpreter_utils.h</code> 看到的 <code>std::array&lt;void (*)(), 392&gt;</code> 不是随手写的常量，它来自模板展开后的“handler 名单长度”：</p>
+<ul>
+<li><strong>IRTOC/LLVM fast interpreter 的 table</strong>：生成模板 <code>runtime/interpreter/templates/irtoc_interpreter_utils.h.erb</code> 里直接用：</li>
+<li><code>std::array&lt;void (*)(), Panda::dispatch_table.handler_names.size() + 1&gt;</code></li>
+<li>
+<p>最后 <code>+1</code> 是补上 <code>HANDLE_FAST_EXCEPTION(_LLVM)</code> 这个异常槽位</p>
+</li>
+<li>
+<p><strong>C++ interpreter 的 label dispatch table（同长度、同一套 ISA 空间）</strong>：生成模板 <code>runtime/interpreter/templates/interpreter-inl_gen.h.erb</code> 里有：</p>
+</li>
+<li><code>DISPATCH_TABLE_LEN = 256 + NUM_PREFIXED + 1</code></li>
+<li><code>256</code>：一级表覆盖 0..255 的 primary opcode</li>
+<li><code>NUM_PREFIXED</code>：prefix 扩展出的额外 opcode 数（来自 ISA）</li>
+<li><code>+1</code>：为 <code>EXCEPTION_HANDLER</code> 预留的槽位（见 <code>isa_constants_gen.h.erb</code> 注释）</li>
+</ul>
+<p>因此：在本仓库当前 ISA 下，<code>392</code> 同时满足：</p>
+<ul>
+<li><code>392 = Panda::dispatch_table.handler_names.size() + 1</code>（fast interpreter table 的真实生成规则）</li>
+<li><code>392 = 256 + NUM_PREFIXED + 1</code>（同一套 ISA 空间下，C++ interpreter 的 label table 长度）</li>
+</ul>
+<h2 id="5">5) 证据链（本章）<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<ul>
+<li>运行时：<code>runtime/interpreter/interpreter_impl.cpp</code></li>
+<li>build header：<code>build/runtime/include/irtoc_interpreter_utils.h</code></li>
+<li>IRTOC 脚本：<code>irtoc/scripts/interpreter.irt</code></li>
+<li>IRTOC 编译产物：<code>build/irtoc/irtoc_interpreter/irtoc_code.cpp</code></li>
+</ul>
+<h2 id="6-vm-irtoc">6) VM 架构师视角：新人如何“真正学会改 IRTOC”（从现象到落地）<a class="headerlink" href="#6-vm-irtoc" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>这是新人最缺的一段：知道 fast interpreter 存在 ≠ 能改得动。<br />
+建议把它当作你做任何 IRTOC 相关改动前的固定 checklist。</p>
+</blockquote>
+<h3 id="61">6.1 一句话工作流（最短闭环）<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<p><strong>确认你跑的是 fast interpreter → 定位 <code>.irt</code> 的锚点（dispatch/decode/call/OSR/exception）→ 修改 <code>irtoc/scripts/interpreter.irt</code> → 用 build 产物做三段式验证（.irt.fixed → irtoc_code.cpp → disasm.txt）</strong>。</p>
+<p>更详细的“怎么读/怎么改/怎么验证”见：
+- <a href="../IRTOC_DSL_Primer/">IRTOC_DSL_Primer</a>（新人工具书：最小语法集 + 常见改动落点表 + 验证闭环）
+- 逐行证据：<a href="../../FileNotes/irtoc_scripts_interpreter.irt/">irtoc_scripts_interpreter.irt</a>、<a href="../../FileNotes/irtoc_scripts_common.irt/">irtoc_scripts_common.irt</a>
+- 更系统的 DSL 参考：<a href="../IRTOC_DSL_Reference/">IRTOC_DSL_Reference</a>（查手册式：语法/语义/常见坑）</p>
+<h3 id="62-irt">6.2 从现象到 <code>.irt</code>：第一落点速查表（新人最实用）<a class="headerlink" href="#62-irt" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>你看到的现象</th>
+<th>先确认</th>
+<th><code>.irt</code> 第一落点（关键词）</th>
+<th>下一跳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>改了 C++ handler 没生效</td>
+<td>是否跑的是 <code>--interpreter-type=llvm/irtoc</code></td>
+<td><code>Panda.instructions.each</code> / <code>handle_xxx</code></td>
+<td><a href="../IRTOC_DSL_Primer/">IRTOC_DSL_Primer</a>（2/3/4 节）</td>
+</tr>
+<tr>
+<td>dispatch/异常入口不对</td>
+<td>dispatch table 末尾是否是 exception slot</td>
+<td><code>macro(:dispatch)</code> / <code>move_to_exception</code></td>
+<td><a href="../../FileNotes/build_runtime_include_irtoc_interpreter_utils.h/">build_runtime_include_irtoc_interpreter_utils.h</a></td>
+</tr>
+<tr>
+<td>OSR 不触发/回退奇怪</td>
+<td>是否是回边触发、是否 fake-return</td>
+<td><code>instrument_branches</code> / <code>handle_fake_return</code></td>
+<td><a href="../../FileNotes/irtoc_scripts_interpreter.irt/">irtoc_scripts_interpreter.irt</a>（OSR 段）</td>
+</tr>
+<tr>
+<td>call/return 行为异常</td>
+<td>是否走 I2C 或 stackless</td>
+<td><code>generic_call</code> / <code>generic_return</code></td>
+<td><a href="../Bridge_I2C_C2I/">Bridge_I2C_C2I（Flow）</a></td>
+</tr>
+<tr>
+<td>GC/safepoint 崩或偶现错</td>
+<td>acc 是否在边界前写回</td>
+<td><code>save_acc</code> / <code>restore_acc</code> / <code>safepoint</code></td>
+<td><a href="../../DataStructures/Frame_VReg_Acc/">Frame_VReg_Acc（DataStructure）</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="63">6.3 “验证你改动真的生效”的证据链（必须做）<a class="headerlink" href="#63" title="Permanent link">&para;</a></h3>
+<p>不要只靠“运行起来没崩”。至少做一次三段式对齐：</p>
+<ul>
+<li><strong>脚本层</strong>：<code>build/irtoc/irtoc_interpreter/interpreter.irt.fixed</code>（确认你的改动确实被规范化产物吸收）</li>
+<li><strong>IR 层</strong>：<code>build/irtoc/irtoc_interpreter/irtoc_code.cpp</code>（确认对应 <code>Loc(..., line)</code> 的 IR 节点发生变化）</li>
+<li><strong>机器码层</strong>：<code>build/irtoc/irtoc_interpreter/disasm.txt</code>（确认对应 <code># [inst] id</code> 的汇编发生变化）</li>
+</ul>
+<p>参考笔记：<a href="../../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt/">build_irtoc_irtoc_interpreter_disasm.txt</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.prune", "navigation.indexes", "navigation.top", "toc.follow", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../../assets/javascripts/mermaid-init.js"></script>
+      
+    
+  </body>
+</html>

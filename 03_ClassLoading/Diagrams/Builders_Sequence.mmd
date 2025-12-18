@@ -1,0 +1,21 @@
+sequenceDiagram
+  participant CL as ClassLinker
+  participant LC as LanguageContext
+  participant ITB as ITableBuilder
+  participant VTB as VTableBuilder
+  participant IMTB as IMTableBuilder
+  participant K as Class
+
+  CL->>LC: CreateITableBuilder(errHandler)
+  CL->>LC: CreateVTableBuilder(errHandler)
+  CL->>LC: CreateIMTableBuilder()
+  CL->>ITB: Build(classLinker, base, interfaces, isInterface)
+  CL->>VTB: Build(cda/methods, base, ITB.GetITable(), context/isInterface)
+  CL->>IMTB: Build(cda/ITable, ITB.GetITable(), isInterface)
+  Note over CL: 之后创建 Class 并 LoadMethods/LoadFields
+  CL->>VTB: UpdateClass(K)
+  CL->>ITB: Resolve(K)
+  CL->>ITB: UpdateClass(K)
+  CL->>IMTB: UpdateClass(K)
+
+

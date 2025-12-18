@@ -1,0 +1,14 @@
+schema: 1
+chapter: "06_Tooling_Profiling_Verification"
+policy:
+  discovery: dynamic
+  cross_chapter: no_duplicate_line_by_line
+seeds:
+  dirs:
+    - "runtime/tooling"
+    - "runtime/jit"
+    - "verification"
+  files:
+files:
+  - path: "(dynamic_discovery)"
+    note: "逐行精读过程中发现同章强相关文件，将追加到此列表"

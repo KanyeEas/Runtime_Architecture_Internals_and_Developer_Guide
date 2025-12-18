@@ -1,0 +1,382 @@
+schema: 1
+chapter: "04_ExecutionEngine"
+policy:
+  discovery: dynamic
+  cross_chapter: no_duplicate_line_by_line
+seeds:
+  dirs:
+    - "runtime/interpreter"
+    - "runtime/bridge"
+    - "runtime/entrypoints"
+    - "compiler"
+    - "irtoc"
+    - "bytecode_optimizer"
+    - "quickener"
+    # build/ 不是源码目录，但 fast interpreter 的关键证据在 build 输出里（本机可审计）
+    # - "build"
+  files:
+    - "runtime/interpreter/interpreter.h"
+    - "runtime/interpreter/interpreter.cpp"
+    - "runtime/interpreter/interpreter_impl.h"
+    - "runtime/interpreter/interpreter_impl.cpp"
+    - "runtime/interpreter/interpreter-inl.h"
+    - "runtime/interpreter/instruction_handler_state.h"
+    - "runtime/interpreter/instruction_handler_base.h"
+    - "runtime/interpreter/arch/macros.h"
+    - "runtime/interpreter/frame.h"
+    - "runtime/interpreter/vregister.h"
+    - "runtime/interpreter/acc_vregister.h"
+    - "runtime/interpreter/acc_vregister-inl.h"
+    - "runtime/interpreter/state.h"
+    - "runtime/interpreter/runtime_interface.h"
+    - "runtime/interpreter/templates/interpreter-inl_gen.h.erb"
+    - "runtime/interpreter/templates/isa_constants_gen.h.erb"
+    - "runtime/interpreter/templates/irtoc_interpreter_utils.h.erb"
+    - "runtime/templates/plugins_interpreters-inl.h.erb"
+    # Bridge dispatch 生成模板（I2C / dyn I2C）
+    - "runtime/templates/bridge_dispatch.S.erb"
+    - "runtime/templates/bridge_dispatch_dyn.S.erb"
+    - "runtime/bridge/bridge.h"
+    - "runtime/bridge/bridge.cpp"
+    - "runtime/entrypoints/entrypoints.h"
+    - "runtime/entrypoints/entrypoints.cpp"
+    - "runtime/compiler.h"
+    - "runtime/compiler.cpp"
+    - "runtime/include/compiler_interface.h"
+    - "runtime/include/exceptions.h"
+    - "runtime/exceptions.cpp"
+    - "runtime/deoptimization.h"
+    - "runtime/deoptimization.cpp"
+    - "runtime/osr.h"
+    - "runtime/osr.cpp"
+    # OSR arch 入口（平台差异非常关键：arm64 有真实实现，其它平台可能为 stub）
+    - "runtime/arch/asm_support.cpp"
+    - "runtime/arch/aarch64/osr_aarch64.S"
+    - "runtime/arch/x86/osr_x86.S"
+    - "runtime/arch/arm/osr_arm.S"
+    - "runtime/arch/amd64/osr_amd64.S"
+    - "runtime/include/stack_walker.h"
+    - "runtime/stack_walker.cpp"
+    # IRTOC fast interpreter（真实默认解释器语义）
+    - "irtoc/scripts/interpreter.irt"
+    # build 产物（本机证据：dispatch table + fixed 脚本 + 生成 C++）
+    - "build/runtime/include/irtoc_interpreter_utils.h"
+    - "build/irtoc/irtoc_interpreter/interpreter.irt.fixed"
+    - "build/irtoc/irtoc_interpreter/irtoc_code.cpp"
+    - "build/irtoc/irtoc_interpreter/validation.yaml"
+    - "build/irtoc/irtoc_interpreter/disasm.txt"
+    # interpreter.irt 的强依赖：寄存器/常量/offset/cross_values 定义
+    - "irtoc/scripts/common.irt"
+    # ISA（opcode 的唯一事实来源）：core + ETS 扩展
+    - "isa/isa.yaml"
+    - "plugins/ets/isa/isa.yaml"
+    # AOT（Stage1 提到，但 Stage2 需要补齐证据链）
+    - "compiler/aot/aot_headers.h"
+    - "compiler/aot/aot_file.h"
+    - "compiler/aot/aot_file.cpp"
+    - "compiler/aot/aot_manager.h"
+    - "compiler/aot/aot_manager.cpp"
+    - "compiler/aot/compiled_method.h"
+    # Quickener / Bytecode Optimizer（执行前变换层：工具链闭环）
+    - "quickener/quick.cpp"
+    - "bytecode_optimizer/optimize_bytecode.h"
+    - "bytecode_optimizer/optimize_bytecode.cpp"
+    # Bridge 汇编证据链（I2C/C2I boundary frame 的物理落地）
+    - "runtime/bridge/arch/aarch64/interpreter_to_compiled_code_bridge_aarch64.S"
+    - "runtime/bridge/arch/aarch64/interpreter_to_compiled_code_bridge_dyn_aarch64.S"
+    - "runtime/bridge/arch/aarch64/compiled_code_to_interpreter_bridge_aarch64.S"
+    - "runtime/bridge/arch/aarch64/compiled_code_to_interpreter_bridge_dyn_aarch64.S"
+    - "runtime/bridge/arch/aarch64/proxy_entrypoint_aarch64.S"
+    - "runtime/bridge/arch/aarch64/deoptimization_aarch64.S"
+    - "runtime/bridge/arch/amd64/interpreter_to_compiled_code_bridge_amd64.S"
+    - "runtime/bridge/arch/amd64/interpreter_to_compiled_code_bridge_dyn_amd64.S"
+    - "runtime/bridge/arch/amd64/compiled_code_to_interpreter_bridge_amd64.S"
+    - "runtime/bridge/arch/amd64/compiled_code_to_interpreter_bridge_dyn_amd64.S"
+    - "runtime/bridge/arch/amd64/proxy_entrypoint_amd64.S"
+    - "runtime/bridge/arch/amd64/deoptimization_amd64.S"
+files:
+  - path: "runtime/interpreter/interpreter.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/interpreter.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/interpreter_impl.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/interpreter_impl.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/interpreter-inl.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/instruction_handler_state.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/instruction_handler_base.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/arch/macros.h"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/interpreter/frame.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/vregister.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/acc_vregister.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/acc_vregister-inl.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/state.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/runtime_interface.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/templates/interpreter-inl_gen.h.erb"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/interpreter/templates/isa_constants_gen.h.erb"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/interpreter/templates/irtoc_interpreter_utils.h.erb"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/templates/plugins_interpreters-inl.h.erb"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/templates/bridge_dispatch.S.erb"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/templates/bridge_dispatch_dyn.S.erb"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/bridge/bridge.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/bridge/bridge.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/entrypoints/entrypoints.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/entrypoints/entrypoints.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/compiler.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/compiler.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/compiler_interface.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/exceptions.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/exceptions.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/deoptimization.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/deoptimization.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/osr.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/osr.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/arch/asm_support.cpp"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/arch/aarch64/osr_aarch64.S"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/arch/x86/osr_x86.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/arch/arm/osr_arm.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/arch/amd64/osr_amd64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/stack_walker.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "runtime/include/stack_walker.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "irtoc/scripts/interpreter.irt"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "build/runtime/include/irtoc_interpreter_utils.h"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "build/irtoc/irtoc_interpreter/interpreter.irt.fixed"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "build/irtoc/irtoc_interpreter/irtoc_code.cpp"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "build/irtoc/irtoc_interpreter/validation.yaml"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "build/irtoc/irtoc_interpreter/disasm.txt"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "irtoc/scripts/common.irt"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "isa/isa.yaml"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "plugins/ets/isa/isa.yaml"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  # --- AOT（补齐 Stage1 的 AOT 段落证据链） ---
+  - path: "compiler/aot/aot_headers.h"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "compiler/aot/aot_file.h"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "compiler/aot/aot_file.cpp"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "compiler/aot/aot_manager.h"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "compiler/aot/aot_manager.cpp"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "compiler/aot/compiled_method.h"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  # --- Quickener / Bytecode Optimizer（执行前变换层） ---
+  - path: "quickener/quick.cpp"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "bytecode_optimizer/optimize_bytecode.h"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "bytecode_optimizer/optimize_bytecode.cpp"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  # --- Bridge arch 汇编（boundary frame 物理落地） ---
+  - path: "runtime/bridge/arch/aarch64/interpreter_to_compiled_code_bridge_aarch64.S"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/bridge/arch/aarch64/interpreter_to_compiled_code_bridge_dyn_aarch64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/bridge/arch/aarch64/compiled_code_to_interpreter_bridge_aarch64.S"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/bridge/arch/aarch64/compiled_code_to_interpreter_bridge_dyn_aarch64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/bridge/arch/aarch64/proxy_entrypoint_aarch64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/bridge/arch/aarch64/deoptimization_aarch64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/bridge/arch/amd64/interpreter_to_compiled_code_bridge_amd64.S"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/bridge/arch/amd64/interpreter_to_compiled_code_bridge_dyn_amd64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/bridge/arch/amd64/compiled_code_to_interpreter_bridge_amd64.S"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "runtime/bridge/arch/amd64/compiled_code_to_interpreter_bridge_dyn_amd64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/bridge/arch/amd64/proxy_entrypoint_amd64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "runtime/bridge/arch/amd64/deoptimization_amd64.S"
+    mode: line_by_line
+    priority: P2
+    status: completed
+  - path: "(dynamic_discovery)"
+    note: "逐行精读过程中发现同章强相关文件，将追加到此列表"

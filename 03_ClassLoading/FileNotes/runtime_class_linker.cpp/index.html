@@ -1,0 +1,4233 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ark runtime_core/static_core internal wiki（概览 + 深入证据链）">
+      
+      
+      
+        <link rel="canonical" href="https://github.com/KanyeEas/Runtime_Architecture_Internals_and_Developer_Guide/03_ClassLoading/FileNotes/runtime_class_linker.cpp/">
+      
+      
+        <link rel="prev" href="../plugins_ets_runtime_ets_language_context.h/">
+      
+      
+        <link rel="next" href="../runtime_class_linker_context.h/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>runtime_class_linker.cpp - Runtime Architecture Internals & Developer Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#runtimeclass_linkercpp" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Runtime Architecture Internals &amp; Developer Guide" class="md-header__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Runtime Architecture Internals & Developer Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              runtime_class_linker.cpp
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到夜间模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到夜间模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到日间模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到日间模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
+          
+  
+  
+    
+  
+  00 总览与方法论
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../01_Startup/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  01 Startup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../02_Memory/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  02 Memory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  03 ClassLoading
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../04_ExecutionEngine/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  04 ExecutionEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../05_NativeBridge/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  05 NativeBridge
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../06_Tooling_Profiling_Verification/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  06 Tooling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../07_Build_and_Configuration/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  07 Build&Config
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Runtime Architecture Internals &amp; Developer Guide" class="md-nav__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Runtime Architecture Internals & Developer Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../.." class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 总览与方法论
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../01_Startup/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 Startup
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../02_Memory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 Memory
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 ClassLoading
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    03 ClassLoading
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Flows/ClassLoading_EndToEnd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    端到端主线（EndToEnd）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Newbie_MinDebug_Playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    新人最小调试手册
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    深入路线图（Index）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Completion_Review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完成度验收（Checklist）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Errata_to_Stage1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage1 校正（Errata）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题索引
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题索引
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../Flows/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flows
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../DataStructures/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataStructures
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../Diagrams/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../Manifests/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manifests
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_7_5" id="__nav_4_7_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileNotes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_7_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_7_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    FileNotes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../_Glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    _Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_class_linker.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_class_linker.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_class_linker.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_class_linker.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_class_linker_context.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_class_linker_context.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_class_linker_context.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_class_linker_context.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_class_linker_extension.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_class_linker_extension.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_class_linker_extension.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_class_linker_extension.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_itable_builder.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_itable_builder.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_itable_builder.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_itable_builder.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_language_context.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_language_context.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins_ets_runtime_ets_language_context.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    plugins_ets_runtime_ets_language_context.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_class_linker.cpp
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_class_linker.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getclass-loadclass-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一图读懂：GetClass → LoadClass → Link（本文件主线）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0-include-l16l49" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 顶部 include 与命名空间（L16–L49）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-pandafile-classlinkeraddpandafilel50l79" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. PandaFile 注册：ClassLinker::AddPandaFile（L50–L79）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-freeclassdatafreeclassclasslinkerl81l160" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 释放路径：FreeClassData/FreeClass/~ClassLinker（L81–L160）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 释放路径：FreeClassData/FreeClass/~ClassLinker（L81–L160）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-freeclassdatal81l147" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 FreeClassData（L81–L147）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-freeclassl149l153" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 FreeClass（L149–L153）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-l155l160" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 析构（L155–L160）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-extension-classlinkerclasslinkerresetextensionl162l179" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 构造与 extension 装配：ClassLinker::ClassLinker/ResetExtension（L162–L179）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-initializeinitializerootsl187l221" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 初始化：Initialize/InitializeRoots（L187–L221）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-boot-files-findclassinpandafiles-findloadedclassl223l242" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Boot files 查找：FindClassInPandaFiles + FindLoadedClass（L223–L242）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-class-getclasssizel244l297" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 计算 Class 对象总大小：GetClassSize（L244–L297）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-setupclassinfo-builder-sizel345l421" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. SetupClassInfo：创建三类 builder 并算 size（L345–L421）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. SetupClassInfo：创建三类 builder 并算 size（L345–L421）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-a-panda_fileclassdataaccessorl345l370" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 版本 A：基于 panda_file::ClassDataAccessor*（L345–L370）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-b-spanmethodspanfieldl397l421" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 版本 B：基于 Span&lt;Method&gt;/Span&lt;Field&gt;（L397–L421）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-loadmethod-copied-methods-aot-l423l545" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. LoadMethod / copied methods / AOT 入口点（L423–L545）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. LoadMethod / copied methods / AOT 入口点（L423–L545）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-loadmethodl423l453" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 LoadMethod（L423–L453）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-aot-maybelinkmethodtoaotcodel455l472" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 AOT 链接：MaybeLinkMethodToAotCode（L455–L472）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-copied-methodssetupcopiedmethodsl474l493" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 copied methods：SetupCopiedMethods（L474–L493）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-loadmethodsl495l545" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 LoadMethods（L495–L545）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-loadfields-field-l547l571" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. LoadFields：构建 Field 数组（L547–L571）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-layoutfieldsl573l819" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 字段布局算法：LayoutFields*（L573–L819）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 字段布局算法：LayoutFields*（L573–L819）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-l577l581" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 核心设计目标（L577–L581）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-layoutfieldswithoutalignmentl573l601" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 LayoutFieldsWithoutAlignment（L573–L601）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-layoutreferencefieldsl603l621" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 引用字段特殊处理：LayoutReferenceFields（L603–L621）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-padding-layoutfieldsinbaseclasspaddingl629l661" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 “基类 padding 回填”：LayoutFieldsInBaseClassPadding（L629–L661）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#105-layoutfieldsl664l717" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 主布局：LayoutFields（L664–L717）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#106-classlinkerlayoutfieldsl732l791" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6 对外入口：ClassLinker::LayoutFields（L732–L791）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#107-linkmethodslinkfieldsl793l819" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7 LinkMethods/LinkFields（L793–L819）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-baseinterfaces-loadclass-l821l1103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. base/interfaces 解析与主 LoadClass 管线（L821–L1103）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. base/interfaces 解析与主 LoadClass 管线（L821–L1103）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-loadbaseclassl821l841" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 LoadBaseClass（L821–L841）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-loadinterfacesl843l872" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 LoadInterfaces（L843–L872）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-l874" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 “并发加载/循环检测”骨架（L874+）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-loadclassclassdataaccessor-l906l959" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 LoadClass(ClassDataAccessor*, ...)（L906–L959）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#115-runtimecontext-l1088l1102" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 “加入 runtime/context &amp; 事件”包装层（L1088–L1102）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-buildclass-arrayunionl1105l1390" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. BuildClass（合成类）与 array/union（L1105–L1390）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. BuildClass（合成类）与 array/union（L1105–L1390）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-descriptor-copymutf8stringl1105l1111" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 descriptor 复制：CopyMutf8String（L1105–L1111）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-linkentitiesandinitclassl1113l1133" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 LinkEntitiesAndInitClass（L1113–L1133）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-buildclassl1135l1205" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 BuildClass（L1135–L1205）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#124-union-l1207l1317" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 union 类（L1207–L1317）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#125-array-l1319l1390" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.5 array 类（L1319–L1390）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-getclassdescriptorpath-boot-filterl1410l1535" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. GetClass：descriptor/path 的缓存与 boot filter（L1410–L1535）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13. GetClass：descriptor/path 的缓存与 boot filter（L1410–L1535）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-getclassdescriptor-l1410l1463" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 GetClass(descriptor, ...)（L1410–L1463）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-getclasspfidl1466l1535" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 GetClass(pf,id,...)（L1466–L1535）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-getmethod-getfield-id-l1537l1815" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. GetMethod / GetField：缓存与“按 id / 按签名”双路径（L1537–L1815）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. GetMethod / GetField：缓存与“按 id / 按签名”双路径（L1537–L1815）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-getmethodl1537" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 GetMethod（L1537+）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142-getfield-id-l1660l1743" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 GetField：按 id / 按签名（L1660–L1743）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143-initializeclassl1745l1754" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 InitializeClass（L1745–L1754）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-aot-boot-class-bloom-filterl1828l1894" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. AOT 重新链接与 boot class bloom filter（L1828–L1894）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. 本文件对 03 章的“契约回指”
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_class_linker_context.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_class_linker_context.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_class_linker_extension.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_class_linker_extension.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_class_lock.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_class_lock.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_class_lock.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_class_lock.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_core_core_class_linker_extension.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_core_core_class_linker_extension.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_file_manager.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_file_manager.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_imtable_builder.cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_imtable_builder.cpp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_class-inl.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_class-inl.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_class.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_class.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_class_helper.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_class_helper.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_class_linker.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_class_linker.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_class_linker_extension.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_class_linker_extension.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_field.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_field.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_file_manager.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_file_manager.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_imtable_builder.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_imtable_builder.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_itable.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_itable.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_itable_builder.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_itable_builder.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_method.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_method.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_vtable_builder_base-inl.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_vtable_builder_base-inl.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_vtable_builder_base.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_vtable_builder_base.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_vtable_builder_interface.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_vtable_builder_interface.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_vtable_builder_variance-inl.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_vtable_builder_variance-inl.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime_include_vtable_builder_variance.h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    runtime_include_vtable_builder_variance.h
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../04_ExecutionEngine/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 ExecutionEngine
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../05_NativeBridge/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 NativeBridge
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../06_Tooling_Profiling_Verification/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 Tooling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../07_Build_and_Configuration/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 Build&Config
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getclass-loadclass-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一图读懂：GetClass → LoadClass → Link（本文件主线）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0-include-l16l49" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. 顶部 include 与命名空间（L16–L49）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-pandafile-classlinkeraddpandafilel50l79" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. PandaFile 注册：ClassLinker::AddPandaFile（L50–L79）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-freeclassdatafreeclassclasslinkerl81l160" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 释放路径：FreeClassData/FreeClass/~ClassLinker（L81–L160）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 释放路径：FreeClassData/FreeClass/~ClassLinker（L81–L160）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-freeclassdatal81l147" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 FreeClassData（L81–L147）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-freeclassl149l153" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 FreeClass（L149–L153）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-l155l160" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 析构（L155–L160）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-extension-classlinkerclasslinkerresetextensionl162l179" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 构造与 extension 装配：ClassLinker::ClassLinker/ResetExtension（L162–L179）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-initializeinitializerootsl187l221" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 初始化：Initialize/InitializeRoots（L187–L221）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-boot-files-findclassinpandafiles-findloadedclassl223l242" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Boot files 查找：FindClassInPandaFiles + FindLoadedClass（L223–L242）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-class-getclasssizel244l297" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 计算 Class 对象总大小：GetClassSize（L244–L297）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-setupclassinfo-builder-sizel345l421" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. SetupClassInfo：创建三类 builder 并算 size（L345–L421）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. SetupClassInfo：创建三类 builder 并算 size（L345–L421）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-a-panda_fileclassdataaccessorl345l370" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 版本 A：基于 panda_file::ClassDataAccessor*（L345–L370）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-b-spanmethodspanfieldl397l421" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 版本 B：基于 Span&lt;Method&gt;/Span&lt;Field&gt;（L397–L421）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-loadmethod-copied-methods-aot-l423l545" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. LoadMethod / copied methods / AOT 入口点（L423–L545）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. LoadMethod / copied methods / AOT 入口点（L423–L545）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-loadmethodl423l453" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 LoadMethod（L423–L453）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-aot-maybelinkmethodtoaotcodel455l472" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 AOT 链接：MaybeLinkMethodToAotCode（L455–L472）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-copied-methodssetupcopiedmethodsl474l493" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 copied methods：SetupCopiedMethods（L474–L493）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-loadmethodsl495l545" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 LoadMethods（L495–L545）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-loadfields-field-l547l571" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. LoadFields：构建 Field 数组（L547–L571）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-layoutfieldsl573l819" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 字段布局算法：LayoutFields*（L573–L819）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 字段布局算法：LayoutFields*（L573–L819）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-l577l581" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 核心设计目标（L577–L581）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-layoutfieldswithoutalignmentl573l601" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 LayoutFieldsWithoutAlignment（L573–L601）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-layoutreferencefieldsl603l621" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 引用字段特殊处理：LayoutReferenceFields（L603–L621）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-padding-layoutfieldsinbaseclasspaddingl629l661" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 “基类 padding 回填”：LayoutFieldsInBaseClassPadding（L629–L661）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#105-layoutfieldsl664l717" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 主布局：LayoutFields（L664–L717）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#106-classlinkerlayoutfieldsl732l791" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6 对外入口：ClassLinker::LayoutFields（L732–L791）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#107-linkmethodslinkfieldsl793l819" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7 LinkMethods/LinkFields（L793–L819）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-baseinterfaces-loadclass-l821l1103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. base/interfaces 解析与主 LoadClass 管线（L821–L1103）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. base/interfaces 解析与主 LoadClass 管线（L821–L1103）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-loadbaseclassl821l841" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 LoadBaseClass（L821–L841）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-loadinterfacesl843l872" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 LoadInterfaces（L843–L872）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-l874" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 “并发加载/循环检测”骨架（L874+）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-loadclassclassdataaccessor-l906l959" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 LoadClass(ClassDataAccessor*, ...)（L906–L959）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#115-runtimecontext-l1088l1102" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 “加入 runtime/context &amp; 事件”包装层（L1088–L1102）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-buildclass-arrayunionl1105l1390" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. BuildClass（合成类）与 array/union（L1105–L1390）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. BuildClass（合成类）与 array/union（L1105–L1390）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-descriptor-copymutf8stringl1105l1111" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 descriptor 复制：CopyMutf8String（L1105–L1111）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-linkentitiesandinitclassl1113l1133" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 LinkEntitiesAndInitClass（L1113–L1133）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-buildclassl1135l1205" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 BuildClass（L1135–L1205）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#124-union-l1207l1317" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 union 类（L1207–L1317）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#125-array-l1319l1390" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.5 array 类（L1319–L1390）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-getclassdescriptorpath-boot-filterl1410l1535" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. GetClass：descriptor/path 的缓存与 boot filter（L1410–L1535）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13. GetClass：descriptor/path 的缓存与 boot filter（L1410–L1535）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-getclassdescriptor-l1410l1463" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 GetClass(descriptor, ...)（L1410–L1463）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-getclasspfidl1466l1535" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 GetClass(pf,id,...)（L1466–L1535）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-getmethod-getfield-id-l1537l1815" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. GetMethod / GetField：缓存与“按 id / 按签名”双路径（L1537–L1815）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. GetMethod / GetField：缓存与“按 id / 按签名”双路径（L1537–L1815）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-getmethodl1537" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 GetMethod（L1537+）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142-getfield-id-l1660l1743" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 GetField：按 id / 按签名（L1660–L1743）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143-initializeclassl1745l1754" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 InitializeClass（L1745–L1754）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-aot-boot-class-bloom-filterl1828l1894" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. AOT 重新链接与 boot class bloom filter（L1828–L1894）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. 本文件对 03 章的“契约回指”
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="runtimeclass_linkercpp"><code>runtime/class_linker.cpp</code>（逐行精读｜按函数簇分段）<a class="headerlink" href="#runtimeclass_linkercpp" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>章节归属：Stage2 / 03_ClassLoading<br />
+文件规模：1895 行（实现文件，按“函数簇 + 行段”做逐行记录）<br />
+目标：把 <strong>ClassLinker 的真实执行管线</strong>、<strong>布局算法</strong>、<strong>缓存/并发策略</strong>、以及 <strong>AOT/boot filter</strong> 的接入点讲清楚。</p>
+<p>术语速查：见 <a href="../_Glossary/">FileNotes/_Glossary</a>（同目录）</p>
+</blockquote>
+<h2 id="getclass-loadclass-link">一图读懂：GetClass → LoadClass → Link（本文件主线）<a class="headerlink" href="#getclass-loadclass-link" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+  A["GetClass(descriptor/pf,id)"] --&gt; B{"context 缓存命中？\nFindLoadedClass"}
+  B --&gt;|是| R1["返回 Class*"]
+  B --&gt;|否| C{"union/array?"}
+  C --&gt;|union| U["LoadUnionClass\nLoadConstituentClasses"] --&gt; L["LoadClass(主管线)"]
+  C --&gt;|array| AR["LoadArrayClass\ncomponent resolve"] --&gt; L
+  C --&gt;|普通| D{"boot context?"}
+  D --&gt;|是| F["boot bloom filter + bootPandaFiles 查 classId"] --&gt; L
+  D --&gt;|否| E["context-&gt;LoadClass(虚函数)\n(ETS 有特化)"] --&gt; L
+  L --&gt; M["SetupClassInfo\nCreate builders + compute size"]
+  M --&gt; N["CreateClass(ext)\nLoadMethods/LoadFields"]
+  N --&gt; O["LinkMethods\n(vtable/itable/IMT)"]
+  O --&gt; P["LinkFields\n(LayoutFields 写 offset/refFields/objectSize)"]
+  P --&gt; Q["InsertClass 并发去重\n(失败则回收新对象)"]
+  Q --&gt; R2["返回 Class* / nullptr"]</code></pre>
+<h2 id="0-include-l16l49">0. 顶部 include 与命名空间（L16–L49）<a class="headerlink" href="#0-include-l16l49" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>L16</strong>：实现对应头：<code>runtime/include/class_linker.h</code>。</li>
+<li><strong>L17</strong>：bridge：<code>GetCompiledCodeToInterpreterBridge</code>（LoadMethod 设置 entrypoint 用）。</li>
+<li><strong>L18–L19</strong>：<code>cha.h</code>、<code>class_initializer.h</code>（类初始化与 CHA 相关）。</li>
+<li><strong>L33–L39</strong>：panda_file 的各类 accessor（Class/Method/Field/Proto/Code）与 <code>panda_cache.h</code>（缓存）。</li>
+<li><strong>L45–L49</strong>：<code>namespace ark</code>；<code>using Type/SourceLang</code>。</li>
+</ul>
+<h2 id="1-pandafile-classlinkeraddpandafilel50l79">1. PandaFile 注册：<code>ClassLinker::AddPandaFile</code>（L50–L79）<a class="headerlink" href="#1-pandafile-classlinkeraddpandafilel50l79" title="Permanent link">&para;</a></h2>
+<p>核心逻辑：
+- <strong>L58–L61</strong>：在 <code>pandaFilesLock_</code> 下把 <code>{context, pf}</code> push 到 <code>pandaFiles_</code>（全量文件集）。
+- <strong>L63</strong>：调用 <code>AotManager::UpdatePandaFilesSnapshot(file, context, IsArkAot)</code>，让 AOT 侧同步可见文件集。
+- <strong>L65–L71</strong>：如果是 boot context（或 context==nullptr）：
+  - 加入 <code>bootPandaFiles_</code>（受 <code>bootPandaFilesLock_</code> 保护）
+  - 如果启用 <code>boot class filter</code>（bloom filter），调用 <code>AddBootClassFilter(file)</code> 预热过滤器。
+- <strong>L73–L76</strong>：Runtime 已初始化时，发出 <code>LoadModuleEvent</code>（通知系统）。
+- <strong>L78</strong>：<code>tooling::DebugInf::AddCodeMetaInfo</code>（调试元信息注册）。</p>
+<blockquote>
+<p>结论：<strong>AddPandaFile 是“文件注册中心”</strong>：它同时驱动 AOT snapshot、boot files 集合、以及调试/通知。</p>
+</blockquote>
+<h2 id="2-freeclassdatafreeclassclasslinkerl81l160">2. 释放路径：<code>FreeClassData/FreeClass/~ClassLinker</code>（L81–L160）<a class="headerlink" href="#2-freeclassdatafreeclassclasslinkerl81l160" title="Permanent link">&para;</a></h2>
+<h3 id="21-freeclassdatal81l147">2.1 <code>FreeClassData</code>（L81–L147）<a class="headerlink" href="#21-freeclassdatal81l147" title="Permanent link">&para;</a></h3>
+<ul>
+<li>释放 <code>fields</code> 数组（L83–L87）。</li>
+<li>释放 <code>methods</code> 数组前，先释放每个 method 的 <code>ProfilingData</code>（L91–L97）。<br />
+  这里强调：profiling data 通过 <code>InternalAllocator</code> 分配，因此也必须通过同 allocator free。</li>
+<li>对 copied methods（default interface method 拷贝出来的 Method）：</li>
+<li><strong>L99–L120</strong>：存在“profilingData 借用原方法”的可能性，故先在原 methods 中查同 (fileId,pf) 的方法，
+    仅当 copied method 的 profilingData 并非指向原方法的同一块时才 free（L115–L119）。</li>
+<li><strong>L125–L136</strong>：释放 itable 及其每个 entry 的 methods span；数组类可能不拥有自己的 itable（<code>!IsArrayClass()</code>）。</li>
+<li><strong>L137–L146</strong>：释放 interfaces / constituent types spans。</li>
+</ul>
+<h3 id="22-freeclassl149l153">2.2 <code>FreeClass</code>（L149–L153）<a class="headerlink" href="#22-freeclassl149l153" title="Permanent link">&para;</a></h3>
+<p>先 <code>FreeClassData</code>，再委托 extension 做语言特定的 <code>FreeClass</code>。</p>
+<h3 id="23-l155l160">2.3 析构（L155–L160）<a class="headerlink" href="#23-l155l160" title="Permanent link">&para;</a></h3>
+<p>释放 <code>copiedNames_</code> 中保存的“被复制过的 descriptor 字符串”内存（由 <code>CopyMutf8String</code> 分配）。</p>
+<h2 id="3-extension-classlinkerclasslinkerresetextensionl162l179">3. 构造与 extension 装配：<code>ClassLinker::ClassLinker/ResetExtension</code>（L162–L179）<a class="headerlink" href="#3-extension-classlinkerclasslinkerresetextensionl162l179" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>L164–L168</strong>：初始化：</li>
+<li><code>aotManager_ = MakePandaUnique&lt;AotManager&gt;()</code></li>
+<li><code>isTraceEnabled_</code> 来自 options</li>
+<li><code>bootClassFilter_</code> 以常量参数构造（NUM_BOOT_CLASSES / FILTER_RATE）。</li>
+<li><strong>L170–L172</strong>：把外部传入的 extensions vector 转换填充到 <code>extensions_[langIndex]</code>。</li>
+<li><strong>L175–L179</strong>：<code>ResetExtension(lang)</code>：通过 <code>Runtime::GetLanguageContext(lang)</code> 重新创建该语言 extension（热更/重置场景）。</li>
+</ul>
+<h2 id="4-initializeinitializerootsl187l221">4. 初始化：<code>Initialize/InitializeRoots</code>（L187–L221）<a class="headerlink" href="#4-initializeinitializerootsl187l221" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Initialize</strong>：遍历所有 non-null extension，调用 <code>ext-&gt;Initialize(this, compressedStringEnabled)</code>；成功后 <code>isInitialized_ = true</code>。</li>
+<li><strong>InitializeRoots</strong>：遍历 extension 调 <code>ext-&gt;InitializeRoots(thread)</code>，用于构建 class roots（Object/Class/String/Array…）。</li>
+</ul>
+<blockquote>
+<p>注意：这里体现了两阶段：<strong>Initialize（初始化 extension 与 linker）</strong> 与 <strong>InitializeRoots（构建根类）</strong>。</p>
+</blockquote>
+<h2 id="5-boot-files-findclassinpandafiles-findloadedclassl223l242">5. Boot files 查找：<code>FindClassInPandaFiles</code> + <code>FindLoadedClass</code>（L223–L242）<a class="headerlink" href="#5-boot-files-findclassinpandafiles-findloadedclassl223l242" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>FindClassInPandaFiles(descriptor, pandaFiles)</code>：线性扫描文件列表，<code>pf-&gt;GetClassId(descriptor)</code> 命中且非 external 则返回 <code>(classId,pf)</code>。</li>
+<li><code>FindLoadedClass(descriptor, context)</code>：直接转发 <code>context-&gt;FindClass</code>（内部带 <code>classesLock_</code>）。</li>
+</ul>
+<h2 id="6-class-getclasssizel244l297">6. 计算 Class 对象总大小：<code>GetClassSize</code>（L244–L297）<a class="headerlink" href="#6-class-getclasssizel244l297" title="Permanent link">&para;</a></h2>
+<p>该模板函数枚举 <strong>静态字段类型分布</strong>，统计：
+- 8/16/32/64 位 primitive
+- reference
+- tagged（动态语言 TaggedValue）</p>
+<p>并调用：
+- <strong>L295–L296</strong>：<code>Class::ComputeClassSize(vtableSize, imtSize, numXxxSfields...)</code></p>
+<blockquote>
+<p>关键点：<strong>Class 的内存大小不仅取决于 vtable/imt，还取决于静态字段类型分布</strong>（布局由 Class::ComputeClassSize 定义）。</p>
+</blockquote>
+<h2 id="7-setupclassinfo-builder-sizel345l421">7. SetupClassInfo：创建三类 builder 并算 size（L345–L421）<a class="headerlink" href="#7-setupclassinfo-builder-sizel345l421" title="Permanent link">&para;</a></h2>
+<h3 id="71-a-panda_fileclassdataaccessorl345l370">7.1 版本 A：基于 <code>panda_file::ClassDataAccessor*</code>（L345–L370）<a class="headerlink" href="#71-a-panda_fileclassdataaccessorl345l370" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>L349</strong>：<code>LanguageContext ctx = Runtime::GetLanguageContext(dataAccessor)</code>（从 classData 解析语言）。</li>
+<li><strong>L351–L353</strong>：创建 builder：</li>
+<li><code>ctx.CreateVTableBuilder(errorHandler)</code></li>
+<li><code>ctx.CreateITableBuilder(errorHandler)</code></li>
+<li><code>ctx.CreateIMTableBuilder()</code></li>
+<li><strong>L356–L358</strong>：itableBuilder 先 Build（需要 base + interfaces + 是否接口）。</li>
+<li><strong>L360–L363</strong>：vtableBuilder Build 失败则释放 itable/interfaces（<code>FreeITableAndInterfaces</code>）。</li>
+<li><strong>L364</strong>：imtableBuilder Build。</li>
+<li><strong>L366–L368</strong>：通过 wrapper 枚举静态字段类型 → <code>GetClassSize</code> 算出 <code>info.size</code> 与 <code>info.numSfields</code>。</li>
+</ul>
+<h3 id="72-b-spanmethodspanfieldl397l421">7.2 版本 B：基于 <code>Span&lt;Method&gt;/Span&lt;Field&gt;</code>（L397–L421）<a class="headerlink" href="#72-b-spanmethodspanfieldl397l421" title="Permanent link">&para;</a></h3>
+<p>用于 <code>BuildClass</code>（合成类）路径：语言从 <code>*base</code> 决定（L400），其余步骤与版本 A 一致。</p>
+<blockquote>
+<p>结论：<strong>SetupClassInfo 是管线的“装配点”</strong>：它同时决定三类派发表构建策略与 class 对象整体布局大小。</p>
+</blockquote>
+<h2 id="8-loadmethod-copied-methods-aot-l423l545">8. LoadMethod / copied methods / AOT 入口点（L423–L545）<a class="headerlink" href="#8-loadmethod-copied-methods-aot-l423l545" title="Permanent link">&para;</a></h2>
+<h3 id="81-loadmethodl423l453">8.1 <code>LoadMethod</code>（L423–L453）<a class="headerlink" href="#81-loadmethodl423l453" title="Permanent link">&para;</a></h3>
+<ul>
+<li>取 proto shorty：<code>ProtoDataAccessor pda(pf, protoId)</code>。</li>
+<li>根据 ctor/cctor 名称为 method 打上 <code>ACC_CONSTRUCTOR</code>（L431–L434）。</li>
+<li>计算 <code>numArgs</code>：static 用 <code>pda.GetNumArgs()</code>，非 static +1（隐式 this）（L437）。</li>
+<li>若无 codeId（L439–L447）：</li>
+<li><code>InitializeMemory(method, klass, pf, methodId, codeId=0, accessFlags, numArgs, shorty)</code></li>
+<li>native：<code>SetCompiledEntryPoint(ext-&gt;GetNativeEntryPointFor(method))</code></li>
+<li>非 native：<code>SetInterpreterEntryPoint()</code>（C2I bridge）</li>
+<li>若有 codeId（L448–L452）：</li>
+<li><code>InitializeMemory(..., codeId)</code></li>
+<li><code>SetCompiledEntryPoint(GetCompiledCodeToInterpreterBridge(method))</code></li>
+</ul>
+<h3 id="82-aot-maybelinkmethodtoaotcodel455l472">8.2 AOT 链接：<code>MaybeLinkMethodToAotCode</code>（L455–L472）<a class="headerlink" href="#82-aot-maybelinkmethodtoaotcodel455l472" title="Permanent link">&para;</a></h3>
+<p>若 method 非 intrinsic 且 AOT class 有该 methodIndex 的 code entry，则直接把 entrypoint 切到 AOT code（并打事件）。</p>
+<h3 id="83-copied-methodssetupcopiedmethodsl474l493">8.3 copied methods：<code>SetupCopiedMethods</code>（L474–L493）<a class="headerlink" href="#83-copied-methodssetupcopiedmethodsl474l493" title="Permanent link">&para;</a></h3>
+<p>把 vtable builder 产出的 <code>CopiedMethod</code> 复制成新的 <code>Method</code> 对象：
+- <code>InitializeMemory(method, copiedMethods[i].GetMethod())</code>（调用 Method 的“从 Method* 拷贝构造”）
+- <code>SetIsDefaultInterfaceMethod()</code>
+- 若 status 是 ABSTRACT/CONFLICT，设置 entrypoint 为对应 stub（AbstractMethodError / DefaultConflict）。</p>
+<h3 id="84-loadmethodsl495l545">8.4 <code>LoadMethods</code>（L495–L545）<a class="headerlink" href="#84-loadmethodsl495l545" title="Permanent link">&para;</a></h3>
+<p>要点：
+- 计算 vmethods/smethods 分区（L500–L502）。
+- totalNumMethods = 原 methods + copiedMethods（L503–L505）。
+- 分配连续 <code>Span&lt;Method&gt;</code>（L509）。
+- 枚举 panda_file 方法：
+  - static 放入 <code>methods[smethodIdx++]</code>，virtual 放 <code>methods[vmethodIdx++]</code>（L529）。
+  - <code>LoadMethod</code> 初始化。
+  - 若 AOT class valid → <code>MaybeLinkMethodToAotCode</code>（L531–L533）。
+  - abstract method 直接把 entrypoint 设为 <code>GetAbstractMethodStub()</code>（L534–L538），避免每次派发前判断 abstract。
+- 末尾 <code>SetupCopiedMethods</code>，并 <code>klass-&gt;SetMethods(methods, numVmethods, numSmethods)</code>。</p>
+<h2 id="9-loadfields-field-l547l571">9. <code>LoadFields</code>：构建 Field 数组（L547–L571）<a class="headerlink" href="#9-loadfields-field-l547l571" title="Permanent link">&para;</a></h2>
+<ul>
+<li>分配 <code>Span&lt;Field&gt; fields</code>，并按 static/instance 分区写入（L559–L566）：</li>
+<li><code>InitializeMemory(field, klass, fieldId, accessFlags, TypeFromEncoding(fda.GetType()))</code></li>
+<li><code>klass-&gt;SetFields(fields, numSfields)</code>（L568）。</li>
+</ul>
+<blockquote>
+<p>与 <code>field.h</code> 对齐：Field 的 type 编码进 <code>accessFlags_</code>；offset 仍未设置，后续由 LayoutFields 写入。</p>
+</blockquote>
+<h2 id="10-layoutfieldsl573l819">10. 字段布局算法：<code>LayoutFields*</code>（L573–L819）<a class="headerlink" href="#10-layoutfieldsl573l819" title="Permanent link">&para;</a></h2>
+<h3 id="101-l577l581">10.1 核心设计目标（L577–L581）<a class="headerlink" href="#101-l577l581" title="Permanent link">&para;</a></h3>
+<p>注释明确：<strong>必须保持与“语言侧 class 表示”一致的字段顺序</strong>，否则会出现如 String 的字段顺序不一致问题。</p>
+<h3 id="102-layoutfieldswithoutalignmentl573l601">10.2 <code>LayoutFieldsWithoutAlignment</code>（L573–L601）<a class="headerlink" href="#102-layoutfieldswithoutalignmentl573l601" title="Permanent link">&para;</a></h3>
+<p>对同尺寸字段列表按顺序批量写 offset：
+- 正向：<code>field-&gt;SetOffset(*offset); *offset += size</code>
+- 逆向（REVERSE_LAYOUT=true）：用于把子类小字段塞回 base 的 padding 末尾。</p>
+<h3 id="103-layoutreferencefieldsl603l621">10.3 引用字段特殊处理：<code>LayoutReferenceFields</code>（L603–L621）<a class="headerlink" href="#103-layoutreferencefieldsl603l621" title="Permanent link">&para;</a></h3>
+<p>先布局 <code>volatile</code> 引用字段，再布局非 volatile；返回 volatile 引用字段数量。
+这和 <code>Class::SetVolatileRefFieldsNum/SetRefFieldsOffset</code> 配套，用于 GC/并发可见性策略。</p>
+<h3 id="104-padding-layoutfieldsinbaseclasspaddingl629l661">10.4 “基类 padding 回填”：<code>LayoutFieldsInBaseClassPadding</code>（L629–L661）<a class="headerlink" href="#104-padding-layoutfieldsinbaseclasspaddingl629l661" title="Permanent link">&para;</a></h3>
+<p>确定起始 offset：
+- static：<code>klass-&gt;GetStaticFieldsOffset()</code>
+- instance：<code>base-&gt;GetObjectSize()</code> 或 <code>ObjectHeaderSize()</code></p>
+<p>根据“最高对齐需求”（ref &gt; 64 &gt; 32 &gt; 16）对齐到 <code>alignOffset</code>，若有 padding，则 <strong>逆向把 32/16/8 位字段塞进 padding</strong>。</p>
+<h3 id="105-layoutfieldsl664l717">10.5 主布局：<code>LayoutFields</code>（L664–L717）<a class="headerlink" href="#105-layoutfieldsl664l717" title="Permanent link">&para;</a></h3>
+<p>顺序：
+1) 先处理 refFields：对齐到 OBJECT_POINTER_SIZE，写 <code>refFieldsNum/refFieldsOffset/volatileRefFieldsNum</code>
+2) 处理 TaggedValue 与 64 位字段：必要时用 32/16/8 填充对齐缺口
+3) 再处理 32 位字段：必要时用 16/8 填充
+4) 再处理 16 位字段：必要时用 8 填充
+5) 最后处理 8 位字段</p>
+<h3 id="106-classlinkerlayoutfieldsl732l791">10.6 对外入口：<code>ClassLinker::LayoutFields</code>（L732–L791）<a class="headerlink" href="#106-classlinkerlayoutfieldsl732l791" title="Permanent link">&para;</a></h3>
+<p>把 fields 按类型分桶到 tagged/64/32/16/8/ref，然后调用 <code>ark::LayoutFields(...)</code> 得到最终 size：
+- instance 且非 variable-size：<code>klass-&gt;SetObjectSize(size)</code>（L786–L788）。</p>
+<h3 id="107-linkmethodslinkfieldsl793l819">10.7 <code>LinkMethods/LinkFields</code>（L793–L819）<a class="headerlink" href="#107-linkmethodslinkfieldsl793l819" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>LinkMethods</code>：<code>vtableBuilder-&gt;UpdateClass</code> 写回 vtableIndex 等；<code>itableBuilder-&gt;Resolve/UpdateClass</code>；<code>imtableBuilder-&gt;UpdateClass</code>。</li>
+<li><code>LinkFields</code>：分别对 static/instance fields 调 <code>LayoutFields</code>，失败则 log 并返回 false。</li>
+</ul>
+<blockquote>
+<p>结论：<strong>字段 offset 的唯一写入点就在这里</strong>，它直接决定对象布局与反射/解释器字段访问的正确性。</p>
+</blockquote>
+<h2 id="11-baseinterfaces-loadclass-l821l1103">11. base/interfaces 解析与主 LoadClass 管线（L821–L1103）<a class="headerlink" href="#11-baseinterfaces-loadclass-l821l1103" title="Permanent link">&para;</a></h2>
+<h3 id="111-loadbaseclassl821l841">11.1 <code>LoadBaseClass</code>（L821–L841）<a class="headerlink" href="#111-loadbaseclassl821l841" title="Permanent link">&para;</a></h3>
+<p>从 superClassId 解析 base：
+- offset==0 → Object root
+- 否则通过 extension 的 <code>GetClass(pf, baseClassId, context, handler)</code> 获取 base。</p>
+<h3 id="112-loadinterfacesl843l872">11.2 <code>LoadInterfaces</code>（L843–L872）<a class="headerlink" href="#112-loadinterfacesl843l872" title="Permanent link">&para;</a></h3>
+<p>分配 <code>Span&lt;Class*&gt;</code>，逐个 <code>GetClass(pf, ifaceId, context, handler)</code>；失败则释放数组并返回 empty optional。</p>
+<h3 id="113-l874">11.3 “并发加载/循环检测”骨架（L874+）<a class="headerlink" href="#113-l874" title="Permanent link">&para;</a></h3>
+<p>文件中引入 <code>ClassLoadingSet</code> 与 <code>ClassScopeStaticSetAutoCleaner</code>（见后续实际使用点），用于防止同线程递归加载导致的循环问题；其核心是把 <code>(pandaFileHash,classId)</code> 组合成一个 64-bit hash（L900–L904）。</p>
+<h3 id="114-loadclassclassdataaccessor-l906l959">11.4 <code>LoadClass(ClassDataAccessor*, ...)</code>（L906–L959）<a class="headerlink" href="#114-loadclassclassdataaccessor-l906l959" title="Permanent link">&para;</a></h3>
+<p>关键阶段：
+1) <code>SetupClassInfo</code>（builders + size + numSfields）
+2) <code>ext-&gt;CreateClass(descriptor, vtableSize, imtSize, size)</code> 创建 <code>Class</code> 对象（L916–L919）
+3) 写入 class 元信息：context/base/interfaces/fileId/pandaFile/accessFlags/indexes（L924–L936）
+4) 写入 counts：numVirtualMethods/numCopiedMethods/numStaticFields（L937–L939）
+5) onFail lambda：失败统一 <code>FreeClass(klass)</code> 并打 log（L941–L945）
+6) <code>LoadMethods</code> → <code>LoadFields</code> → <code>LinkMethods</code> → <code>LinkFields</code>（L946–L957）
+7) 返回 klass（仍未加入 context；加入发生在更外层 LoadClass wrapper 中）</p>
+<h3 id="115-runtimecontext-l1088l1102">11.5 “加入 runtime/context &amp; 事件”包装层（L1088–L1102）<a class="headerlink" href="#115-runtimecontext-l1088l1102" title="Permanent link">&para;</a></h3>
+<p>当 <code>addToRuntime</code> 为 true：
+- <code>ClassLoadEvent</code>
+- <code>context-&gt;InsertClass(klass)</code>：若返回 otherKlass，说明另一个线程已创建同 descriptor 的类 → FreeClass 并返回 otherKlass（L1091–L1096）
+- <code>RemoveCreatedClassInExtension(klass)</code>：通知 extension “该 class 已 prepared”
+- <code>ClassPrepareEvent</code></p>
+<blockquote>
+<p>这里体现了：<strong>并发下的“最后写入者赢/插入冲突回收”策略</strong>。</p>
+</blockquote>
+<h2 id="12-buildclass-arrayunionl1105l1390">12. BuildClass（合成类）与 array/union（L1105–L1390）<a class="headerlink" href="#12-buildclass-arrayunionl1105l1390" title="Permanent link">&para;</a></h2>
+<h3 id="121-descriptor-copymutf8stringl1105l1111">12.1 descriptor 复制：<code>CopyMutf8String</code>（L1105–L1111）<a class="headerlink" href="#121-descriptor-copymutf8stringl1105l1111" title="Permanent link">&para;</a></h3>
+<p>分配并复制 descriptor（null-terminated），用于 needCopyDescriptor 为真时避免引用外部临时内存。</p>
+<h3 id="122-linkentitiesandinitclassl1113l1133">12.2 <code>LinkEntitiesAndInitClass</code>（L1113–L1133）<a class="headerlink" href="#122-linkentitiesandinitclassl1113l1133" title="Permanent link">&para;</a></h3>
+<p>对 BuildClass/某些路径复用：
+- <code>LinkMethods</code>、<code>LinkFields</code>、<code>ext-&gt;InitializeClass</code></p>
+<h3 id="123-buildclassl1135l1205">12.3 <code>BuildClass</code>（L1135–L1205）<a class="headerlink" href="#123-buildclassl1135l1205" title="Permanent link">&para;</a></h3>
+<p>流程：
+- 可选复制 descriptor 并记录到 <code>copiedNames_</code>（L1140–L1144）。
+- <code>SetupClassInfo</code>（基于 spans）。
+- <code>ext-&gt;CreateClass</code> 创建 class。
+- 填充 base/interfaces/accessFlags/counts、写入 methods/fields spans，并把 Method/Field 的 <code>classWord_</code> 重绑到新 klass（L1178–L1184）。
+- <code>LinkEntitiesAndInitClass</code> → state=LOADED → 事件 → <code>context-&gt;InsertClass</code> 并处理并发冲突（L1194–L1199）。</p>
+<h3 id="124-union-l1207l1317">12.4 union 类（L1207–L1317）<a class="headerlink" href="#124-union-l1207l1317" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>LoadConstituentClasses</code>：解析 union descriptor 的 component 列表，逐个 <code>GetClass</code>（失败释放）。</li>
+<li><code>LoadUnionClass</code>：</li>
+<li>通过 <code>ext-&gt;GetCommonContext(constituentClasses)</code> 获取 commonContext（可能与当前 context 不同）</li>
+<li>在 commonContext 中 <code>FindLoadedClass</code> 做去重</li>
+<li><code>CreateUnionClass</code>（调用 <code>ext-&gt;InitializeUnionClass</code>）</li>
+<li>事件 + InsertClass（与普通类一致）</li>
+</ul>
+<h3 id="125-array-l1319l1390">12.5 array 类（L1319–L1390）<a class="headerlink" href="#125-array-l1319l1390" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>LoadArrayClass</code>：</li>
+<li>通过 <code>GetClass(componentDescriptor)</code> 获取 componentClass</li>
+<li><code>componentClassContext</code> 决定最终插入的 context（避免跨 context 复制）</li>
+<li><code>CreateArrayClass</code>（<code>ext-&gt;InitializeArrayClass</code>）</li>
+<li>事件 + InsertClass（同上）</li>
+</ul>
+<h2 id="13-getclassdescriptorpath-boot-filterl1410l1535">13. GetClass：descriptor/path 的缓存与 boot filter（L1410–L1535）<a class="headerlink" href="#13-getclassdescriptorpath-boot-filterl1410l1535" title="Permanent link">&para;</a></h2>
+<h3 id="131-getclassdescriptor-l1410l1463">13.1 <code>GetClass(descriptor, ...)</code>（L1410–L1463）<a class="headerlink" href="#131-getclassdescriptor-l1410l1463" title="Permanent link">&para;</a></h3>
+<p>顺序：
+1) 在 context 查 loadedClasses（L1420–L1423）
+2) union/array descriptor 特判（L1425–L1431）
+3) 若 boot context：
+   - 先 <code>LookupInFilter</code>，IMPOSSIBLY_HAS 直接返回 nullptr（L1434–L1436）
+   - 在 <code>bootPandaFiles_</code> 中查 classId（受 <code>bootPandaFilesLock_</code> 保护）（L1442–L1444）
+   - 未找到：构造错误信息（注意缩小 lock scope 防递归）并 <code>OnError</code>（L1446–L1455）
+   - 找到：走 <code>LoadClass(pandaFile, classId, descriptor, context, errorHandler)</code>（L1459）
+4) 非 boot context：委托 <code>context-&gt;LoadClass</code>（虚函数，可由语言插件实现 app context 的加载策略）（L1462）</p>
+<h3 id="132-getclasspfidl1466l1535">13.2 <code>GetClass(pf,id,...)</code>（L1466–L1535）<a class="headerlink" href="#132-getclasspfidl1466l1535" title="Permanent link">&para;</a></h3>
+<p>额外增加 panda_cache：
+1) <code>pf.GetPandaCache()-&gt;GetClassFromCache(id)</code> 命中直接返回（L1475–L1478）
+2) 否则按 descriptor 查 loadedClasses；命中则写回 cache（L1481–L1485）
+3) union/array 分支同样会在成功后写回 cache（L1487–L1500）
+4) boot context：同样先 <code>LookupInFilter</code>，再查 bootPandaFiles_，最后 <code>LoadClass</code> 并写 cache（L1503–L1531）
+5) 非 boot：<code>context-&gt;LoadClass(descriptor, false, handler)</code>（L1534）</p>
+<h2 id="14-getmethod-getfield-id-l1537l1815">14. GetMethod / GetField：缓存与“按 id / 按签名”双路径（L1537–L1815）<a class="headerlink" href="#14-getmethod-getfield-id-l1537l1815" title="Permanent link">&para;</a></h2>
+<h3 id="141-getmethodl1537">14.1 GetMethod（L1537+）<a class="headerlink" href="#141-getmethodl1537" title="Permanent link">&para;</a></h3>
+<ul>
+<li>先 panda_cache：<code>GetMethodFromCache</code>。</li>
+<li>无 context 时：用 <code>ClassDataAccessor</code> 推导语言，取 extension 的 bootContext（L1548–L1558）。</li>
+<li><code>klass = GetClass(pf, classId, context, handler)</code>，失败返回 nullptr。</li>
+<li><code>GetMethod(klass, methodDataAccessor, handler)</code>：</li>
+<li>若方法定义在同 pf 且非 external：优先用 id 直接取（接口/类分别取 static/virtual 分区）（L1613–L1618）</li>
+<li>否则：用 name + proto 在 class 中查找（必要时 abstract class 允许查接口方法）（L1632–L1643）</li>
+<li>找不到会构造 <code>METHOD_NOT_FOUND</code> 错误并返回 nullptr（L1620–L1626 / L1645–L1651）。</li>
+</ul>
+<h3 id="142-getfield-id-l1660l1743">14.2 GetField：按 id / 按签名（L1660–L1743）<a class="headerlink" href="#142-getfield-id-l1660l1743" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GetFieldById</code>：<code>FindStaticFieldById/FindInstanceFieldById</code>，失败 OnError(FIELD_NOT_FOUND)。</li>
+<li><code>GetFieldBySignature</code>：name+type 过滤：</li>
+<li>primitive：只比 type + name</li>
+<li>reference：还要比较 “字段类型的 class type”（通过对比 typeId 的 stringData）（L1693–L1701）</li>
+<li><code>GetField(pf,id,...)</code>：先 cache；<code>klass = GetClass(pf, classId, ...)</code>；</li>
+<li>若非 external 且 <code>klass-&gt;GetPandaFile()==&amp;pf</code> 用 byId，否则用 bySignature（L1737–L1741）。</li>
+</ul>
+<h3 id="143-initializeclassl1745l1754">14.3 InitializeClass（L1745–L1754）<a class="headerlink" href="#143-initializeclassl1745l1754" title="Permanent link">&para;</a></h3>
+<p>若已 initialized 直接 true，否则委托 <code>LanguageContext::InitializeClass(this, thread, klass)</code>（语言相关的 init state machine）。</p>
+<h2 id="15-aot-boot-class-bloom-filterl1828l1894">15. AOT 重新链接与 boot class bloom filter（L1828–L1894）<a class="headerlink" href="#15-aot-boot-class-bloom-filterl1828l1894" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>TryReLinkAotCodeForBoot</code>：遍历 bootContext 已加载类，枚举 methods 并调用 <code>MaybeLinkMethodToAotCode</code>（用于 boot 期间补挂 AOT entry）。</li>
+<li><code>AddBootClassFilter</code>：锁 <code>bootClassFilterLock_</code>，把 boot file 的所有 className 加入 bloom filter（L1857–L1867）。</li>
+<li><code>LookupInFilter</code>：</li>
+<li>未启用过滤：DISABLED</li>
+<li>否则 <code>PossiblyContains(descriptor)</code>；若 false：<ul>
+<li>errorHandler 为空：直接 IMPOSSIBLY_HAS</li>
+<li>否则上报 <code>CLASS_NOT_FOUND</code> 并返回 IMPOSSIBLY_HAS</li>
+</ul>
+</li>
+<li>命中则 POSSIBLY_HAS</li>
+</ul>
+<blockquote>
+<p>过滤器语义：<strong>只做“快速否定”</strong>（bloom filter false → 一定不存在；true → 还需去 bootPandaFiles 查证）。</p>
+</blockquote>
+<h2 id="16-03">16. 本文件对 03 章的“契约回指”<a class="headerlink" href="#16-03" title="Permanent link">&para;</a></h2>
+<p>本文件是 <code>Method/Field/Class</code> 契约的主要写入点：
+- <strong>Method</strong>：
+  - <code>SetCompiledEntryPoint</code>（解释器桥 / native / AOT / stub）
+  - <code>SetIsDefaultInterfaceMethod</code>（copied method）
+  - abstract method stub（避免派发前检查）
+- <strong>Field</strong>：
+  - <code>SetOffset</code>（布局算法唯一写入点）
+- <strong>Class</strong>：
+  - <code>SetRefFieldsNum/Offset/VolatileRefFieldsNum</code>
+  - <code>SetObjectSize</code>
+  - <code>SetMethods/SetFields/SetInterfaces/SetBase/SetLoadContext</code>
+  - <code>SetState(LOADED)</code> 与插入 context（并发冲突回收）</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.prune", "navigation.indexes", "navigation.top", "toc.follow", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../../assets/javascripts/mermaid-init.js"></script>
+      
+    
+  </body>
+</html>

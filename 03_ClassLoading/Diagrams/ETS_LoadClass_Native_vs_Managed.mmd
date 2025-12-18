@@ -1,0 +1,14 @@
+flowchart TD
+  A["EtsClassLinkerContext::LoadClass(descriptor)"] --> B{"本context缓存命中？\nFindClass"}
+  B -->|是| R1["返回 Class*"]
+  B -->|否| C["TryLoadingClassFromNative\n(沿 RuntimeLinker parent+shared libs 链)"]
+  C --> D{"链遍历成功？"}
+  D -->|成功且找到/有错误| R2["返回 Class* 或传播错误"]
+  D -->|失败(非白名单linker)| E{"当前线程可调用 managed？\n(coro && IsManagedCode)"}
+  E -->|否| R3["禁止进入 managed\n上报 CLASS_NOT_FOUND 返回 nullptr"]
+  E -->|是| F["构造 args(runtimeLinker, etsClassName, nullptr)\n调用 managed RuntimeLinker.loadClass(final)"]
+  F --> G{"有异常？"}
+  G -->|无| R4["把返回的 class object 转为 Class* 返回"]
+  G -->|有| R5["上报 CLASS_NOT_FOUND 返回 nullptr"]
+
+

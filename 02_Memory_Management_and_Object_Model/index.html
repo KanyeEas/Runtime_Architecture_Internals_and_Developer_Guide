@@ -1,0 +1,2109 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ark runtime_core/static_core internal wiki（概览 + 深入证据链）">
+      
+      
+      
+        <link rel="canonical" href="https://github.com/KanyeEas/Runtime_Architecture_Internals_and_Developer_Guide/02_Memory_Management_and_Object_Model/">
+      
+      
+        <link rel="prev" href="../01_Startup_and_Entrypoints/">
+      
+      
+        <link rel="next" href="../03_Class_Loading_and_Linking/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>02 Memory - Runtime Architecture Internals & Developer Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-2memory-management-object-model" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="Runtime Architecture Internals &amp; Developer Guide" class="md-header__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Runtime Architecture Internals & Developer Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              02 Memory
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到夜间模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到夜间模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到日间模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到日间模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href=".." class="md-tabs__link">
+          
+  
+  
+    
+  
+  00 总览与方法论
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01_Startup/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  01 Startup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../02_Memory/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  02 Memory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../03_ClassLoading/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  03 ClassLoading
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04_ExecutionEngine/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  04 ExecutionEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../05_NativeBridge/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  05 NativeBridge
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../06_Tooling_Profiling_Verification/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  06 Tooling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../07_Build_and_Configuration/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  07 Build&Config
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Runtime Architecture Internals &amp; Developer Guide" class="md-nav__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Runtime Architecture Internals & Developer Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href=".." class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 总览与方法论
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    00 总览与方法论
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_Master_Index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    总索引（概览）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_Methodology_Wiki_Review_Checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    方法论 Checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../All_Pages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    全量页面索引（必备）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1_5" id="__nav_1_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    各章概览（Stage1）
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    各章概览（Stage1）
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Startup_and_Entrypoints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 Startup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 Memory
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 组件地图（目录 → 职责）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-new-object-heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 分配主路径：从 new object 到 Heap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 分配主路径：从 new object 到 Heap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 分配入口在哪里？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Allocation 流程图（概念级）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-gc-gc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GC 框架：GC 的职责边界与主线程模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. GC 框架：GC 的职责边界与主线程模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-gc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 GC 抽象接口的“最小集合”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-gc-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 GC 触发器（Trigger）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-barrierset-gc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. BarrierSet：解释器与编译器如何与 GC 协作
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. BarrierSet：解释器与编译器如何与 GC 协作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-barrier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 为什么需要 Barrier？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-g1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 典型实现：分代写屏障 / G1 屏障
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-objectheader-markwordclassword" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 对象模型：ObjectHeader + MarkWord/ClassWord
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 对象模型：ObjectHeader + MarkWord/ClassWord">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-objectheader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 ObjectHeader 的两大职责
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 “转发地址”意味着什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-object-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 object header 配置点
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-coretypesarray-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 核心对象（coretypes）：Array 与 String
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 核心对象（coretypes）：Array 与 String">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 String
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 阶段 2（后续扩展建议）
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_Class_Loading_and_Linking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 ClassLoading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_Execution_Engine_Interpreter_JIT_AOT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 ExecutionEngine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Native_Bridge_ANI_and_Interop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 NativeBridge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_Tooling_Profiling_Verification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 Tooling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_Build_and_Configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 Build&Config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01_Startup/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 Startup
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02_Memory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 Memory
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03_ClassLoading/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 ClassLoading
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04_ExecutionEngine/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 ExecutionEngine
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05_NativeBridge/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 NativeBridge
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06_Tooling_Profiling_Verification/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 Tooling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07_Build_and_Configuration/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 Build&Config
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 组件地图（目录 → 职责）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-new-object-heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 分配主路径：从 new object 到 Heap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 分配主路径：从 new object 到 Heap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 分配入口在哪里？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Allocation 流程图（概念级）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-gc-gc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GC 框架：GC 的职责边界与主线程模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. GC 框架：GC 的职责边界与主线程模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-gc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 GC 抽象接口的“最小集合”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-gc-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 GC 触发器（Trigger）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-barrierset-gc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. BarrierSet：解释器与编译器如何与 GC 协作
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. BarrierSet：解释器与编译器如何与 GC 协作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-barrier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 为什么需要 Barrier？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-g1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 典型实现：分代写屏障 / G1 屏障
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-objectheader-markwordclassword" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 对象模型：ObjectHeader + MarkWord/ClassWord
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 对象模型：ObjectHeader + MarkWord/ClassWord">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-objectheader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 ObjectHeader 的两大职责
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 “转发地址”意味着什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-object-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 object header 配置点
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-coretypesarray-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 核心对象（coretypes）：Array 与 String
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 核心对象（coretypes）：Array 与 String">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 String
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 阶段 2（后续扩展建议）
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-2memory-management-object-model">Chapter 2：内存管理与对象模型（Memory Management &amp; Object Model）<a class="headerlink" href="#chapter-2memory-management-object-model" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>本章回答三件事：<strong>对象如何分配</strong>、<strong>GC 如何追踪/触发/回收</strong>、以及 <strong>对象头/核心对象（coretypes）长什么样</strong>。阶段 1 以“架构地图 + 索引”为主，便于你快速定位到可读的关键文件。</p>
+</blockquote>
+<hr />
+<h3 id="1">1. 组件地图（目录 → 职责）<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>子系统</th>
+<th>目录</th>
+<th>关键文件（建议入口）</th>
+<th>你能在这里找到什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HeapManager / 分配入口</td>
+<td><code>runtime/mem/</code></td>
+<td><code>runtime/mem/heap_manager.h</code>、<code>runtime/mem/heap_manager.cpp</code></td>
+<td><code>AllocateObject/AllocateNonMovableObject</code>、TLAB、对象空间判定（young/non-movable）</td>
+</tr>
+<tr>
+<td>分配器家族</td>
+<td><code>runtime/mem/</code></td>
+<td><code>allocator.*</code>、<code>runslots*</code>、<code>region_allocator*</code>、<code>bump-allocator*</code></td>
+<td>不同 size class/region/runslots 分配策略</td>
+</tr>
+<tr>
+<td>GC 总接口</td>
+<td><code>runtime/mem/gc/</code></td>
+<td><code>runtime/mem/gc/gc.h</code>、<code>runtime/mem/gc/gc.cpp</code></td>
+<td><code>GC::StartGC/StopGC/WaitForGC</code>、root/phase/stats/worker 框架</td>
+</tr>
+<tr>
+<td>GC 具体实现</td>
+<td><code>runtime/mem/gc/*/</code></td>
+<td><code>stw-gc/</code>、<code>gen-gc/</code>、<code>g1/</code>、<code>epsilon/</code>…</td>
+<td>STW/分代/G1/空 GC 等实现细节</td>
+</tr>
+<tr>
+<td>触发器（Trigger）</td>
+<td><code>runtime/mem/gc/</code></td>
+<td><code>runtime/mem/gc/gc_trigger.h</code></td>
+<td>heap 阈值、adaptive、debug、按 Nth alloc 等触发策略</td>
+</tr>
+<tr>
+<td>BarrierSet（写屏障/读屏障）</td>
+<td><code>runtime/mem/gc/</code> + <code>libarkbase/mem/</code></td>
+<td><code>runtime/mem/gc/gc_barrier_set.h</code></td>
+<td>Interpreter 调用的 <code>PreBarrier/PostBarrier</code> + 给 Compiler 的 operand 接口</td>
+</tr>
+<tr>
+<td>对象头</td>
+<td><code>runtime/</code></td>
+<td><code>runtime/include/object_header.h</code>、<code>runtime/object_header.cpp</code>、<code>runtime/mark_word.h</code>、<code>runtime/object_header_config.h</code></td>
+<td>MarkWord/ClassWord、同步/哈希/转发地址、对象大小与类型判定</td>
+</tr>
+<tr>
+<td>核心对象（Array/String）</td>
+<td><code>runtime/include/coretypes/</code> + <code>runtime/coretypes/</code></td>
+<td><code>runtime/include/coretypes/array.h</code>、<code>runtime/include/coretypes/string.h</code></td>
+<td><code>Array</code>/<code>String</code> 继承 <code>ObjectHeader</code>，定义布局、读写与 barrier 交互</td>
+</tr>
+<tr>
+<td>设计文档（对齐实现）</td>
+<td><code>docs/</code></td>
+<td><code>docs/memory-management.md</code></td>
+<td>设计/术语/对象头布局、barrier/safepoint 理念</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="2-new-object-heap">2. 分配主路径：从 <code>new object</code> 到 Heap<a class="headerlink" href="#2-new-object-heap" title="Permanent link">&para;</a></h3>
+<h4 id="21">2.1 分配入口在哪里？<a class="headerlink" href="#21" title="Permanent link">&para;</a></h4>
+<p><strong>统一入口是 <code>mem::HeapManager</code></strong>：
+- <code>runtime/mem/heap_manager.h</code>：<code>AllocateObject()</code> / <code>AllocateNonMovableObject()</code><br />
+- <code>runtime/object_header.cpp</code>：<code>ObjectHeader::CreateObject()</code> 内部通过 <code>thread-&gt;GetVM()-&gt;GetHeapManager()</code> 分配对象
+- <code>runtime/coretypes/string.cpp</code> / <code>runtime/coretypes/line_string.cpp</code>：字符串也通过 <code>vm-&gt;GetHeapManager()-&gt;AllocateObject(...)</code> 分配（可 movable 或 non-movable）</p>
+<h4 id="22-allocation">2.2 Allocation 流程图（概念级）<a class="headerlink" href="#22-allocation" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+  allocSite[AllocationSite] --&gt; createObj[ObjectHeaderCreateObject]
+  createObj --&gt; heapMgr[HeapManagerAllocate]
+  heapMgr --&gt; tlab{UseTLAB?}
+  tlab --&gt;|yes| fastPath[TLABFastAlloc]
+  tlab --&gt;|no| slowPath[ObjectAllocatorAlloc]
+  fastPath --&gt; initBits[GCInitGCBits]
+  slowPath --&gt; maybeTrigger{NeedGCTrigger?}
+  maybeTrigger --&gt;|yes| enqueueGc[GCTaskEnqueue]
+  maybeTrigger --&gt;|no| done[ReturnObjectHeader]
+  initBits --&gt; done</code></pre>
+<blockquote>
+<p>注：具体“是否触发 GC”由 <code>GCTrigger</code> 与 <code>GC::WaitForGC/Trigger</code> 组合决定；TLAB 事件/统计在 <code>runtime/entrypoints/entrypoints.cpp</code> 有记录点（例如 slowpath alloc 事件、MemStats 记录）。</p>
+</blockquote>
+<hr />
+<h3 id="3-gc-gc">3. GC 框架：GC 的职责边界与主线程模型<a class="headerlink" href="#3-gc-gc" title="Permanent link">&para;</a></h3>
+<h4 id="31-gc">3.1 GC 抽象接口的“最小集合”<a class="headerlink" href="#31-gc" title="Permanent link">&para;</a></h4>
+<p>在 <code>runtime/mem/gc/gc.h</code> 中，GC 基类提供了：
+- <strong>生命周期</strong>：<code>Initialize(PandaVM*)</code>、<code>StartGC()</code>、<code>StopGC()</code>
+- <strong>任务执行</strong>：<code>WaitForGC(GCTask)</code>、<code>WaitForGCInManaged(...)</code>（在 managed scope 下等待）
+- <strong>对象元数据</strong>：<code>InitGCBits(...)</code>、<code>InitGCBitsForAllocationInTLAB(...)</code>
+- <strong>可观测性</strong>：<code>GCListener</code>、<code>GCPhase</code>、<code>GCStats</code>、<code>GCWorkersTaskPool</code></p>
+<p>读代码建议：先看 <code>GC::StartGC/StopGC/WaitForGC</code> 的约束，再进入具体实现（G1/Gen/STW）。</p>
+<h4 id="32-gc-trigger">3.2 GC 触发器（Trigger）<a class="headerlink" href="#32-gc-trigger" title="Permanent link">&para;</a></h4>
+<p><code>runtime/mem/gc/gc_trigger.h</code> 给出可插拔的触发策略（示例）：
+- <code>HEAP_TRIGGER</code>：heap size 相对上次 GC 增长一定百分比触发
+- <code>ADAPTIVE_HEAP_TRIGGER</code>：自适应阈值（保存近期阈值避免过频）
+- <code>DEBUG</code> / <code>DEBUG_NEVER</code> / <code>ON_NTH_ALLOC</code>：调试/测试策略</p>
+<p>在工程层面，“何时跑 GC”通常是：</p>
+<pre class="mermaid"><code>flowchart TD
+  alloc[Allocation] --&gt; memStats[MemStatsUpdate]
+  memStats --&gt; trigger[GCTriggerTriggerGcIfNeeded]
+  trigger --&gt;|enqueue| gcQueue[GCQueue]
+  gcQueue --&gt; gcThread[GCWorkerThread]</code></pre>
+<hr />
+<h3 id="4-barrierset-gc">4. BarrierSet：解释器与编译器如何与 GC 协作<a class="headerlink" href="#4-barrierset-gc" title="Permanent link">&para;</a></h3>
+<h4 id="41-barrier">4.1 为什么需要 Barrier？<a class="headerlink" href="#41-barrier" title="Permanent link">&para;</a></h4>
+<p>GC 需要在并发标记/分代收集中保持堆一致性与 remembered set/card table 的正确性。工程中把 barrier 抽象为 <code>GCBarrierSet</code>：</p>
+<ul>
+<li><strong>Interpreter 使用</strong>（直接调用）</li>
+<li><code>PreBarrier(void *preValAddr)</code></li>
+<li><code>PostBarrier(const void *objAddr, size_t offset, void *valAddr)</code></li>
+<li><code>PostBarrier(const void *objAddr, size_t offset, size_t count)</code></li>
+<li><strong>Compiler 使用</strong>（生成 barrier 的 operand）</li>
+<li><code>GetBarrierOperand(BarrierPosition, name)</code></li>
+</ul>
+<p>对应文件：<code>runtime/mem/gc/gc_barrier_set.h</code></p>
+<h4 id="42-g1">4.2 典型实现：分代写屏障 / G1 屏障<a class="headerlink" href="#42-g1" title="Permanent link">&para;</a></h4>
+<p><code>gc_barrier_set.h</code> 里可以直接看到：
+- <code>GCGenBarrierSet</code>：使用 <code>CardTable</code> + dirty card 更新（典型 inter-generational barrier）
+- <code>GCG1BarrierSet</code>：更复杂，涉及 thread-local card queue / ring buffer（用于 G1 remembered set 更新）</p>
+<hr />
+<h3 id="5-objectheader-markwordclassword">5. 对象模型：ObjectHeader + MarkWord/ClassWord<a class="headerlink" href="#5-objectheader-markwordclassword" title="Permanent link">&para;</a></h3>
+<h4 id="51-objectheader">5.1 ObjectHeader 的两大职责<a class="headerlink" href="#51-objectheader" title="Permanent link">&para;</a></h4>
+<p><code>runtime/include/object_header.h</code> 明确把职责拆为：
+- <strong>Class word</strong>：类型/元数据（<code>ClassAddr&lt;T&gt;()</code>）、字段访问/类型判断
+- <strong>Mark word</strong>：锁（轻量/重量）、hash、GC mark、转发地址（forwarding）</p>
+<p><code>runtime/mark_word.h</code> 则给出不同平台配置下 MarkWord 的 bit layout（高端/低端、32/64 位指针）。</p>
+<h4 id="52">5.2 “转发地址”意味着什么？<a class="headerlink" href="#52" title="Permanent link">&para;</a></h4>
+<p>当对象被移动 GC 移动后，MarkWord 进入 <code>STATE_GC</code>（forwarding），这解释了：
+- 为什么对象头需要保存 forwarding address
+- 为什么 <code>ObjectHeader::IsForwarded()</code> 是一个高频判断点（对读 barrier/更新指针非常关键）</p>
+<h4 id="53-object-header">5.3 object header 配置点<a class="headerlink" href="#53-object-header" title="Permanent link">&para;</a></h4>
+<p><code>runtime/object_header_config.h</code>：当前通过 <code>#define HIGHENDSYSTEM</code> 选择 high-end 配置（hash in header 等），并按 <code>OBJECT_POINTER_SIZE</code> 分化 32/64 位。</p>
+<hr />
+<h3 id="6-coretypesarray-string">6. 核心对象（coretypes）：Array 与 String<a class="headerlink" href="#6-coretypesarray-string" title="Permanent link">&para;</a></h3>
+<h4 id="61-array">6.1 Array<a class="headerlink" href="#61-array" title="Permanent link">&para;</a></h4>
+<p><code>runtime/include/coretypes/array.h</code>：
+- <code>class Array : public ObjectHeader</code>
+- 布局要点：对象头 + <code>length_</code> + <code>data_[]</code>
+- 关键点：<code>GetObject/SetObject</code> 等 API 会结合 <strong>读写 barrier</strong>（通过模板参数控制 <code>NEED_READ_BARRIER/NEED_WRITE_BARRIER</code>）</p>
+<h4 id="62-string">6.2 String<a class="headerlink" href="#62-string" title="Permanent link">&para;</a></h4>
+<p><code>runtime/include/coretypes/string.h</code>：
+- <code>class String : public ObjectHeader</code>
+- 支持压缩字符串（<code>LineString::SetCompressedStringsEnabled</code>），多种来源构建（Utf8/Utf16/MUtf8）
+- 字符串实现与 <code>LanguageContext</code>/<code>PandaVM</code> 强绑定（创建时需要 ctx 与 vm）</p>
+<hr />
+<h3 id="7-2">7. 阶段 2（后续扩展建议）<a class="headerlink" href="#7-2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>把 heap space/region/young/tenured 的“真实实现类”补齐</strong>：在 <code>runtime/mem/heap_space.*</code>、<code>runtime/mem/gc/g1/*</code>、<code>runtime/mem/gc/gen-gc/*</code> 之间建立一张类图</li>
+<li><strong>补齐 root 枚举与扫描路径</strong>：从 <code>runtime/mem/gc/gc_root.*</code>、<code>runtime/include/thread.h</code>、<code>runtime/stack_walker.*</code> 出发</li>
+<li><strong>补齐 safepoint 与信号协作</strong>：对照 <code>docs/memory-management.md</code> 的 safepoint 设计段落，关联 runtime 实际实现点</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.prune", "navigation.indexes", "navigation.top", "toc.follow", "content.code.copy"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js"></script>
+      
+        <script src="../assets/javascripts/mermaid-init.js"></script>
+      
+    
+  </body>
+</html>

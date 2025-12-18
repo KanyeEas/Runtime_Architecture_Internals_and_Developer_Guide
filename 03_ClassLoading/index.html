@@ -1,0 +1,2197 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ark runtime_core/static_core internal wiki（概览 + 深入证据链）">
+      
+      
+      
+        <link rel="canonical" href="https://github.com/KanyeEas/Runtime_Architecture_Internals_and_Developer_Guide/03_ClassLoading/">
+      
+      
+        <link rel="prev" href="../02_Memory/Errata_to_Stage1/">
+      
+      
+        <link rel="next" href="Flows/ClassLoading_EndToEnd/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>03_ClassLoading（Stage2） - Runtime Architecture Internals & Developer Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#03_classloadingstage2" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="Runtime Architecture Internals &amp; Developer Guide" class="md-header__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Runtime Architecture Internals & Developer Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              03_ClassLoading（Stage2）
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到夜间模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到夜间模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到日间模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到日间模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href=".." class="md-tabs__link">
+          
+  
+  
+    
+  
+  00 总览与方法论
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01_Startup/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  01 Startup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../02_Memory/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  02 Memory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+    
+  
+  03 ClassLoading
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04_ExecutionEngine/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  04 ExecutionEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../05_NativeBridge/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  05 NativeBridge
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../06_Tooling_Profiling_Verification/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  06 Tooling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../07_Build_and_Configuration/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  07 Build&Config
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Runtime Architecture Internals &amp; Developer Guide" class="md-nav__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Runtime Architecture Internals & Developer Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href=".." class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 总览与方法论
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01_Startup/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 Startup
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02_Memory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 Memory
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 ClassLoading
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    03 ClassLoading
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="Flows/ClassLoading_EndToEnd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    端到端主线（EndToEnd）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="Newbie_MinDebug_Playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    新人最小调试手册
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="Index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    深入路线图（Index）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="Completion_Review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完成度验收（Checklist）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="Errata_to_Stage1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage1 校正（Errata）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题索引
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题索引
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="Flows/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flows
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="DataStructures/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataStructures
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="Diagrams/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="Manifests/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manifests
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="FileNotes/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileNotes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04_ExecutionEngine/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 ExecutionEngine
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05_NativeBridge/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 NativeBridge
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06_Tooling_Profiling_Verification/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 Tooling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07_Build_and_Configuration/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 Build&Config
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        你读完应该能回答什么（面向新同学）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filenotes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        快速上手（不读 FileNotes 也能建立整体模型）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="快速上手（不读 FileNotes 也能建立整体模型）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0) 先看“端到端脊柱图”（新人最推荐的第一入口）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 先记住一句话（本章主线）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) 三个你最常遇到的场景（对应三条阅读路线）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2) 三个你最常遇到的场景（对应三条阅读路线）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 A 排障：从“找不到类/初始化失败”到定位点（决策树）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 B 排障：接口派发/默认方法/冲突（决策树）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-ets-app-context-nativemanaged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 C 排障：ETS app context 加载（native/managed 两段式）（决策树）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 术语速查（建议打开在侧边）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 新人最小调试手册（独立文档）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章产物导航（建议先看这些“总览型”文档）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        章节总览：组件边界与数据流
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mermaid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关键流程（Mermaid，可复制复用）——看图先建立直觉
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="关键流程（Mermaid，可复制复用）——看图先建立直觉">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-getclassdescriptor-boot-vs-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) GetClass(descriptor) 决策树（boot vs app）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-loadclass-builder-layout-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) LoadClass 主管线（builder + layout + link）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#21-insertclass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 你必须知道的并发现实：可能“重复构建”，最后 InsertClass 去重
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ets-etsclasslinkercontextloadclassnative-managed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) ETS EtsClassLinkerContext::LoadClass（native 优先，必要时 managed）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        再补两张“新手最需要”的图（把边界讲清楚）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="再补两张“新手最需要”的图（把边界讲清楚）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#4-bootappchained-context-dumpforsigquit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) Boot/App/Chained Context 的关系（以及 DumpForSigQuit 如何输出）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-cnfe-vs-ncdfe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) “找不到类”到底抛什么（CNFE vs NCDFE）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datastructures-flows-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataStructures / Flows / Diagrams（本章沉淀产物）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证据链（从总述跳到逐行）
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="03_classloadingstage2">03_ClassLoading（Stage2）<a class="headerlink" href="#03_classloadingstage2" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>阶段二：逐行精读与 wiki 沉淀（<strong>已闭环到代码实现与 ETS 插件落地</strong>）。</p>
+</blockquote>
+<h2 id="_1">你读完应该能回答什么（面向新同学）<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>类是怎么被“找到/加载/链接/初始化”的</strong>：从 <code>GetClass(descriptor|pf,id)</code> 到 <code>LoadClass</code> 管线、到 <code>InitializeClass</code>。</li>
+<li><strong>派发表（vtable / itable / IMT）是谁建的、怎么建的、冲突怎么处理的</strong>：default interface method、multiple implement、IMT 冲突即清空槽。</li>
+<li><strong>Field offset/对象布局是谁算的</strong>：静态/实例字段分桶、对齐、基类 padding 回填、ref/volatile 统计写回。</li>
+<li><strong>上下文（Context/Loader）如何隔离与并发协调</strong>：descriptor→Class 缓存、per-Class mutex+condvar、GC roots、ETS 的 RuntimeLinker 链式加载。</li>
+<li><strong>ETS 插件怎么把“策略”落到“实现”</strong>：LanguageContext 工厂（builder/extension/VM/GC/verification）、Extension 自举 roots、Context 的 native/managed 两段式加载。</li>
+</ul>
+<h2 id="filenotes">快速上手（不读 FileNotes 也能建立整体模型）<a class="headerlink" href="#filenotes" title="Permanent link">&para;</a></h2>
+<h3 id="0">0) 先看“端到端脊柱图”（新人最推荐的第一入口）<a class="headerlink" href="#0" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="Flows/ClassLoading_EndToEnd/">Flows/ClassLoading_EndToEnd</a>：一张图把“文件装载→GetClass→LoadClass→builders/layout/link→并发去重→初始化交界”串起来；每个框都能一键下潜到对应 Flow/卡片/逐行证据。</li>
+</ul>
+<h3 id="1">1) 先记住一句话（本章主线）<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p><strong>类加载 = “文件进来” → “按 descriptor 找类” → “创建 Class + 填 methods/fields” → “建派发表/算 offset” → “插入 context 缓存并发去重”</strong>。<br />
+其中“语言差异”主要通过 <code>ClassLinkerExtension/LanguageContext/ClassLinkerContext</code> 三个点注入。</p>
+<h3 id="2">2) 三个你最常遇到的场景（对应三条阅读路线）<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>场景 A：启动后第一次解析某个类</strong>（为什么找不到？为什么是 NCDFE？）</li>
+<li>看 <code>GetClass</code> 决策树 + <code>LoadClass</code> 管线 + Extension 的异常包装（CNFE→NCDFE）。</li>
+<li><strong>场景 B：接口方法派发/默认方法冲突</strong>（为什么 MULTIPLE_IMPLEMENT？为什么 IMT 为空？）</li>
+<li>看 vtable/itable/IMT 的构建顺序与冲突策略。</li>
+<li><strong>场景 C：ETS app context 加载</strong>（为什么 native 先尝试？为什么不让非 managed 线程回退？）</li>
+<li>看 ETS <code>EtsClassLinkerContext::LoadClass</code> 两段式加载。</li>
+</ul>
+<h4 id="a">场景 A 排障：从“找不到类/初始化失败”到定位点（决策树）<a class="headerlink" href="#a" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+  S["症状/日志：类相关失败\n- CLASS_NOT_FOUND\n- Cannot find class &lt;descriptor&gt;\n- ClassNotFoundException(CNFE)\n- NoClassDefFoundError(NCDFE)\n- 启动阶段首次触达某类即失败"] --&gt; A{"失败发生在 boot 还是 app？"}
+
+  A --&gt;|boot/启动期| B1["优先看：boot panda files 是否已注册\n+ boot bloom filter 是否启用"]
+  B1 --&gt; B2{"descriptor 真的在 boot files 里吗？"}
+  B2 --&gt;|不在| C1["原因：文件没加载/没加入 boot list\n定位：FileManager::LoadAbcFile + ClassLinker::AddPandaFile\n优先读：Flows/FileManager_ABC_AN.md"]
+  B2 --&gt;|在| C2{"boot filter 是否把它判为 IMPOSSIBLY_HAS？"}
+  C2 --&gt;|是| C3["原因：filter 数据/注册时机问题\n定位：ClassLinker::AddBootClassFilter/LookupInFilter\n证据：FileNotes/runtime_class_linker.cpp.md（boot filter 段）"]
+  C2 --&gt;|否| C4["继续：在 bootPandaFiles_ 查 classId 并 LoadClass\n优先读：Flows/GetClass_and_LoadClass.md"]
+
+  A --&gt;|app/运行期| D1["优先看：Context 的 LoadClass 策略\n(默认 AppContext / ETS 特化)"]
+  D1 --&gt; D2{"是 ETS app context 吗？"}
+  D2 --&gt;|是| D3["转到 场景C（ETS 两段式加载）"]
+  D2 --&gt;|否| D4["默认 AppContext：先探测 GetClass(ctx=null)\n再遍历 pfs_ 按 classId LoadClass"]
+  D4 --&gt; D5["定位：runtime/class_linker_extension.cpp::AppContext::LoadClass\n证据：FileNotes/runtime_class_linker_extension.cpp.md"]
+
+  S --&gt; E{"异常类型是 NCDFE？"}
+  E --&gt;|是| E1["常见含义：底层曾抛 CNFE，但被 Extension 包装为 NCDFE\n定位：WrapClassNotFoundExceptionIfNeeded\n证据：FileNotes/runtime_class_linker_extension.cpp.md"]
+  E --&gt;|否| E2["仍可能是纯粹的 CNFE/handler 上报\n继续沿 GetClass/LoadClass 路径追查"]
+
+  S --&gt; F{"是否是 link/verify/oom 等“非找不到”错误？"}
+  F --&gt;|是| F1["原因：LoadClass 内部失败（循环依赖/多实现/分配失败/验证失败）\n优先读：FileNotes/runtime_class_linker.cpp.md（LoadClass 错误路径）"]
+  F --&gt;|否| F2["按上面 boot/app 分支继续收敛"]</code></pre>
+<h4 id="b">场景 B 排障：接口派发/默认方法/冲突（决策树）<a class="headerlink" href="#b" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+  S["症状/日志：接口派发异常\n- MULTIPLE_IMPLEMENT\n- default interface method 冲突\n- IMT 槽命中为空/FREE SLOT\n- 调用走慢路径（itable）导致性能差"] --&gt; A{"你看到的主要信号是什么？"}
+
+  A --&gt;|MULTIPLE_IMPLEMENT| B1["原因：同一个接口方法出现多个实现候选\n(ETS resolve 或 vtable override 冲突)"]
+  B1 --&gt; B2["定位优先：EtsITableBuilder::Resolve/FindMethodInVTable\n证据：FileNotes/plugins_ets_runtime_ets_itable_builder.cpp.md"]
+  B1 --&gt; B3["补充：vtable builder 冲突策略/默认方法冲突\n证据：FileNotes/runtime_include_vtable_builder_variance-inl.h.md"]
+
+  A --&gt;|IMT 为空 / imtSize==0| C1["原因：接口方法总数过大 → IMT 禁用\n或 abstract/interface 类不填 IMT"]
+  C1 --&gt; C2["定位：IMTableBuilder::Build/UpdateClass\n证据：FileNotes/runtime_imtable_builder.cpp.md"]
+  C1 --&gt; C3["结论：IMT 只是加速结构，必须回退 itable 派发"]
+
+  A --&gt;|IMT 槽冲突| D1["原因：不同接口方法 hash 到同一槽\n策略：冲突即清空槽，并标记 conflict（后续不再尝试该槽）"]
+  D1 --&gt; D2["定位：IMTableBuilder::AddMethod/UpdateClass\n证据：FileNotes/runtime_imtable_builder.cpp.md"]
+
+  A --&gt;|默认方法行为不符合预期| E1["原因：default interface methods 可能被复制为 copied methods\n并用 stub/冲突 stub 表达"]
+  E1 --&gt; E2["定位：VTableBuilder/CopiedMethod + ClassLinker::SetupCopiedMethods\n证据：FileNotes/runtime_class_linker.cpp.md（LoadMethods/SetupCopiedMethods 段）"]
+
+  A --&gt;|只是性能慢（接口调用频繁）| F1["先确认：IMT 是否启用且命中率如何\n其次看：接口方法数量与冲突槽比例"]
+  F1 --&gt; F2["建议读：DataStructures/ITable_and_IMT.md + Flows/Builders_and_LinkMethods.md"]</code></pre>
+<h4 id="c-ets-app-context-nativemanaged">场景 C 排障：ETS app context 加载（native/managed 两段式）（决策树）<a class="headerlink" href="#c-ets-app-context-nativemanaged" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+  S["症状/日志：ETS 类加载异常\n- 在 app context 找不到类\n- native 链式查找失败\n- 不允许进入 managed 回退\n- managed loadClass 触发异常"] --&gt; A{"当前线程/协程状态？"}
+
+  A --&gt;|非 managed 线程 / 无 coroutine| B1["规则：禁止进入 managed 回退（避免 VM 内部线程 re-enter managed）"]
+  B1 --&gt; B2["结果：只能走 native 链式查找，失败则 CLASS_NOT_FOUND\n定位：EtsClassLinkerContext::LoadClass\n证据：FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md"]
+
+  A --&gt;|managed 线程（有 coroutine）| C1["允许：native 优先，必要时调用 managed RuntimeLinker.loadClass(final)"]
+  C1 --&gt; C2{"native 链式查找结果？"}
+  C2 --&gt;|找到类| R1["返回 Class*（无需进入 managed）"]
+  C2 --&gt;|错误≠CLASS_NOT_FOUND| C3["传播错误（说明加载过程出错）\n定位：DecoratorErrorHandler 逻辑"]
+  C2 --&gt;|仅 CLASS_NOT_FOUND| C4["进入 managed 回退：RuntimeLinker.loadClass(final)"]
+  C4 --&gt; C5{"managed 回退结果？"}
+  C5 --&gt;|返回 class object| R2["转为 runtime Class* 返回"]
+  C5 --&gt;|抛异常/返回空| R3["上报 CLASS_NOT_FOUND\n建议检查：该 context 的 AbcFiles/panda files 列表是否包含目标类"]
+
+  S --&gt; D{"你怀疑是“文件/上下文不对”？"}
+  D --&gt;|是| D1["检查：EtsAbcRuntimeLinker 的 AbcFiles 是否枚举到\n定位：EnumeratePandaFilesImpl/FindAndLoadClass\n证据：FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp.md"]
+  D --&gt;|否| D2["按线程状态与链式查找/managed 回退分支收敛"]</code></pre>
+<h3 id="3">3) 术语速查（建议打开在侧边）<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="FileNotes/_Glossary/">FileNotes/_Glossary</a>：本章术语解释（descriptor、PandaFile、EntityId、Context、roots、ITable/IMT、CNFE/NCDFE…）</li>
+</ul>
+<h3 id="4">4) 新人最小调试手册（独立文档）<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="Newbie_MinDebug_Playbook/">Newbie_MinDebug_Playbook</a>：新人 10 分钟定位 <strong>找不到类 / CNFE vs NCDFE / IMT 冲突与禁用 / ETS 两段式加载 gate / .abc/.an 装载</strong> 的最短路径（含可复现实验）</li>
+<li><strong>更强交付标准入口</strong>：Playbook 内含“日志关键词 → 第一落点函数 → 必查分支条件 → 第二落点”的症状矩阵（见 <a href="Newbie_MinDebug_Playbook/">Newbie_MinDebug_Playbook</a> 的 2.1 节）。</li>
+</ul>
+<h2 id="_2">本章产物导航（建议先看这些“总览型”文档）<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>学习路线图</strong>：<a href="Index/">Index</a>（30 分钟/2 小时/1 天三档）</li>
+<li><strong>本章沉淀</strong>：</li>
+<li><a href="DataStructures/Index/">DataStructures/Index</a>：关键数据结构卡片（Class/Method/Field/ITable/IMT/Contexts/ETS）</li>
+<li><a href="Flows/Index/">Flows/Index</a>：按调用链组织的流程讲解（每条 flow 都可直接复用到排障/分享）</li>
+<li><a href="Diagrams/Index/">Diagrams/Index</a>：可复用 Mermaid 图（README 里嵌了主图，这里是单文件版本）</li>
+<li><strong>逐行证据链</strong>：<code>FileNotes/</code>（当你需要“为什么一定是这样”时再下潜）</li>
+<li><strong>阶段一校正</strong>：<a href="Errata_to_Stage1/">Errata_to_Stage1</a></li>
+<li><strong>章节完工审查（交付验收）</strong>：<a href="Completion_Review/">Completion_Review</a>（逐断言核验 + 源码证据点 + 可执行优化项）</li>
+</ul>
+<h2 id="_3">章节总览：组件边界与数据流<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>下面这张图把 03 章涉及的核心组件串起来（“语言无关管线”与“语言相关插件”分层）：</p>
+<pre class="mermaid"><code>flowchart TD
+  subgraph RuntimeCore["Runtime（语言无关）"]
+    CL["ClassLinker\n(GetClass/LoadClass/BuildClass)"]
+    CLC["ClassLinkerContext\n(descriptor-&gt;Class, per-Class mutex, roots)"]
+    CDA["panda_file::ClassDataAccessor\n(Method/Field/Proto/Code)"]
+    VTB["VTableBuilder\n(默认方法/覆盖/冲突)"]
+    ITB["ITableBuilder\n(接口表构建/Resolve/写回)"]
+    IMTB["IMTableBuilder\n(IMT 规模策略 + 填表/冲突)"]
+    Layout["LayoutFields\n(offset/对齐/基类padding)"]
+  end
+
+  subgraph ETS["ETS 插件（语言相关）"]
+    LC["EtsLanguageContext\n(Create*Builder/CreateExtension/CreateVM/CreateGC)"]
+    EXT["EtsClassLinkerExtension\n(roots自举/managed&lt;-&gt;runtime Class绑定/native entrypoint)"]
+    ECTX["EtsClassLinkerContext\n(RuntimeLinker链式加载: native-&gt;managed)"]
+    EITB["EtsITableBuilder\n(线性化 + vtable驱动resolve)"]
+    EVTB["EtsVTableBuilder\n(ETS override/冲突策略)"]
+  end
+
+  CDA --&gt; CL
+  CL --&gt;|"使用"| VTB
+  CL --&gt;|"使用"| ITB
+  CL --&gt;|"使用"| IMTB
+  CL --&gt;|"使用"| Layout
+  CL --&gt;|"插入/查找"| CLC
+
+  LC --&gt;|"创建"| EVTB
+  LC --&gt;|"创建"| EITB
+  LC --&gt;|"创建"| EXT
+  EXT --&gt;|"创建/管理"| ECTX
+  EXT --&gt;|"提供错误处理/entrypoint"| CL
+  ECTX --&gt;|"非boot: LoadClass"| CL</code></pre>
+<h2 id="mermaid">关键流程（Mermaid，可复制复用）——看图先建立直觉<a class="headerlink" href="#mermaid" title="Permanent link">&para;</a></h2>
+<h3 id="1-getclassdescriptor-boot-vs-app">1) <code>GetClass(descriptor)</code> 决策树（boot vs app）<a class="headerlink" href="#1-getclassdescriptor-boot-vs-app" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+  A["GetClass(descriptor, context)"] --&gt; B{"context 内已加载？\nFindLoadedClass"}
+  B --&gt;|是| R1["返回已加载 Class*"]
+  B --&gt;|否| C{"descriptor 类型？"}
+  C --&gt;|union| U["LoadUnionClass\n(需要 commonContext)"] --&gt; R2["返回/缓存/插入context"]
+  C --&gt;|array| AR["LoadArrayClass\n(componentContext 决定插入域)"] --&gt; R2
+  C --&gt;|普通| D{"IsBootContext?"}
+  D --&gt;|是| F{"Boot BloomFilter\nPossiblyContains?"}
+  F --&gt;|"否(IMPOSSIBLY_HAS)"| R0["返回 nullptr\n(可上报 CLASS_NOT_FOUND)"]
+  F --&gt;|是| G["在 bootPandaFiles_ 查 classId"] --&gt; H{"找到?"}
+  H --&gt;|否| R3["上报 CLASS_NOT_FOUND\n返回 nullptr"]
+  H --&gt;|是| I["LoadClass(pf,classId,context)"] --&gt; J["InsertClass 并发去重\n(冲突则回收新对象)"] --&gt; R4["返回 Class*"]
+  D --&gt;|否| K["context-&gt;LoadClass()\n(虚函数/ETS 特化)"] --&gt; R4</code></pre>
+<h3 id="2-loadclass-builder-layout-link">2) <code>LoadClass</code> 主管线（builder + layout + link）<a class="headerlink" href="#2-loadclass-builder-layout-link" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+  S["LoadClass(ClassDataAccessor, descriptor, base, interfaces, context, ext)"] --&gt; I1["SetupClassInfo\nCreate{ITable,VTable,IMTable}Builder\n计算 class size + numSfields"]
+  I1 --&gt; I2["ext-&gt;CreateClass\n(ETS: 分配 NonMovable EtsClass + 绑定 runtime Class)"]
+  I2 --&gt; I3["填元信息\n(base/interfaces/fileId/pf/accessFlags/indexes)\n写入 counts(vmethods/copied/sfields)"]
+  I3 --&gt; I4["LoadMethods\n(+copied methods)\n设置 entrypoint: C2I/native/AOT/stub"]
+  I4 --&gt; I5["LoadFields\n创建 Field 数组（type 编码在 accessFlags）"]
+  I5 --&gt; I6["LinkMethods\nvtable.UpdateClass\nitable.Resolve+UpdateClass\nimtable.UpdateClass"]
+  I6 --&gt; I7["LinkFields\nLayoutFields(static/instance)\n写 offset/refFields* / objectSize"]
+  I7 --&gt; I8["(addToRuntime)\n通知事件 ClassLoad/ClassPrepare\nInsertClass 并发去重"]
+  I8 --&gt; R["返回 Class* 或 nullptr"]</code></pre>
+<h3 id="21-insertclass">2.1 你必须知道的并发现实：可能“重复构建”，最后 InsertClass 去重<a class="headerlink" href="#21-insertclass" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>这是 03 章最容易被忽略但最影响排障的点：同一个 descriptor 在并发场景下<strong>可能被多个线程完整构建</strong>，最后才在 <code>InsertClass</code> 处决出胜负；同线程递归自指依赖用 <code>ClassLoadingSet</code> 检测并报 <code>CLASS_CIRCULARITY</code>。</p>
+</blockquote>
+<ul>
+<li>Flow（含两线程时序图 + 递归加载判定）：<a href="Flows/Concurrency_and_ClassLock/">Flows/Concurrency_and_ClassLock</a></li>
+</ul>
+<h3 id="3-ets-etsclasslinkercontextloadclassnative-managed">3) ETS <code>EtsClassLinkerContext::LoadClass</code>（native 优先，必要时 managed）<a class="headerlink" href="#3-ets-etsclasslinkercontextloadclassnative-managed" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+  A["EtsClassLinkerContext::LoadClass(descriptor)"] --&gt; B{"本context缓存命中？\nFindClass"}
+  B --&gt;|是| R1["返回 Class*"]
+  B --&gt;|否| C["TryLoadingClassFromNative\n(沿 RuntimeLinker parent+shared libs 链)"]
+  C --&gt; D{"链遍历成功？"}
+  D --&gt;|成功且找到/有错误| R2["返回 Class* 或传播错误"]
+  D --&gt;|"失败(非白名单linker)"| E{"当前线程可调用 managed？\n(coro &amp;&amp; IsManagedCode)"}
+  E --&gt;|否| R3["禁止进入 managed\n上报 CLASS_NOT_FOUND 返回 nullptr"]
+  E --&gt;|是| F["构造 args(runtimeLinker, etsClassName, nullptr)\n调用 managed RuntimeLinker.loadClass(final)"]
+  F --&gt; G{"有异常？"}
+  G --&gt;|无| R4["把返回的 class object 转为 Class* 返回"]
+  G --&gt;|有| R5["上报 CLASS_NOT_FOUND 返回 nullptr"]</code></pre>
+<h2 id="_4">再补两张“新手最需要”的图（把边界讲清楚）<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="4-bootappchained-context-dumpforsigquit">4) Boot/App/Chained Context 的关系（以及 DumpForSigQuit 如何输出）<a class="headerlink" href="#4-bootappchained-context-dumpforsigquit" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+  subgraph EXT["ClassLinkerExtension（每语言一个）"]
+    Boot["BootContext\n(boot panda files)"]
+    App1["AppContext #1\n(app panda files)"]
+    App2["AppContext #2\n(app panda files)"]
+    Boot --&gt; App1
+    Boot --&gt; App2
+  end
+
+  subgraph ETSChain["ETS：链式 class loader（示意）"]
+    L0["RuntimeLinker L0\n(ctx0)"] --&gt; L1["parent linker\n(ctx1)"]
+    L0 --&gt; LS["shared libs linker\n(ctxS)"]
+  end
+
+  Dump["Runtime::DumpForSigQuit\nDump class loaders"] --&gt; Enum["ClassLinker::EnumerateContextsForDump"]
+  Enum --&gt; Boot
+  Enum --&gt; App1
+  Enum --&gt; App2
+  Enum --&gt; L0</code></pre>
+<blockquote>
+<p>直觉：<strong>BootContext 是基础可见域</strong>；AppContext 是“每个应用/加载器一份”；ETS 额外引入“parent/共享库链”，所以它的 context 关系不是一棵简单树。</p>
+</blockquote>
+<h3 id="5-cnfe-vs-ncdfe">5) “找不到类”到底抛什么（CNFE vs NCDFE）<a class="headerlink" href="#5-cnfe-vs-ncdfe" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+  A["GetClass(pf,id) / GetClass(descriptor) 失败"] --&gt; B{"线程是否有 pending exception？"}
+  B --&gt;|否| R0["返回 nullptr / 交给 errorHandler"]
+  B --&gt;|是| C{"pending exception 是 CNFE？"}
+  C --&gt;|否| R1["保持原异常"]
+  C --&gt;|是| D["WrapClassNotFoundExceptionIfNeeded"]
+  D --&gt; E["抛 NoClassDefFoundError(NCDFE)\n(更偏“链接失败/定义不可用”)"]</code></pre>
+<blockquote>
+<p>这个行为在 Stage2 已逐行闭环：见 <a href="FileNotes/runtime_class_linker_extension.cpp/">FileNotes/runtime_class_linker_extension.cpp</a>（WrapClassNotFoundExceptionIfNeeded）。</p>
+</blockquote>
+<h2 id="datastructures-flows-diagrams">DataStructures / Flows / Diagrams（本章沉淀产物）<a class="headerlink" href="#datastructures-flows-diagrams" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>DataStructures</strong>：关键结构卡片（字段含义 + 关键不变量 + 与 FileNotes 的对齐）</li>
+<li>见 <a href="DataStructures/Index/">DataStructures/Index</a></li>
+<li><strong>Flows</strong>：按“调用链”组织的流程讲解（每条流程都回链到实现）</li>
+<li>见 <a href="Flows/Index/">Flows/Index</a></li>
+<li><strong>Diagrams</strong>：可复用 Mermaid 图（README 中也嵌入了核心图）</li>
+<li>见 <a href="Diagrams/Index/">Diagrams/Index</a></li>
+</ul>
+<h2 id="_5">证据链（从总述跳到逐行）<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>本章所有结论都应能回溯到逐行笔记：
+- <strong>ClassLinker 主管线</strong>：<a href="FileNotes/runtime_class_linker.cpp/">FileNotes/runtime_class_linker.cpp</a>
+- <strong>ClassLinkerExtension 默认行为</strong>（Boot/AppContext LoadClass / new|created|obsolete classes）：<a href="FileNotes/runtime_class_linker_extension.cpp/">FileNotes/runtime_class_linker_extension.cpp</a>
+- <strong>Core roots 自举（PANDA_ASSEMBLY）</strong>：<a href="FileNotes/runtime_core_core_class_linker_extension.cpp/">FileNotes/runtime_core_core_class_linker_extension.cpp</a>
+- <strong>字段布局与 offset 写入</strong>：同上（LayoutFields 段）+ <a href="FileNotes/runtime_include_field.h/">FileNotes/runtime_include_field.h</a>
+- <strong>Method entrypoint/编译状态位段</strong>：<a href="FileNotes/runtime_include_method.h/">FileNotes/runtime_include_method.h</a>
+- <strong>IMT 策略</strong>：<a href="FileNotes/runtime_imtable_builder.cpp/">FileNotes/runtime_imtable_builder.cpp</a>
+- <strong>ETS itable resolve</strong>：<a href="FileNotes/plugins_ets_runtime_ets_itable_builder.cpp/">FileNotes/plugins_ets_runtime_ets_itable_builder.cpp</a>
+- <strong>ETS Context 链式加载</strong>：<a href="FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp/">FileNotes/plugins_ets_runtime_ets_class_linker_context.cpp</a>
+- <strong>ETS Extension roots/entrypoint</strong>：<a href="FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp/">FileNotes/plugins_ets_runtime_ets_class_linker_extension.cpp</a>
+- <strong>ETS façade（对外 API + async 注解解析）</strong>：<a href="FileNotes/plugins_ets_runtime_ets_class_linker.cpp/">FileNotes/plugins_ets_runtime_ets_class_linker.cpp</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.prune", "navigation.indexes", "navigation.top", "toc.follow", "content.code.copy"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js"></script>
+      
+        <script src="../assets/javascripts/mermaid-init.js"></script>
+      
+    
+  </body>
+</html>

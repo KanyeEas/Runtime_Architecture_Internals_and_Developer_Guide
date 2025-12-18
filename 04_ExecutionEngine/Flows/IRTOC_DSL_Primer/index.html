@@ -1,0 +1,2976 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ark runtime_core/static_core internal wiki（概览 + 深入证据链）">
+      
+      
+      
+        <link rel="canonical" href="https://github.com/KanyeEas/Runtime_Architecture_Internals_and_Developer_Guide/04_ExecutionEngine/Flows/IRTOC_DSL_Primer/">
+      
+      
+        <link rel="prev" href="../Interpreter_Execute/">
+      
+      
+        <link rel="next" href="../IRTOC_DSL_Reference/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>IRTOC_DSL_Primer - Runtime Architecture Internals & Developer Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#irtoc-irt-dsl" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Runtime Architecture Internals &amp; Developer Guide" class="md-header__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Runtime Architecture Internals & Developer Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              IRTOC_DSL_Primer
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到夜间模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到夜间模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到日间模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到日间模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
+          
+  
+  
+    
+  
+  00 总览与方法论
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../01_Startup/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  01 Startup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../02_Memory/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  02 Memory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../03_ClassLoading/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  03 ClassLoading
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  04 ExecutionEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../05_NativeBridge/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  05 NativeBridge
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../06_Tooling_Profiling_Verification/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  06 Tooling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../07_Build_and_Configuration/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  07 Build&Config
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Runtime Architecture Internals &amp; Developer Guide" class="md-nav__button md-logo" aria-label="Runtime Architecture Internals & Developer Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Runtime Architecture Internals & Developer Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../.." class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 总览与方法论
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../01_Startup/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 Startup
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../02_Memory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 Memory
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../03_ClassLoading/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 ClassLoading
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 ExecutionEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    04 ExecutionEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ExecutionEngine_EndToEnd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    端到端主线（EndToEnd）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Newbie_MinDebug_Playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    新人最小调试手册
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    深入路线图（Index）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Completion_Review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完成度验收（Checklist）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Errata_to_Stage1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage1 校正（Errata）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题索引
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题索引
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_7_1" id="__nav_5_7_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flows
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_7_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flows
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Bridge_I2C_C2I/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bridge_I2C_C2I
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Deopt_and_OSR/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deopt_and_OSR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Entrypoints_and_RuntimeInterface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entrypoints_and_RuntimeInterface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ExecutionEngine_EndToEnd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    端到端主线（EndToEnd）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Interpreter_Execute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interpreter_Execute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IRTOC_DSL_Primer
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IRTOC_DSL_Primer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-04" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0) 在 04 章端到端主线中的位置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 你首先要形成的 3 个心智模型（非常关键）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1) 你首先要形成的 3 个心智模型（非常关键）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-irt-ir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 .irt 不是“解释器源码”，而是“生成器 + IR 构造脚本”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-irt-ruby-dsl-runtime-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 .irt 的三层结构：Ruby 控制流 / DSL 节点 / Runtime layout 常量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-fast-interpreter-abi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 fast interpreter 的“内部 ABI”是性能核心
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-irt-dsl-80" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) .irt DSL 的“最小语法集”（够你改 80% 的问题）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2) .irt DSL 的“最小语法集”（够你改 80% 的问题）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-macro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 定义 macro（可复用片段）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-x-ir-ssa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 x := ...：创建一个 IR 值（SSA 风格）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-if-phi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 If ... Phi ...：控制流与合流
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-intrinsic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Intrinsic(...)：后端专用的“语义指令”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-liveinliveout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 LiveIn/LiveOut：把语义寄存器绑到硬件寄存器（别忽略它）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 你应该从哪里改（按问题类型给“第一落点”）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 新人“怎么改”的标准工作流（VM 架构审计级别）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4) 新人“怎么改”的标准工作流（VM 架构审计级别）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-fast-interpreter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 定位：先从运行时现象回到“你到底跑的是 fast interpreter 吗”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-irtocscriptsinterpreterirt-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 修改：永远改源码 irtoc/scripts/interpreter.irt（不要改 build 产物）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 验证（强烈建议按“3 段式证据链”走）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-guardrail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 两个“新人必踩坑”与架构层 guardrail
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-irt-ir-ir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 你问的核心：谁把 .irt 变成 IR 图？IR 图又是谁编译成机器码？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6) 你问的核心：谁把 .irt 变成 IR 图？IR 图又是谁编译成机器码？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-ruby-irt-irtoc_codecpp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 第一步：Ruby 生成器执行 .irt，并生成 irtoc_code.cpp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 第二步：Graph 在哪里生成？是谁生成？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 第三步：谁把 Graph 编译成机器码？机器码生成在哪里？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ir-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) IR 图（Graph）到底是什么？怎么理解它？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-fast-interpreter-c-interpreter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8) fast interpreter 与 C++ interpreter 的关系是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-fast-interpreter-clang" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9) 为什么 fast interpreter 更快？（澄清“clang 也会优化”这个误解）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10) 更详尽的语法参考（教科书式）
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IRTOC_DSL_Reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IRTOC_DSL_Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IRTOC_FastInterpreter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IRTOC_FastInterpreter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Opcode_DeepDives_IRTOC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Opcode_DeepDives_IRTOC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../StackWalking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StackWalking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../DataStructures/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataStructures
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../Diagrams/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../Manifests/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manifests
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../FileNotes/Index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileNotes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../05_NativeBridge/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 NativeBridge
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../06_Tooling_Profiling_Verification/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 Tooling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../07_Build_and_Configuration/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 Build&Config
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-04" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0) 在 04 章端到端主线中的位置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 你首先要形成的 3 个心智模型（非常关键）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1) 你首先要形成的 3 个心智模型（非常关键）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-irt-ir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 .irt 不是“解释器源码”，而是“生成器 + IR 构造脚本”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-irt-ruby-dsl-runtime-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 .irt 的三层结构：Ruby 控制流 / DSL 节点 / Runtime layout 常量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-fast-interpreter-abi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 fast interpreter 的“内部 ABI”是性能核心
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-irt-dsl-80" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) .irt DSL 的“最小语法集”（够你改 80% 的问题）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2) .irt DSL 的“最小语法集”（够你改 80% 的问题）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-macro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 定义 macro（可复用片段）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-x-ir-ssa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 x := ...：创建一个 IR 值（SSA 风格）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-if-phi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 If ... Phi ...：控制流与合流
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-intrinsic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Intrinsic(...)：后端专用的“语义指令”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-liveinliveout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 LiveIn/LiveOut：把语义寄存器绑到硬件寄存器（别忽略它）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 你应该从哪里改（按问题类型给“第一落点”）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 新人“怎么改”的标准工作流（VM 架构审计级别）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4) 新人“怎么改”的标准工作流（VM 架构审计级别）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-fast-interpreter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 定位：先从运行时现象回到“你到底跑的是 fast interpreter 吗”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-irtocscriptsinterpreterirt-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 修改：永远改源码 irtoc/scripts/interpreter.irt（不要改 build 产物）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 验证（强烈建议按“3 段式证据链”走）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-guardrail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 两个“新人必踩坑”与架构层 guardrail
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-irt-ir-ir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 你问的核心：谁把 .irt 变成 IR 图？IR 图又是谁编译成机器码？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6) 你问的核心：谁把 .irt 变成 IR 图？IR 图又是谁编译成机器码？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-ruby-irt-irtoc_codecpp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 第一步：Ruby 生成器执行 .irt，并生成 irtoc_code.cpp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 第二步：Graph 在哪里生成？是谁生成？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 第三步：谁把 Graph 编译成机器码？机器码生成在哪里？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ir-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) IR 图（Graph）到底是什么？怎么理解它？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-fast-interpreter-c-interpreter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8) fast interpreter 与 C++ interpreter 的关系是什么？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-fast-interpreter-clang" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9) 为什么 fast interpreter 更快？（澄清“clang 也会优化”这个误解）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10) 更详尽的语法参考（教科书式）
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="irtoc-irt-dsl">IRTOC <code>.irt</code> DSL 入门（新人可落地的“怎么读/怎么改/怎么验证”）<a class="headerlink" href="#irtoc-irt-dsl" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>目标：让完全没 IRTOC 背景的新同学，在 <strong>1 小时内</strong>具备三种能力：<br />
+1) 看懂 <code>interpreter.irt</code> 的大结构（macro/handler/dispatch）<br />
+2) 能定位“某个现象对应 .irt 里的哪一段”并做小改动<br />
+3) 能用 build 产物把“DSL → IR → 汇编 → 运行时行为”串成证据链闭环</p>
+</blockquote>
+<h2 id="0-04">0) 在 04 章端到端主线中的位置<a class="headerlink" href="#0-04" title="Permanent link">&para;</a></h2>
+<ul>
+<li>总入口：<a href="../ExecutionEngine_EndToEnd/">ExecutionEngine_EndToEnd</a>（“Fast interpreter（IRTOC/LLVM）”相关框）</li>
+<li>运行时入口与选型：<a href="../IRTOC_FastInterpreter/">IRTOC_FastInterpreter</a></li>
+<li><code>.irt</code> 逐行证据（更细）：<a href="../../FileNotes/irtoc_scripts_interpreter.irt/">irtoc_scripts_interpreter.irt</a>、<a href="../../FileNotes/irtoc_scripts_common.irt/">irtoc_scripts_common.irt</a></li>
+<li><code>.irt → Graph → 机器码</code> 的实现源码入口（建议收藏）：</li>
+<li>Ruby 侧生成器：<code>irtoc/lang/irtoc.rb</code>、<code>irtoc/lang/function.rb</code></li>
+<li>C++ 侧编译器：<code>irtoc/backend/irtoc.cpp</code>、<code>irtoc/backend/compilation.cpp</code>、<code>irtoc/backend/function.cpp</code></li>
+<li>Graph 类型与 IR 构造器：<code>compiler/optimizer/ir/graph.h</code>、<code>compiler/optimizer/ir/ir_constructor.h</code></li>
+</ul>
+<h2 id="1-3">1) 你首先要形成的 3 个心智模型（非常关键）<a class="headerlink" href="#1-3" title="Permanent link">&para;</a></h2>
+<h3 id="11-irt-ir">1.1 <code>.irt</code> 不是“解释器源码”，而是“生成器 + IR 构造脚本”<a class="headerlink" href="#11-irt-ir" title="Permanent link">&para;</a></h3>
+<p><code>irtoc/scripts/interpreter.irt</code> 是一个 Ruby 脚本，它通过 DSL 构造 <strong>IR 图（Graph）</strong>，再由 IRTOC/LLVM backend 生成 <code>ExecuteImplFast*</code> 与 <code>HANDLE_FAST_*</code> 机器码。</p>
+<blockquote>
+<p>也就是说：你改 <code>.irt</code>，不会影响 C++ interpreter 的 handler；它影响的是 fast interpreter 的生成物。</p>
+</blockquote>
+<h3 id="12-irt-ruby-dsl-runtime-layout">1.2 <code>.irt</code> 的三层结构：Ruby 控制流 / DSL 节点 / Runtime layout 常量<a class="headerlink" href="#12-irt-ruby-dsl-runtime-layout" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Ruby 控制流</strong>：<code>if Options.arm64?</code>、<code>Panda.instructions.each</code> 等，决定生成哪些代码</li>
+<li><strong>DSL 节点构造</strong>：<code>LoadI/AddI/StoreI/Call/Intrinsic/If/Phi/Cast...</code>（这是“IR 指令”）</li>
+<li><strong>运行时布局常量</strong>：来自 <code>include_relative 'common.irt'</code> 的 <code>Constants</code>、regmap（Frame/Thread/Method offset、entrypoint id 等）</li>
+</ul>
+<h3 id="13-fast-interpreter-abi">1.3 fast interpreter 的“内部 ABI”是性能核心<a class="headerlink" href="#13-fast-interpreter-abi" title="Permanent link">&para;</a></h3>
+<p>fast interpreter 把解释器核心状态长期放在固定寄存器（<code>tr/pc/frame/acc/dispatch</code>），通过 <code>dispatch_table[opc]</code> 做 computed-goto（tail-call）。</p>
+<p>对应证据链：
+- <code>.irt</code> 语义：<code>macro(:dispatch)</code>（见 <a href="../../FileNotes/irtoc_scripts_interpreter.irt/">irtoc_scripts_interpreter.irt</a>）
+- build 产物：<a href="../../FileNotes/build_runtime_include_irtoc_interpreter_utils.h/">build_runtime_include_irtoc_interpreter_utils.h</a>
+- 汇编证据：<a href="../../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt/">build_irtoc_irtoc_interpreter_disasm.txt</a></p>
+<h2 id="2-irt-dsl-80">2) <code>.irt</code> DSL 的“最小语法集”（够你改 80% 的问题）<a class="headerlink" href="#2-irt-dsl-80" title="Permanent link">&para;</a></h2>
+<h3 id="21-macro">2.1 定义 macro（可复用片段）<a class="headerlink" href="#21-macro" title="Permanent link">&para;</a></h3>
+<p>形态：</p>
+<div class="highlight"><pre><span></span><code><span class="n">macro</span><span class="p">(</span><span class="ss">:readbyte</span><span class="p">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">pc</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="o">|</span>
+<span class="w">  </span><span class="no">LoadI</span><span class="p">(</span><span class="n">pc</span><span class="p">)</span><span class="o">.</span><span class="n">Imm</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="o">.</span><span class="n">u8</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>要点：
+- <code>macro(:name)</code> 定义一个可被其他宏/handler 调用的“模板片段”
+- 里面的 <code>LoadI/AddI/...</code> 是 IR 节点构造器
+- 末尾的 <code>.u8/.i32/.ref/...</code> 是 <strong>把 IR 节点标注为某种 DataType</strong></p>
+<h3 id="22-x-ir-ssa">2.2 <code>x := ...</code>：创建一个 IR 值（SSA 风格）<a class="headerlink" href="#22-x-ir-ssa" title="Permanent link">&para;</a></h3>
+<p>你会经常看到：</p>
+<div class="highlight"><pre><span></span><code><span class="n">opc</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">readbyte</span><span class="p">(</span><span class="n">pc</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="n">offset</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="no">Mul</span><span class="p">(</span><span class="n">u8toword</span><span class="p">(</span><span class="n">opc</span><span class="p">),</span><span class="w"> </span><span class="no">WordSize</span><span class="p">())</span>
+<span class="n">addr</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="no">Load</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span>
+<span class="n">tail_call</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+</code></pre></div>
+<p>直觉理解：
+- <code>:=</code> 不是 Ruby 的赋值语法，它是 DSL 定义的“创建 SSA 值/节点”的写法
+- 这些值会成为后续 IR 节点的输入</p>
+<h3 id="23-if-phi">2.3 <code>If ... Phi ...</code>：控制流与合流<a class="headerlink" href="#23-if-phi" title="Permanent link">&para;</a></h3>
+<p>典型：</p>
+<div class="highlight"><pre><span></span><code><span class="n">res0</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="no">If</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">NE</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span><span class="n">res1</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">end</span>
+<span class="no">Phi</span><span class="p">(</span><span class="n">res0</span><span class="p">,</span><span class="w"> </span><span class="n">res1</span><span class="p">)</span><span class="o">.</span><span class="n">i32</span>
+</code></pre></div>
+<p>要点：
+- <code>If(x, y).NE do ... end</code> 生成分支
+- <code>Phi(a, b)</code> 在分支汇合点选择值（SSA 合流）</p>
+<h3 id="24-intrinsic">2.4 <code>Intrinsic(...)</code>：后端专用的“语义指令”<a class="headerlink" href="#24-intrinsic" title="Permanent link">&para;</a></h3>
+<p>fast interpreter 的两个高频 intrinsic：
+- <code>Intrinsic(:TAIL_CALL)</code>：实现 computed-goto 的尾跳转（脚本里通常封装成 <code>tail_call(addr)</code>）
+- <code>Intrinsic(:INTERPRETER_RETURN)</code>：从 fast interpreter “返回到 runtime 边界”（用于异常/非 stackless return 等）</p>
+<h3 id="25-liveinliveout">2.5 <code>LiveIn/LiveOut</code>：把语义寄存器绑到硬件寄存器（别忽略它）<a class="headerlink" href="#25-liveinliveout" title="Permanent link">&para;</a></h3>
+<p>你在 <code>.irt</code> 里看到的 <code>%tr/%pc/%frame/%acc</code> 等语义寄存器，需要通过 LiveIn/LiveOut 固定到硬件寄存器（由 regmap 决定）。</p>
+<p><strong>常见坑</strong>：改了一个宏/handler 后，如果忘了对关键状态做 LiveOut，可能导致后端把寄存器当成可重用临时寄存器，产生“偶现错误/难复现”。</p>
+<h2 id="3">3) 你应该从哪里改（按问题类型给“第一落点”）<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>下面每一条都对应 <code>interpreter.irt</code> 中一个稳定锚点，建议新人先从锚点开始 grep。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>你要改的东西</th>
+<th><code>.irt</code> 第一落点（关键词）</th>
+<th>为什么在这里</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dispatch/跳表</td>
+<td><code>macro(:dispatch)</code></td>
+<td>决定 opcode→handler 的 computed-goto 语义</td>
+</tr>
+<tr>
+<td>decode/取操作数</td>
+<td><code>macro(:readbyte)</code>、<code>macro(:as_vreg_idx)</code>、<code>macro(:as_id)</code></td>
+<td>一切 handler 的 operand 都从这里读出来</td>
+</tr>
+<tr>
+<td>acc 写回/恢复</td>
+<td><code>save_acc</code> / <code>restore_acc</code> 相关宏</td>
+<td>GC/safepoint/桥接/异常都依赖 acc 一致性</td>
+</tr>
+<tr>
+<td>异常入口</td>
+<td><code>move_to_exception</code> / <code>find_catch_block</code></td>
+<td>exception slot 与“两段式异常”在这里落地</td>
+</tr>
+<tr>
+<td>OSR 触发/回边</td>
+<td><code>instrument_branches</code> / <code>handle_fake_return</code></td>
+<td>OSR 最难理解也最常改动的区域</td>
+</tr>
+<tr>
+<td>call/return</td>
+<td><code>generic_call</code> / <code>generic_return</code></td>
+<td>编译态调用（I2C）与 stackless 调用在这里统一</td>
+</tr>
+<tr>
+<td>单个 opcode 语义</td>
+<td><code>handle_xxx</code> 宏 + <code>Panda.instructions.each</code> 生成段</td>
+<td>大部分 <code>HANDLE_FAST_*</code> 都是“宏展开+生成器”</td>
+</tr>
+</tbody>
+</table>
+<p>更细的逐行证据：直接看 <a href="../../FileNotes/irtoc_scripts_interpreter.irt/">irtoc_scripts_interpreter.irt</a>（里面已经按上述锚点分段）。</p>
+<h2 id="4-vm">4) 新人“怎么改”的标准工作流（VM 架构审计级别）<a class="headerlink" href="#4-vm" title="Permanent link">&para;</a></h2>
+<h3 id="41-fast-interpreter">4.1 定位：先从运行时现象回到“你到底跑的是 fast interpreter 吗”<a class="headerlink" href="#41-fast-interpreter" title="Permanent link">&para;</a></h3>
+<ul>
+<li>用 <code>--log-level=debug --log-components=runtime:interpreter</code> 看是否出现 <code>Setting up LLVM Irtoc dispatch table</code> / <code>Setting up Irtoc dispatch table</code></li>
+<li>如果你跑的是 cpp interpreter，你改 <code>.irt</code> 不会生效</li>
+</ul>
+<h3 id="42-irtocscriptsinterpreterirt-build">4.2 修改：永远改源码 <code>irtoc/scripts/interpreter.irt</code>（不要改 build 产物）<a class="headerlink" href="#42-irtocscriptsinterpreterirt-build" title="Permanent link">&para;</a></h3>
+<p>你会看到三份相关文件：
+- 源码：<code>irtoc/scripts/interpreter.irt</code>（改这里）
+- 规范化产物：<code>build/irtoc/irtoc_interpreter/interpreter.irt.fixed</code>（只读，用于行号与 Loc 对齐）
+- 生成 C++：<code>build/irtoc/irtoc_interpreter/irtoc_code.cpp</code>（只读，用于 IR 节点定位）</p>
+<h3 id="43-3">4.3 验证（强烈建议按“3 段式证据链”走）<a class="headerlink" href="#43-3" title="Permanent link">&para;</a></h3>
+<p>1) <strong>脚本层</strong>：在 <code>interpreter.irt.fixed</code> 中确认你的改动确实出现（避免“没触发重新生成”）
+2) <strong>IR 层</strong>：在 <code>irtoc_code.cpp</code> 找到对应 <code>Loc(..., &lt;line&gt;)</code> 与 <code>INST(id, ...)</code> 变化
+3) <strong>机器码层</strong>：在 <code>disasm.txt</code> 找到对应 method 的 <code># [inst] &lt;id&gt;</code>，确认汇编真的变了</p>
+<p>参考笔记：
+- <a href="../../FileNotes/build_irtoc_irtoc_interpreter_disasm.txt/">build_irtoc_irtoc_interpreter_disasm.txt</a>
+- <a href="../../FileNotes/build_runtime_include_irtoc_interpreter_utils.h/">build_runtime_include_irtoc_interpreter_utils.h</a></p>
+<h2 id="5-guardrail">5) 两个“新人必踩坑”与架构层 guardrail<a class="headerlink" href="#5-guardrail" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>坑 1：以为改 C++ handler 会影响生产</strong><br />
+  生产默认往往是 <code>--interpreter-type=llvm</code>（fast interpreter），你需要改的是 <code>.irt</code> 或生成链，而不是 <code>interpreter-inl.h</code>。</p>
+</li>
+<li>
+<p><strong>坑 2：忘记 acc/pc/frame 的一致性不变量</strong><br />
+  fast interpreter 里大量 <code>save_acc/restore_acc</code>、<code>update_bytecode_offset</code> 都不是“多余代码”，它们在 GC/safepoint/异常/桥接边界上是硬不变量。<br />
+  改动时优先问自己：<strong>这条路径上 GC/StackWalker/hook 是否还能看到一致的 acc/frame/pc？</strong></p>
+</li>
+</ul>
+<h2 id="6-irt-ir-ir">6) 你问的核心：谁把 <code>.irt</code> 变成 IR 图？IR 图又是谁编译成机器码？<a class="headerlink" href="#6-irt-ir-ir" title="Permanent link">&para;</a></h2>
+<p>这一节是“架构师视角的全链路分工”，用来消除新人最常见的误解：<br />
+<strong><code>.irt</code> 本身不会直接变成机器码；它先变成“生成的 C++（irtoc_code.cpp）”，再在构建阶段被一个 <code>irtoc</code> 可执行程序跑起来，把 Graph 编译成 <code>.o</code>。</strong></p>
+<h3 id="61-ruby-irt-irtoc_codecpp">6.1 第一步：Ruby 生成器执行 <code>.irt</code>，并生成 <code>irtoc_code.cpp</code><a class="headerlink" href="#61-ruby-irt-irtoc_codecpp" title="Permanent link">&para;</a></h3>
+<p>生成器入口在 <code>irtoc/lang/irtoc.rb</code>，它做了三件关键事：</p>
+<p>1) <strong>预处理 DSL 语法</strong>（这是你看到 <code>:=</code>、<code>%tr</code> 等“非 Ruby”语法还能跑的根因）
+   - <code>(\w+) := ...</code> 会被转成 <code>let :name, ...</code>
+   - <code>%tr/%pc/%frame/...</code> 会被转成 <code>LiveIn(regmap[:tr])</code> 之类
+2) <strong><code>instance_eval</code> 执行预处理后的脚本</strong>（这就是“<code>.irt 是 Ruby 脚本”的现实含义）
+3) **把脚本里</code>function(...) { ... }<code>形成的内容“emit 成 C++ 源码”**（即</code>irtoc_code.cpp<code>/</code>irtoc_code_llvm.cpp`）</p>
+<blockquote>
+<p>你可以把 <code>.irt</code> 理解成“用 Ruby 写的代码生成器输入语言”，它的输出是“会构造 Graph 的 C++ 源码”。</p>
+</blockquote>
+<h3 id="62-graph">6.2 第二步：Graph 在哪里生成？是谁生成？<a class="headerlink" href="#62-graph" title="Permanent link">&para;</a></h3>
+<p><strong>Graph 不是一个静态文件，它在构建时由 <code>irtoc</code> 程序运行时，在内存里创建。</strong></p>
+<p>关键链路是：</p>
+<ul>
+<li>Ruby 生成的 <code>irtoc_code.cpp</code> 里会产生很多 <code>COMPILE(HANDLE_FAST_xxx) { ... }</code></li>
+<li><code>COMPILE(name)</code>（定义在 <code>irtoc/backend/compilation.h</code>）会把每个函数注册成一个 <code>Function unit</code></li>
+<li>构建阶段运行 <code>irtoc</code> 可执行程序（入口 <code>irtoc/backend/irtoc.cpp</code>），它会执行 <code>Compilation().Run()</code></li>
+<li><code>Compilation::Compile()</code> 遍历所有 units，对每个 unit 调 <code>Function::Compile(...)</code></li>
+<li><code>Function::Compile</code> 会 <code>New&lt;compiler::Graph&gt;(...)</code> 创建 Graph，并调用 <code>MakeGraphImpl()</code> 把 IR 节点塞进 Graph</li>
+<li><code>MakeGraphImpl()</code> 的主体就是 Ruby 在 <code>irtoc/lang/function.rb</code> 里 <code>emit_ir</code> 出来的内容</li>
+<li>IR 节点的构造器是 <code>compiler::IrConstructor</code>（见 <code>compiler/optimizer/ir/ir_constructor.h</code>）</li>
+</ul>
+<h3 id="63-graph">6.3 第三步：谁把 Graph 编译成机器码？机器码生成在哪里？<a class="headerlink" href="#63-graph" title="Permanent link">&para;</a></h3>
+<p>还是构建阶段的 <code>irtoc</code> 可执行程序负责“Graph → 机器码”：</p>
+<ul>
+<li>对每个 Graph：</li>
+<li>先跑 IRTOC 的优化（<code>RunIrtocInterpreterOptimizations/RunIrtocOptimizations</code>）</li>
+<li>然后进入 codegen，把机器码写入 <code>graph-&gt;GetCode()</code>（最终会被 <code>Function::SetCode</code> 拷贝出来）</li>
+<li>如果开启了 LLVM IRTOC 路径（<code>PANDA_LLVM_IRTOC</code> 等宏），则 <code>Function::CompileByLLVM()</code> 会调用 <code>llvmCompiler_-&gt;TryAddGraph(graph)</code>：</li>
+<li><strong>注意</strong>：这是“LLVM 编译 Graph”，不是“clang 编译 C++ interpreter”</li>
+</ul>
+<p>构建系统证据（以 CMake 为例）：</p>
+<ul>
+<li><code>irtoc/backend/CMakeLists.txt</code> 的 <code>irtoc_compile(...)</code> 会：</li>
+<li>先运行 Ruby 生成器产出 <code>irtoc_code.cpp</code>（以及可选 <code>irtoc_code_llvm.cpp</code>）</li>
+<li>编译一个可执行程序 <code>${TARGET}_exec</code>（源码包含 <code>irtoc_code.cpp + irtoc/backend/irtoc.cpp</code>）</li>
+<li>再运行这个可执行程序生成 <code>${TARGET}.o</code> / <code>${TARGET}_llvm.o</code>，并输出 <code>disasm.txt</code>（用于验证机器码）</li>
+</ul>
+<h2 id="7-ir-graph">7) IR 图（Graph）到底是什么？怎么理解它？<a class="headerlink" href="#7-ir-graph" title="Permanent link">&para;</a></h2>
+<p>在本工程里，<code>compiler::Graph</code> 是编译器内部的 <strong>SSA/基本块</strong>形式的中间表示（IR）：</p>
+<ul>
+<li><strong>Graph = BasicBlock 图</strong>（控制流图 CFG）</li>
+<li><strong>BasicBlock 里是一串 Inst（IR 指令）</strong>（例如 Load/Store/Add/If/Phi/Call/Intrinsic）</li>
+<li><strong>Phi 节点</strong>表达控制流合流时的 SSA 值选择</li>
+</ul>
+<p>你可以把 Graph 理解为“比 C++ 语法更接近 CPU 执行模型、也更利于优化/寄存器分配”的表示形式：<br />
+它能让优化器（CSE/LSE/LICM/RegAlloc/Scheduler…）在“解释器 handler”上做编译器级别的优化，然后再生成机器码。</p>
+<h2 id="8-fast-interpreter-c-interpreter">8) fast interpreter 与 C++ interpreter 的关系是什么？<a class="headerlink" href="#8-fast-interpreter-c-interpreter" title="Permanent link">&para;</a></h2>
+<p><strong>关系：语义目标相同，落地形态不同。</strong></p>
+<ul>
+<li>C++ interpreter（<code>runtime/interpreter/interpreter-inl.h</code> 等）：</li>
+<li>语义实现以 C++ handler 为主</li>
+<li>dispatch loop/异常入口很多在生成的 <code>interpreter-inl_gen.h</code>（模板生成）里</li>
+<li>
+<p>每条 opcode 的执行倾向于“读写 Frame 内存 + 分支/函数调用”</p>
+</li>
+<li>
+<p>IRTOC/LLVM fast interpreter（<code>.irt</code>）：</p>
+</li>
+<li>仍然以 Frame/VReg/Acc 为语义中心（只是把热点状态缓存到固定寄存器）</li>
+<li>dispatch 是 computed-goto 的“尾跳转到 handler”（更接近 direct threaded code）</li>
+<li>handler 是“提前生成的机器码”，而不是运行时频繁经过 C++ 抽象层</li>
+</ul>
+<blockquote>
+<p>同一个工程里两条路径并存的意义：<br />
+C++ interpreter 更适合 debug/可读性；fast interpreter 更适合性能与可控的低层 ABI/寄存器策略。</p>
+</blockquote>
+<h2 id="9-fast-interpreter-clang">9) 为什么 fast interpreter 更快？（澄清“clang 也会优化”这个误解）<a class="headerlink" href="#9-fast-interpreter-clang" title="Permanent link">&para;</a></h2>
+<p>你说的关键疑问是：“C++ interpreter 也是 clang/LLVM 编译的，为什么不一样快？”</p>
+<p>要点在于：<strong>是否使用 LLVM 并不是唯一变量，‘程序结构’才是决定解释器性能的核心变量。</strong></p>
+<p>fast interpreter 更快主要来自这些结构性差异：</p>
+<p>1) <strong>状态常驻寄存器</strong>：<code>tr/pc/frame/acc/dispatch</code> 固定寄存器减少 load/store
+2) <strong>direct threaded dispatch</strong>：<code>dispatch_table[opc]</code> + <code>tail_call/jmp</code>，减少 switch/分支开销
+3) <strong>更可控的 ABI 与边界</strong>：acc 写回/恢复、异常入口 slot、OSR fake-return 等都是“写死的协议”，便于全链路优化
+4) <strong>编译器 IR 优化适配</strong>：Graph 级优化（CSE/LSE/RegAlloc/Scheduler…）对 handler 这种小热块非常有效</p>
+<p>而 C++ interpreter 即便由 clang 编译：</p>
+<ul>
+<li>也很难自动把它“变形”为同等结构的 direct threaded code（尤其是与 Frame/GC/异常/OSR 协议耦合的部分）</li>
+<li>大量边界检查、抽象层、以及更保守的别名分析，会限制编译器能做的优化</li>
+</ul>
+<blockquote>
+<p>结论：LLVM/clang 能把 C++ 编译成机器码，但不保证它拥有 fast interpreter 那种“为解释器而设计”的执行结构。</p>
+</blockquote>
+<h2 id="10">10) 更详尽的语法参考（教科书式）<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<p>如果你希望像 C 语言教科书一样系统学习 DSL（每个构造的语义、类型系统、控制流、LiveIn/LiveOut、常用节点），建议继续读：</p>
+<ul>
+<li><a href="../IRTOC_DSL_Reference/">IRTOC_DSL_Reference</a>（更详尽的“语法/语义参考”）</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.prune", "navigation.indexes", "navigation.top", "toc.follow", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../../assets/javascripts/mermaid-init.js"></script>
+      
+    
+  </body>
+</html>

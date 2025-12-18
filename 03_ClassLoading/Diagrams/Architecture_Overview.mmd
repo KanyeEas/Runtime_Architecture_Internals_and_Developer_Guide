@@ -1,0 +1,34 @@
+flowchart TD
+  subgraph RuntimeCore["Runtime（语言无关）"]
+    CL["ClassLinker\n(GetClass/LoadClass/BuildClass)"]
+    CLC["ClassLinkerContext\n(descriptor->Class, per-Class mutex, roots)"]
+    CDA["panda_file::ClassDataAccessor\n(Method/Field/Proto/Code)"]
+    VTB["VTableBuilder\n(默认方法/覆盖/冲突)"]
+    ITB["ITableBuilder\n(接口表构建/Resolve/写回)"]
+    IMTB["IMTableBuilder\n(IMT 规模策略 + 填表/冲突)"]
+    Layout["LayoutFields\n(offset/对齐/基类padding)"]
+  end
+
+  subgraph ETS["ETS 插件（语言相关）"]
+    LC["EtsLanguageContext\n(Create*Builder/CreateExtension/CreateVM/CreateGC)"]
+    EXT["EtsClassLinkerExtension\n(roots自举/managed<->runtime Class绑定/native entrypoint)"]
+    ECTX["EtsClassLinkerContext\n(RuntimeLinker链式加载: native->managed)"]
+    EITB["EtsITableBuilder\n(线性化 + vtable驱动resolve)"]
+    EVTB["EtsVTableBuilder\n(ETS override/冲突策略)"]
+  end
+
+  CDA --> CL
+  CL -->|"使用"| VTB
+  CL -->|"使用"| ITB
+  CL -->|"使用"| IMTB
+  CL -->|"使用"| Layout
+  CL -->|"插入/查找"| CLC
+
+  LC -->|"创建"| EVTB
+  LC -->|"创建"| EITB
+  LC -->|"创建"| EXT
+  EXT -->|"创建/管理"| ECTX
+  EXT -->|"提供错误处理/entrypoint"| CL
+  ECTX -->|"非boot: LoadClass"| CL
+
+

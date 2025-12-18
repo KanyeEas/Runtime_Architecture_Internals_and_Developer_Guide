@@ -1,0 +1,161 @@
+schema: 1
+chapter: "05_NativeBridge"
+policy:
+  discovery: dynamic
+  cross_chapter: no_duplicate_line_by_line
+seeds:
+  dirs:
+    - "plugins/ets/runtime/ani"
+    - "plugins/ets/runtime/interop_js"
+    - "plugins/ets/runtime"
+  files:
+    # --- Minimal closed set (ANI VM API + env + native library + optional JS interop) ---
+    - "plugins/ets/runtime/ani/ani.h"
+    - "plugins/ets/runtime/ani/ani_vm_api.h"
+    - "plugins/ets/runtime/ani/ani_vm_api.cpp"
+    - "plugins/ets/runtime/ani/ani_interaction_api.h"
+    - "plugins/ets/runtime/ani/ani_interaction_api.cpp"
+    - "plugins/ets/runtime/ani/ani_options.h"
+    - "plugins/ets/runtime/ani/ani_options.cpp"
+    - "plugins/ets/runtime/ani/ani_options_parser.h"
+    - "plugins/ets/runtime/ani/ani_options_parser.cpp"
+    - "plugins/ets/runtime/ani/ani_helpers.h"
+    - "plugins/ets/runtime/ani/ani_helpers.cpp"
+    - "plugins/ets/runtime/ani/ani_converters.h"
+    - "plugins/ets/runtime/ani/ani_checkers.h"
+    - "plugins/ets/runtime/ets_napi_env.h"
+    - "plugins/ets/runtime/ets_napi_env.cpp"
+    - "plugins/ets/runtime/ets_native_library_provider.h"
+    - "plugins/ets/runtime/ets_native_library_provider.cpp"
+    - "plugins/ets/runtime/ets_native_library.h"
+    - "plugins/ets/runtime/ets_native_library.cpp"
+    - "plugins/ets/runtime/external_iface_table.h"
+    - "plugins/ets/runtime/interop_js/interop_context_api.h"
+    - "plugins/ets/runtime/interop_js/interop_context.h"
+    - "plugins/ets/runtime/interop_js/interop_context.cpp"
+    # --- Verifier (optional but strongly related when verifyANI is enabled) ---
+    - "plugins/ets/runtime/ani/verify/verify_ani_vm_api.h"
+    - "plugins/ets/runtime/ani/verify/verify_ani_vm_api.cpp"
+    - "plugins/ets/runtime/ani/verify/verify_ani_interaction_api.h"
+    - "plugins/ets/runtime/ani/verify/verify_ani_interaction_api.cpp"
+    - "plugins/ets/runtime/ani/verify/verify_ani_checker.h"
+    - "plugins/ets/runtime/ani/verify/verify_ani_checker.cpp"
+files:
+  - path: "plugins/ets/runtime/ani/ani.h"
+    mode: line_by_line
+    priority: P0
+    status: pending
+  - path: "plugins/ets/runtime/ani/ani_vm_api.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ani/ani_vm_api.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ani/ani_interaction_api.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ani/ani_interaction_api.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ani/ani_options.h"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/ani_options.cpp"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/ani_options_parser.h"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/ani_options_parser.cpp"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/ani_helpers.h"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/ani_helpers.cpp"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/ani_converters.h"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/ani_checkers.h"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ets_napi_env.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_napi_env.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_native_library_provider.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_native_library_provider.cpp"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/ets_native_library.h"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "plugins/ets/runtime/ets_native_library.cpp"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "plugins/ets/runtime/external_iface_table.h"
+    mode: line_by_line
+    priority: P0
+    status: completed
+  - path: "plugins/ets/runtime/interop_js/interop_context_api.h"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "plugins/ets/runtime/interop_js/interop_context.h"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "plugins/ets/runtime/interop_js/interop_context.cpp"
+    mode: line_by_line
+    priority: P1
+    status: completed
+  - path: "plugins/ets/runtime/ani/verify/verify_ani_vm_api.h"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/verify/verify_ani_vm_api.cpp"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/verify/verify_ani_interaction_api.h"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/verify/verify_ani_interaction_api.cpp"
+    mode: line_by_line
+    priority: P1
+    status: pending
+  - path: "plugins/ets/runtime/ani/verify/verify_ani_checker.h"
+    mode: line_by_line
+    priority: P2
+    status: pending
+  - path: "plugins/ets/runtime/ani/verify/verify_ani_checker.cpp"
+    mode: line_by_line
+    priority: P2
+    status: pending
+  - path: "(dynamic_discovery)"
+    note: "逐行精读过程中发现同章强相关文件，将追加到此列表"
