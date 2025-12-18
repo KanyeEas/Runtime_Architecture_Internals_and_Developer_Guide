@@ -275,7 +275,6 @@ def _emit_chapter(lines: List[str], docs_root: Path, spec: ChapterSpec) -> None:
 def generate_nav_yaml(docs_root: Path) -> str:
     lines: List[str] = []
     _emit_yaml_line(lines, 0, "nav:")
-    _emit_item(lines, 2, "Home", "index.md")
 
     # 00 section (fixed)
     _emit_yaml_line(lines, 2, "- 00 总览与方法论:")

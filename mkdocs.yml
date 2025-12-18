@@ -1,6 +1,6 @@
 site_name: Runtime Architecture Internals & Developer Guide
 site_description: Ark runtime_core/static_core internal wiki（概览 + 深入证据链）
-site_url: ""
+site_url: "https://github.com/KanyeEas/Runtime_Architecture_Internals_and_Developer_Guide"
 
 # Docs live in ./docs (MkDocs requires a child directory).
 docs_dir: docs
@@ -63,7 +63,6 @@ extra_css:
 
 # NAV_BEGIN (AUTO-GENERATED)
 nav:
-  - Home: index.md
   - 00 总览与方法论:
       - 总索引（概览）: 00_Master_Index.md
       - 方法论 Checklist: 00_Methodology_Wiki_Review_Checklist.md

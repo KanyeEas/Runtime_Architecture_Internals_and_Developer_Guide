@@ -5,14 +5,21 @@
 - **概览（原 Stage1）**：每章一篇“架构主线 + 关键概念”总览，方便快速建立心智模型
 - **深入（原 Stage2）**：围绕每章 README/Flows/DataStructures/FileNotes 做逐行证据链沉淀，方便新人落地排障与改代码
 
-## 快速入口（推荐）
+## 00 总览与方法论（首页）
 
-- **总索引（概览）**：`00_Master_Index.md`
-- **文档交付/验收方法论**：`00_Methodology_Wiki_Review_Checklist.md`
-- **深入（新人建议从端到端脊柱图开始）**：
-  - ClassLoading：`03_ClassLoading/Flows/ClassLoading_EndToEnd.md`
-  - ExecutionEngine：`04_ExecutionEngine/Flows/ExecutionEngine_EndToEnd.md`
-- **全量页面索引**（保证每篇 md 都可点到）：`All_Pages.md`
+- [总索引（概览）](00_Master_Index.md)
+- [方法论 Checklist](00_Methodology_Wiki_Review_Checklist.md)
+- [全量页面索引（必备）](All_Pages.md)
+
+### 各章概览（Stage1）
+
+- [01 Startup](01_Startup_and_Entrypoints.md)
+- [02 Memory](02_Memory_Management_and_Object_Model.md)
+- [03 ClassLoading](03_Class_Loading_and_Linking.md)
+- [04 ExecutionEngine](04_Execution_Engine_Interpreter_JIT_AOT.md)
+- [05 NativeBridge](05_Native_Bridge_ANI_and_Interop.md)
+- [06 Tooling](06_Tooling_Profiling_Verification.md)
+- [07 Build&Config](07_Build_and_Configuration.md)
 
 ## 本地预览（MkDocs）
 
