@@ -1,0 +1,15 @@
+{
+  "name": "mermaid-validator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node validate_mermaid_blocks.mjs"
+  },
+  "dependencies": {
+    "mermaid": "10.9.1",
+    "puppeteer": "23.11.1"
+  }
+}
+
+
+

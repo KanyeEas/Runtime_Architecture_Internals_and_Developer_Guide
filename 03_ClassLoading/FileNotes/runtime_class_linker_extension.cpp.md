@@ -22,7 +22,7 @@ flowchart TD
   subgraph Lifecycle["类对象生命周期容器"]
     C["CreateClass(语言实现)\nAddCreatedClass"] --> D["AddClass: InsertClass 并发去重"]
     D -->|成功| E["OnClassPrepared:\n(recordNewClass_? push newClasses_)\nRemoveCreatedClass"]
-    D -->|失败(另线程已插入)| F["FreeClass(语言) + FreeClassData(通用)"]
+    D -->|"失败(另线程已插入)"| F["FreeClass(语言) + FreeClassData(通用)"]
   end
 ```
 

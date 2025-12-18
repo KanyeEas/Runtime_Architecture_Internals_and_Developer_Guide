@@ -176,7 +176,7 @@ flowchart TD
   C -->|array| AR["LoadArrayClass\n(componentContext 决定插入域)"] --> R2
   C -->|普通| D{"IsBootContext?"}
   D -->|是| F{"Boot BloomFilter\nPossiblyContains?"}
-  F -->|否(IMPOSSIBLY_HAS)| R0["返回 nullptr\n(可上报 CLASS_NOT_FOUND)"]
+  F -->|"否(IMPOSSIBLY_HAS)"| R0["返回 nullptr\n(可上报 CLASS_NOT_FOUND)"]
   F -->|是| G["在 bootPandaFiles_ 查 classId"] --> H{"找到?"}
   H -->|否| R3["上报 CLASS_NOT_FOUND\n返回 nullptr"]
   H -->|是| I["LoadClass(pf,classId,context)"] --> J["InsertClass 并发去重\n(冲突则回收新对象)"] --> R4["返回 Class*"]
@@ -213,7 +213,7 @@ flowchart TD
   B -->|否| C["TryLoadingClassFromNative\n(沿 RuntimeLinker parent+shared libs 链)"]
   C --> D{"链遍历成功？"}
   D -->|成功且找到/有错误| R2["返回 Class* 或传播错误"]
-  D -->|失败(非白名单linker)| E{"当前线程可调用 managed？\n(coro && IsManagedCode)"}
+  D -->|"失败(非白名单linker)"| E{"当前线程可调用 managed？\n(coro && IsManagedCode)"}
   E -->|否| R3["禁止进入 managed\n上报 CLASS_NOT_FOUND 返回 nullptr"]
   E -->|是| F["构造 args(runtimeLinker, etsClassName, nullptr)\n调用 managed RuntimeLinker.loadClass(final)"]
   F --> G{"有异常？"}

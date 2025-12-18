@@ -1,4 +1,4 @@
-!*build*
 site/
 .cache/
 .venv/
+tools/mermaid/node_modules

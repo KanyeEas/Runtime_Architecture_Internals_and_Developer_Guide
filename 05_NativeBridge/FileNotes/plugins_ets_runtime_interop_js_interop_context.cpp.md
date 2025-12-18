@@ -65,12 +65,12 @@
 ```mermaid
 flowchart TD
   A[ANI_CreateVM] -->|interop=enable| B[CreateMainInteropContext]
-  B --> C[InteropCtx::Init(mainCoro, napi_env)]
+  B --> C["InteropCtx::Init(mainCoro, napi_env)"]
   C --> D[InteropCtx::InitExternalInterfaces]
   D --> E[ExternalIfaceTable 回调表就绪]
   E --> F[AttachCurrentThread: CreateJSRuntime/CreateInteropCtx]
   E --> G[DetachCurrentThread: GetJSEnv/CleanUpJSEnv]
-  E --> H[Deopt/异常: ClearInteropHandleScopes(Frame*)]
+  E --> H["Deopt/异常: ClearInteropHandleScopes(Frame*)"]
 ```
 
 
