@@ -12,7 +12,17 @@ import os
 from pathlib import Path
 
 
-ROOT = Path("/home/fanzewei/docs/Runtime_Architecture_Internals_and_Developer_Guide")
+def _repo_root() -> Path:
+    """
+    Resolve repository root in a CI-friendly way.
+
+    Assumption: this file lives at <repo>/tools/generate_all_pages.py
+    """
+    return Path(__file__).resolve().parents[1]
+
+
+# Generate into the REAL repo root (not the mkdocs docs_dir symlink farm).
+ROOT = _repo_root()
 OUT = ROOT / "All_Pages.md"
 
 EXCLUDE_DIRS = {
@@ -76,6 +86,7 @@ def main() -> None:
             lines.append(f"- [{title}]({link})")
         lines.append("")
 
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote: {OUT} ({len(files)} pages)")
 

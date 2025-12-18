@@ -20,7 +20,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          # Pin to a stable CPython to avoid pre-release breakages (e.g. 3.14 on ubuntu-latest).
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
