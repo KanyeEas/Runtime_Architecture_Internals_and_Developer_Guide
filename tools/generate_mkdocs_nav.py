@@ -278,6 +278,10 @@ def generate_nav_yaml(docs_root: Path) -> str:
 
     # 00 section (fixed)
     _emit_yaml_line(lines, 2, "- 00 总览与方法论:")
+    # Keep index.md in nav to avoid MkDocs "exists but not included in nav" noise,
+    # while still NOT introducing a top-level "Home" entry.
+    if _maybe_file("index.md", docs_root):
+        _emit_item(lines, 6, "首页（00 总览）", "index.md")
     for title, rel in [
         ("总索引（概览）", "00_Master_Index.md"),
         ("方法论 Checklist", "00_Methodology_Wiki_Review_Checklist.md"),

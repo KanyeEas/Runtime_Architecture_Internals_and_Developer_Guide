@@ -31,10 +31,16 @@ EXCLUDE_DIRS = {
     ".venv",
     "site",
     "__pycache__",
+    # Vendored JS deps under tools/ (e.g. mermaid) are not part of MkDocs site docs.
+    "node_modules",
 }
 
 # We do not want to index generated symlink-farm directory itself; we index the real content.
-EXCLUDE_TOP_LEVEL = {"docs"}
+EXCLUDE_TOP_LEVEL = {
+    "docs",
+    # Tooling scripts / vendored deps are not intended as site pages.
+    "tools",
+}
 
 
 def iter_md_files(root: Path) -> list[Path]:

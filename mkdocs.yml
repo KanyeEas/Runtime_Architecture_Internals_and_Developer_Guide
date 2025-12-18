@@ -64,6 +64,7 @@ extra_css:
 # NAV_BEGIN (AUTO-GENERATED)
 nav:
   - 00 总览与方法论:
+      - 首页（00 总览）: index.md
       - 总索引（概览）: 00_Master_Index.md
       - 方法论 Checklist: 00_Methodology_Wiki_Review_Checklist.md
       - 全量页面索引（必备）: All_Pages.md
